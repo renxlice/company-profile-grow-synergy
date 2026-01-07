@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{{description}}">
+    <meta name="keywords" content="{{keywords}}">
+    <meta name="author" content="{{author}}">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ogTitle}}">
+    <meta property="og:description" content="{{ogDescription}}">
+    <meta property="og:image" content="{{ogImage}}">
+    <meta property="og:url" content="{{ogUrl}}">
+    <meta property="og:type" content="{{ogType}}">
+    <meta property="og:site_name" content="{{siteName}}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="{{twitterCard}}">
+    <meta name="twitter:title" content="{{twitterTitle}}">
+    <meta name="twitter:description" content="{{twitterDescription}}">
+    <meta name="twitter:image" content="{{twitterImage}}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{canonical}}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {{{structuredDataJson}}}
+    </script>
+    
+    <!-- Google Analytics -->
+    {{#if googleAnalyticsId}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{googleAnalyticsId}}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{googleAnalyticsId}}');
+    </script>
+    {{/if}}
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-orange-500 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">G</span>
+                    </div>
+                    <a href="/" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                </div>
+                
+                <div class="hidden md:flex space-x-6">
+                    <a href="/" class="nav-link" data-page="home">Beranda</a>
+                    <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
+                    <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
+                    <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
+                        Hubungi Kami
+                    </button>
+                    <button class="md:hidden text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="background-image"></div>
+    <div class="hero-content">
+        <h2 class="text-3xl md:text-4xl font-light mb-4">Platform Pembelajaran Terbaik</h2>
+        <h1 class="text-4xl md:text-6xl font-bold mb-8">Synergy Academy</h1>
+        <p class="text-xl mb-8 text-center max-w-3xl">
+            Program pelatihan berkualitas dengan kurikulum relevan dan instruktur profesional
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button class="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
+                Daftar Kursus
+            </button>
+            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition">
+                Lihat Kurikulum
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Search Section -->
+<section class="py-8 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Cari pelatihan atau kursus..." 
+                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                >
+                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2 justify-center">
+                <button class="filter-btn px-4 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition" data-filter="all">
+                    Semua
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="data-science">
+                    Data Science
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="web">
+                    Web Development
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="mobile">
+                    Mobile Development
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="ui-ux">
+                    UI/UX Design
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Synergy Academy Section -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Program Pelatihan Kami
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Lebih dari 30 program pelatihan dengan sertifikat yang diakui secara nasional
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="academyGrid">
+            <!-- Course 1 -->
+            <div class="academy-card" data-category="data-science">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course1.jpg" alt="Data Science Fundamental" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Data Science Fundamental</h3>
+                        <p class="academy-description">Pelajari dasar-dasar data science dari pemula hingga mahir</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">12</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">48</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.8</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Beginner</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Data Science Fundamental</h3>
+                    <p class="text-gray-600 mb-4">Mempelajari dasar-dasar data science, Python programming, dan statistical analysis untuk pemula.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">1,250+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 2 -->
+            <div class="academy-card" data-category="web">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course2.jpg" alt="Full Stack Web Development" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Full Stack Web Development</h3>
+                        <p class="academy-description">Menjadi full stack developer dengan React dan Node.js</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">16</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">96</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.9</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Intermediate</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Full Stack Web Development</h3>
+                    <p class="text-gray-600 mb-4">Belajar front-end dan back-end development dengan teknologi modern seperti React, Node.js, dan MongoDB.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">890+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 3 -->
+            <div class="academy-card" data-category="mobile">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course3.jpg" alt="Mobile Development Fundamental" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Mobile Development Fundamental</h3>
+                        <p class="academy-description">Mempelajari dasar-dasar React Native dan Flutter untuk pemula</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">10</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">40</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.7</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Beginner</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Mobile Development Fundamental</h3>
+                    <p class="text-gray-600 mb-4">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">650+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 4 -->
+            <div class="academy-card" data-category="ui-ux">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course4.jpg" alt="UI/UX Design Masterclass" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">UI/UX Design Masterclass</h3>
+                        <p class="academy-description">Master dalam user interface dan user experience design</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">8</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">32</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.8</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Intermediate</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">UI/UX Design Masterclass</h3>
+                    <p class="text-gray-600 mb-4">Belajar design thinking, user research, prototyping, dan visual design dengan tools modern seperti Figma.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">480+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 5 -->
+            <div class="academy-card" data-category="data-science">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course5.jpg" alt="Machine Learning Advanced" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Machine Learning Advanced</h3>
+                        <p class="academy-description">Deep learning dan neural networks untuk advanced users</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">12</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">48</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.9</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Advanced</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Machine Learning Advanced</h3>
+                    <p class="text-gray-600 mb-4">Mempelajari deep learning, neural networks, computer vision, dan NLP dengan TensorFlow dan PyTorch.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">320+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 6 -->
+            <div class="academy-card" data-category="web">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course6.jpg" alt="Frontend Development with React" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Frontend Development with React</h3>
+                        <p class="academy-description">Spesialisasi dalam React.js dan modern frontend development</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">8</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">32</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.8</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Intermediate</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Frontend Development with React</h3>
+                    <p class="text-gray-600 mb-4">Fokus pada React.js, Redux, hooks, dan modern frontend development practices untuk building scalable applications.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">560+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 7 -->
+            <div class="academy-card" data-category="mobile">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course7.jpg" alt="Flutter Mobile Development" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Flutter Mobile Development</h3>
+                        <p class="academy-description">Build cross-platform mobile apps dengan Flutter</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">10</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">40</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.7</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Intermediate</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Flutter Mobile Development</h3>
+                    <p class="text-gray-600 mb-4">Belajar Flutter dan Dart untuk membangun aplikasi mobile cross-platform untuk iOS dan Android.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">290+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Course 8 -->
+            <div class="academy-card" data-category="ui-ux">
+                <div class="academy-image-container">
+                    <img src="/images/academy/course8.jpg" alt="Product Design Workshop" class="w-full h-full object-cover">
+                    <div class="academy-overlay">
+                        <h3 class="academy-title">Product Design Workshop</h3>
+                        <p class="academy-description">Workshop intensif product design dan design systems</p>
+                        <div class="academy-stats">
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4</span>
+                                <span class="academy-stat-label">Minggu</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">16</span>
+                                <span class="academy-stat-label">Jam</span>
+                            </div>
+                            <div class="academy-stat">
+                                <span class="academy-stat-value">4.9</span>
+                                <span class="academy-stat-label">Rating</span>
+                            </div>
+                        </div>
+                        <div class="academy-badges">
+                            <span class="badge-academy">Workshop</span>
+                            <span class="badge-academy">Certificate</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">Product Design Workshop</h3>
+                    <p class="text-gray-600 mb-4">Workshop intensif untuk mempelajari product design, design systems, dan building scalable design solutions.</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-users text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">180+ Siswa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
+                            <span class="text-gray-600">Sertifikat</span>
+                        </div>
+                    </div>
+                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
+                        Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+                <button class="px-3 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition" data-page="1">
+                    1
+                </button>
+                <button class="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-page="2">
+                    2
+                </button>
+                <button class="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-page="3">
+                    3
+                </button>
+                <button class="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-page="4">
+                    4
+                </button>
+                <button class="px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition" data-page="5">
+                    5
+                </button>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="py-16 bg-blue-600 text-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-bold mb-2">30+</div>
+                <p class="text-blue-100">Program Pelatihan</p>
+            </div>
+            <div>
+                <div class="text-4xl font-bold mb-2">5,000+</div>
+                <p class="text-blue-100">Siswa Aktif</p>
+            </div>
+            <div>
+                <div class="text-4xl font-bold mb-2">98%</div>
+                <p class="text-blue-100">Tingkat Kepuasan</p>
+            </div>
+            <div>
+                <div class="text-4xl font-bold mb-2">95%</div>
+                <p class="text-blue-100">Tingkat Kelulusan</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+            Mulai Perjalanan Belajar Anda
+        </h2>
+        <p class="text-xl mb-8 text-blue-100">
+            Bergabung dengan ribuan siswa yang telah meningkatkan karir mereka melalui program kami
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                Daftar Gratis
+            </button>
+            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition">
+                Konsultasi Karir
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <i class="fas fa-chart-line text-blue-400 text-xl"></i>
+                    <span class="text-lg font-bold">GROW SYNERGY INDONESIA</span>
+                </div>
+                <p class="text-gray-400">Platform pelatihan teknologi terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold mb-4">Pelatihan</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="/synergy-academy" class="hover:text-white transition">Synergy Academy</a></li>
+                    <li><a href="/synergy-experts" class="hover:text-white transition">Synergy Experts</a></li>
+                    <li><a href="/synergy-portfolio" class="hover:text-white transition">Synergy Portofolio</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold mb-4">Perusahaan</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
+                    <li><a href="/contact" class="hover:text-white transition">Kontak</a></li>
+                    <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+                    <li><a href="/karir" class="hover:text-white transition">Karir</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold mb-4">Ikuti Kami</h3>
+                <div class="flex space-x-4 mb-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <i class="fab fa-facebook text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <i class="fab fa-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">
+                        <i class="fab fa-instagram text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-400">
+                    <i class="fas fa-envelope mr-2"></i>info@growsynergy.id
+                </p>
+                <p class="text-gray-400">
+                    <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                </p>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 GROW SYNERGY INDONESIA. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+    </main>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script>
+        // Set active navigation based on current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = 'synergy-academy';
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const academyCards = document.querySelectorAll('.academy-card');
+            
+            academyCards.forEach(card => {
+                const title = card.querySelector('.academy-title').textContent.toLowerCase();
+                const description = card.querySelector('.academy-description').textContent.toLowerCase();
+                const overview = card.querySelector('p.text-gray-600').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm) || overview.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                this.classList.remove('bg-gray-200', 'text-gray-700');
+                this.classList.add('bg-blue-600', 'text-white');
+                
+                // Filter cards
+                const filter = this.dataset.filter;
+                const academyCards = document.querySelectorAll('.academy-card');
+                
+                academyCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.category === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Pagination functionality
+        document.querySelectorAll('[data-page]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active page
+                document.querySelectorAll('[data-page]').forEach(b => {
+                    b.classList.remove('bg-blue-600', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                this.classList.remove('bg-gray-200', 'text-gray-700');
+                this.classList.add('bg-blue-600', 'text-white');
+                
+                // Here you would typically load new content based on page number
+                const pageNumber = this.dataset.page;
+                console.log('Loading page:', pageNumber);
+            });
+        });
+    </script>
+</body>
+</html>

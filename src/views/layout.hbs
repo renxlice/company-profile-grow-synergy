@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{{description}}">
+    <meta name="keywords" content="{{keywords}}">
+    <meta name="author" content="{{author}}">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ogTitle}}">
+    <meta property="og:description" content="{{ogDescription}}">
+    <meta property="og:image" content="{{ogImage}}">
+    <meta property="og:url" content="{{ogUrl}}">
+    <meta property="og:type" content="{{ogType}}">
+    <meta property="og:site_name" content="{{siteName}}">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="{{twitterCard}}">
+    <meta name="twitter:title" content="{{twitterTitle}}">
+    <meta name="twitter:description" content="{{twitterDescription}}">
+    <meta name="twitter:image" content="{{twitterImage}}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{canonical}}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {{{structuredDataJson}}}
+    </script>
+    
+    <!-- Google Analytics -->
+    {{#if googleAnalyticsId}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{googleAnalyticsId}}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{googleAnalyticsId}}');
+    </script>
+    {{/if}}
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
+                    <a href="/" class="text-xl font-bold text-gray-800">DataAnalitik.id</a>
+                </div>
+                
+                <div class="hidden md:flex space-x-6">
+                    <a href="/" class="text-gray-600 hover:text-blue-600 transition">Beranda</a>
+                    <a href="/training" class="text-gray-600 hover:text-blue-600 transition">Pelatihan</a>
+                    <a href="/about" class="text-gray-600 hover:text-blue-600 transition">Tentang</a>
+                    <a href="/contact" class="text-gray-600 hover:text-blue-600 transition">Kontak</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Daftar Sekarang
+                    </button>
+                    <button class="md:hidden text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {{{body}}}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-chart-line text-blue-400 text-xl"></i>
+                        <span class="text-lg font-bold">DataAnalitik.id</span>
+                    </div>
+                    <p class="text-gray-400">Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Pelatihan</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/training/data-analitik-pemula" class="hover:text-white transition">Data Analitik Pemula</a></li>
+                        <li><a href="/training/python-data-analitik" class="hover:text-white transition">Python untuk Data Analitik</a></li>
+                        <li><a href="/training/business-intelligence-dashboard" class="hover:text-white transition">Business Intelligence</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Perusahaan</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
+                        <li><a href="/contact" class="hover:text-white transition">Kontak</a></li>
+                        <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+                        <li><a href="/karir" class="hover:text-white transition">Karir</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Ikuti Kami</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        <i class="fas fa-envelope mr-2"></i>info@dataanalitik.id
+                    </p>
+                    <p class="text-gray-400">
+                        <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 DataAnalitik.id. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+</body>
+</html>
