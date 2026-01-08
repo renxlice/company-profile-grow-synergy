@@ -4,44 +4,599 @@
 .hero-section {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     position: relative;
-    overflow: hidden;
-    height: 600px;
+    height: 60vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .hero-section .background-image {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 50%;
     background-image: url('/images/hero-background.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.8;
+    filter: brightness(0.4);
+    z-index: 1;
 }
 
-.hero-content {
+.hero-section .hero-content {
     position: relative;
-    z-index: 10;
+    z-index: 2;
     text-align: center;
     color: white;
-    max-width: 100%;
-    padding: 0 2rem;
+    padding: 2rem;
+    max-width: 800px;
 }
 
-.hero-section::before {
+.hero-section .hero-content h1 {
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .hero-content h2 {
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .hero-content p {
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-section .hero-content button {
+    margin: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-section .hero-content button:first-child {
+    background-color: #FEA521;
+    border-color: #FEA521;
+}
+
+.hero-section .hero-content button:first-child:hover {
+    background-color: #e6941a;
+    border-color: #e6941a;
+}
+
+.hero-section .hero-content button:last-child:hover {
+    background-color: #225273;
+    border-color: #225273;
+    color: white;
+}
+
+/* Tentang Kami Section */
+.tentang-kami {
+    background: linear-gradient(135deg, #225273 0%, #4DB68D 100%);
+    color: white;
+    border-radius: 1rem;
+    padding: 3rem;
+    margin: 2rem auto;
+    max-width: 1200px;
+    box-shadow: 0 10px 30px rgba(34, 152, 231, 0.666);
+}
+
+.tentang-kami h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.tentang-kami h2::after {
+    background-color: #FEA521;
+}
+
+.tentang-kami p {
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.tentang-kami button {
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.tentang-kami button:first-child {
+    background-color: #FEA521;
+    border-color: #FEA521;
+}
+
+.tentang-kami button:first-child:hover {
+    background-color: #e6941a;
+    border-color: #e6941a;
+}
+
+.tentang-kami button:last-child {
+    background-color: transparent;
+    border-color: white;
+    color: white;
+}
+
+.tentang-kami button:last-child:hover {
+    background-color: white;
+    color: #225273;
+}
+
+/* Expert Cards */
+.expert-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.expert-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(34, 82, 115, 0.15);
+    border-color: #4DB68D;
+}
+
+.expert-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    object-fit: cover;
+    border: 4px solid #FEA521;
+}
+
+.expert-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #225273;
+}
+
+.expert-title {
+    color: #4DB68D;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.expert-bio {
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.expert-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #225273, #4DB68D);
+    color: white;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Portfolio Cards */
+.portfolio-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(34, 82, 115, 0.15);
+    border-color: #4DB68D;
+}
+
+.portfolio-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.portfolio-card h3 {
+    color: #225273;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.portfolio-card p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.portfolio-card button {
+    background-color: #4DB68D;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.portfolio-card button:hover {
+    background-color: #3ca576;
+}
+
+/* Navigation Active State */
+.nav-link {
+    color: #000000;
+    transition: color 0.3s ease;
+    position: relative;
+    text-decoration: none;
+    padding-bottom: 2px;
+}
+
+.nav-link:hover {
+    color: #4DB68D;
+}
+
+.nav-link:hover::after {
     content: '';
     position: absolute;
-    top: 0;
+    bottom: -2px;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-    background-size: cover;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #FEA521, #4DB68D);
+    animation: slideIn 0.3s ease;
+}
+
+.nav-link.active {
+    color: #225273;
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #FEA521, #4DB68D);
+}
+
+.nav-link.active:hover {
+    color: #1a1a4d;
+}
+
+@keyframes slideIn {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+/* Navbar Transparent Border */
+header {
+    border-bottom: 1px solid rgba(34, 82, 115, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Academy Cards */
+.academy-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.academy-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(34, 82, 115, 0.15);
+    border-color: #4DB68D;
+}
+
+.academy-image-container {
+    position: relative;
+    height: 192px;
+    overflow: hidden;
+}
+
+.academy-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(34, 82, 115, 0.8) 0%, transparent 100%);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Hide prices */
+.academy-card .flex.items-center.justify-between.mb-4 {
+    display: none;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section .hero-content {
+        padding: 1rem;
+    }
+    
+    .hero-section .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .tentang-kami {
+        padding: 2rem;
+        margin: 1rem;
+    }
+    
+    .expert-card {
+        margin-bottom: 2rem;
+    }
+    
+    .portfolio-card {
+        margin-bottom: 2rem;
+    }
+    
+    .academy-card {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Button Styles - Mix of #FEA521 and #4DB68D */
+button:not([class*="absolute"][class*="right-3"][class*="top-1/2"]):not([class*="transform"]):not([class*="-translate-y-1/2"]):not(.filter-btn):not(.pagination-btn):not([onclick*="search"]):not([onclick*="filter"]):not(.portfolio-card button):not(.academy-card button):not(section[style*="background-color: #225273"] button) {
+    background-color: #FEA521 !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.75rem 2rem !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+button:not([class*="absolute"][class*="right-3"][class*="top-1/2"]):not([class*="transform"]):not([class*="-translate-y-1/2"]):not(.filter-btn):not(.pagination-btn):not([onclick*="search"]):not([onclick*="filter"]):not(.portfolio-card button):not(.academy-card button):not(section[style*="background-color: #225273"] button):hover {
+    background-color: #e6941a !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(254, 165, 33, 0.3) !important;
+}
+
+/* Portfolio and Academy cards - use #4DB68D */
+.portfolio-card button,
+.academy-card button {
+    background-color: #4DB68D !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.portfolio-card button:hover,
+.academy-card button:hover {
+    background-color: #3ca576 !important;
+}
+
+/* Statistics section buttons - use #4DB68D */
+section[style*="background-color: #225273"] button {
+    background-color: #4DB68D !important;
+}
+
+section[style*="background-color: #225273"] button:hover {
+    background-color: #3ca576 !important;
+}
+
+/* Secondary button style - use #4DB68D */
+button.btn-secondary-green,
+button.bg-green-600 {
+    background-color: #4DB68D !important;
+    color: white !important;
+}
+
+button.btn-secondary-green:hover,
+button.bg-green-600:hover {
+    background-color: #3ca576 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(77, 182, 141, 0.3) !important;
+}
+
+/* Give some buttons #4DB68D for variety */
+button:nth-child(even):not([class*="absolute"][class*="right-3"][class*="top-1/2"]):not([class*="transform"]):not([class*="-translate-y-1/2"]):not(.filter-btn):not(.pagination-btn):not([onclick*="search"]):not([onclick*="filter"]):not(.portfolio-card button):not(.academy-card button):not(section[style*="background-color: #225273"] button):not(section[style*="background-color: #FEA521"] button) {
+    background-color: #4DB68D !important;
+}
+
+button:nth-child(even):not([class*="absolute"][class*="right-3"][class*="top-1/2"]):not([class*="transform"]):not([class*="-translate-y-1/2"]):not(.filter-btn):not(.pagination-btn):not([onclick*="search"]):not([onclick*="filter"]):not(.portfolio-card button):not(.academy-card button):not(section[style*="background-color: #225273"] button):not(section[style*="background-color: #FEA521"] button):hover {
+    background-color: #3ca576 !important;
+    box-shadow: 0 4px 12px rgba(77, 182, 141, 0.3) !important;
+}
+
+/* Footer Background Override */
+footer.bg-gray-800 {
+    background-color: #F5F5DC !important;
+}
+
+/* Footer text color adjustment for light background */
+footer.bg-gray-800 .text-white {
+    color: #333333 !important;
+}
+
+footer.bg-gray-800 h3 {
+    color: #333333 !important;
+}
+
+footer.bg-gray-800 p {
+    color: #666666 !important;
+}
+
+footer.bg-gray-800 a {
+    color: #333333 !important;
+}
+
+footer.bg-gray-800 a:hover {
+    color: #FEA521 !important;
+}
+
+/* Statistics section override - use #225273 */
+section.py-16.bg-blue-600.text-white {
+    background-color: #225273 !important;
+}
+
+section.py-16.bg-blue-600.text-white .text-blue-100 {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.bg-blue-600 {
+    background-color: #FEA521 !important;
+}
+
+/* Specific button overrides */
+.bg-orange-600 {
+    background-color: #FEA521 !important;
+}
+
+.bg-orange-600:hover {
+    background-color: #e6941a !important;
+}
+
+.bg-blue-600 {
+    background-color: #FEA521 !important;
+}
+
+.bg-blue-600:hover {
+    background-color: #e6941a !important;
+}
+
+.bg-green-600 {
+    background-color: #4DB68D !important;
+}
+
+.bg-green-600:hover {
+    background-color: #3ca576 !important;
+}
+
+.bg-purple-600 {
+    background-color: #FEA521 !important;
+}
+
+.bg-purple-600:hover {
+    background-color: #e6941a !important;
+}
+
+/* Button text color overrides */
+.bg-orange-600.text-white,
+.bg-blue-600.text-white,
+.bg-green-600.text-white,
+.bg-purple-600.text-white {
+    color: white !important;
+}
+
+/* Hover states */
+.hover\:bg-orange-700:hover {
+    background-color: #e6941a !important;
+}
+
+.hover\:bg-blue-700:hover {
+    background-color: #e6941a !important;
+}
+
+.hover\:bg-green-700:hover {
+    background-color: #3ca576 !important;
+}
+
+.hover\:bg-purple-700:hover {
+    background-color: #e6941a !important;
+}
+
+/* CTA Section buttons - mix colors */
+section[style*="background-color: #FEA521"] button:first-child {
+    background-color: white !important;
+    color: #FEA521 !important;
+    border: 2px solid white !important;
+}
+
+section[style*="background-color: #FEA521"] button:first-child:hover {
+    background-color: #f8f8f8 !important;
+    color: #e6941a !important;
+}
+
+section[style*="background-color: #FEA521"] button:last-child {
+    background-color: transparent !important;
+    color: white !important;
+    border: 2px solid white !important;
+}
+
+section[style*="background-color: #FEA521"] button:last-child:hover {
+    background-color: white !important;
+    color: #FEA521 !important;
+}
+
+/* Section Backgrounds */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #225273 0%, #4DB68D 100%);
+}
+
+.bg-gradient-secondary {
+    background: linear-gradient(135deg, #4DB68D 0%, #FEA521 100%);
+}
+
+.bg-gradient-accent {
+    background: linear-gradient(135deg, #FEA521 0%, #225273 100%);
+}
+
+/* Text Colors */
+.text-primary {
+    color: #225273;
+}
+
+.text-secondary {
+    color: #4DB68D;
+}
+
+.text-accent {
+    color: #FEA521;
+}
+
+/* Background Colors */
+.bg-primary {
+    background-color: #225273;
+}
+
+.bg-secondary {
+    background-color: #4DB68D;
+}
+
+.bg-accent {
+    background-color: #FEA521;
 }
 
 /* Card Hover Effects */
@@ -245,6 +800,7 @@ header {
 .academy-card .flex.items-center.justify-between.mb-4 {
     display: none;
 }
+
 .academy-card {
     background: white;
     border-radius: 12px;
@@ -328,6 +884,7 @@ header {
     font-size: 0.75rem;
     font-weight: 500;
 }
+
 .portfolio-card {
     background: white;
     border-radius: 12px;
