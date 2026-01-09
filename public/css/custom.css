@@ -124,13 +124,28 @@
 
 /* Expert Cards */
 .expert-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     padding: 2rem;
-    text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border: 2px solid transparent;
+}
+
+/* Ensure specific text in expert cards is white */
+.expert-card .text-gray-600,
+.expert-card .text-gray-800,
+.expert-card .text-blue-600,
+.expert-card .text-green-600,
+.expert-card .text-purple-600,
+.expert-card .text-indigo-600,
+.expert-card .text-pink-600,
+.expert-card .text-teal-600,
+.expert-card .text-sm,
+.expert-card p,
+.expert-card h3,
+.expert-card .text-center p {
+    color: white !important;
 }
 
 .expert-card:hover {
@@ -187,12 +202,17 @@
 
 /* Portfolio Cards */
 .portfolio-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border: 2px solid transparent;
+}
+
+/* Ensure all text in portfolio cards is white */
+.portfolio-card * {
+    color: white !important;
 }
 
 .portfolio-card:hover {
@@ -208,13 +228,13 @@
 }
 
 .portfolio-card h3 {
-    color: #225273;
+    color: white;
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
 
 .portfolio-card p {
-    color: #666;
+    color: white;
     margin-bottom: 1rem;
 }
 
@@ -293,12 +313,17 @@ header {
 
 /* Academy Cards */
 .academy-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border: 2px solid transparent;
+}
+
+/* Ensure all text in academy cards is white */
+.academy-card * {
+    color: white !important;
 }
 
 .academy-card:hover {
@@ -438,6 +463,27 @@ button:nth-child(even):not([class*="absolute"][class*="right-3"][class*="top-1/2
 button:nth-child(even):not([class*="absolute"][class*="right-3"][class*="top-1/2"]):not([class*="transform"]):not([class*="-translate-y-1/2"]):not(.filter-btn):not(.pagination-btn):not([onclick*="search"]):not([onclick*="filter"]):not(.portfolio-card button):not(.academy-card button):not(section[style*="background-color: #225273"] button):not(section[style*="background-color: #FEA521"] button):hover {
     background-color: #3ca576 !important;
     box-shadow: 0 4px 12px rgba(77, 182, 141, 0.3) !important;
+}
+
+/* Badge color overrides */
+.bg-blue-100 {
+    background-color: #FEA521 !important;
+    color: white !important;
+}
+
+.bg-green-100 {
+    background-color: #4DB68D !important;
+    color: white !important;
+}
+
+.bg-purple-100 {
+    background-color: #F5F5DC !important;
+    color: #333333 !important;
+}
+
+.bg-orange-100 {
+    background-color: #FEA521 !important;
+    color: white !important;
 }
 
 /* Footer Background Override */
@@ -713,7 +759,7 @@ header {
 
 /* Academy Cards */
 .academy-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -802,7 +848,7 @@ header {
 }
 
 .academy-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -886,7 +932,7 @@ header {
 }
 
 .portfolio-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -943,7 +989,7 @@ header {
     font-weight: 500;
 }
 .expert-card {
-    background: white;
+    background: #225273;
     border-radius: 12px;
     padding: 2rem;
     text-align: center;
