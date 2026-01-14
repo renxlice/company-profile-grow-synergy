@@ -163,293 +163,12 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="portfolioGrid">
-            <!-- Portfolio Card 1 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="web">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project1.jpg" alt="E-Commerce Platform" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">E-Commerce Platform</h3>
-                        <p class="text-white/80 text-sm mb-4">Platform e-commerce modern dengan React dan Node.js</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">UI/UX Design</span>
-                            <span class="text-white/80 text-xs">Full Stack Development</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan platform e-commerce end-to-end dengan fitur lengkap termasuk payment gateway, inventory management, dan analytics dashboard.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">React</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Node.js</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">MongoDB</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Docker</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
-                    </div>
-                </div>
+            <!-- Loading indicator -->
+            <div id="loadingIndicator" class="col-span-full text-center py-12">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p class="mt-4 text-gray-600">Memuat portfolio...</p>
             </div>
-            
-            <!-- Portfolio Card 2 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="mobile">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project2.jpg" alt="Mobile Banking App" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Mobile Banking App</h3>
-                        <p class="text-white/80 text-sm mb-4">Aplikasi mobile banking dengan fitur transfer, payment, dan analytics real-time.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">React Native</span>
-                            <span class="text-white/80 text-xs">TypeScript</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan aplikasi mobile banking dengan security tinggi dan compliance dengan standard perbankan.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">React Native</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">TypeScript</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Node.js</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Firebase</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Portfolio Card 3 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="data">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project3.jpg" alt="Cyber Security Dashboard" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Cyber Security Dashboard</h3>
-                        <p class="text-white/80 text-sm mb-4">Dashboard monitoring keamanan siber dengan real-time threat detection.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">Vue.js</span>
-                            <span class="text-white/80 text-xs">Python</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan dashboard untuk monitoring keamanan jaringan dengan visualisasi data threat secara real-time.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Vue.js</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Python</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">FastAPI</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">PostgreSQL</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Portfolio Card 4 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="ui-ux">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project4.jpg" alt="Healthcare App Design" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Healthcare App Design</h3>
-                        <p class="text-white/80 text-sm mb-4">Aplikasi kesehatan dengan design modern dan user-friendly.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">UI/UX</span>
-                            <span class="text-white/80 text-xs">Figma</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mendesain aplikasi kesehatan dengan focus pada user experience dan accessibility untuk berbagai usia.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Figma</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Adobe XD</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Prototyping</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">User Research</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            View Design
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-palette mr-2"></i>
-                            Case Study
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Portfolio Card 5 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="web">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project5.jpg" alt="Learning Management System" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Learning Management System</h3>
-                        <p class="text-white/80 text-sm mb-4">Platform pembelajaran online dengan fitur video streaming dan quiz.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">Education</span>
-                            <span class="text-white/80 text-xs">Full Stack</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Membangun LMS dengan fitur lengkap untuk pembelajaran online, termasuk video streaming, quiz, dan certificate.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Angular</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Spring Boot</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">MySQL</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">AWS</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Portfolio Card 6 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="mobile">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project6.jpg" alt="Food Delivery App" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Food Delivery App</h3>
-                        <p class="text-white/80 text-sm mb-4">Aplikasi delivery makanan dengan real-time tracking.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">Flutter</span>
-                            <span class="text-white/80 text-xs">Firebase</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan aplikasi food delivery dengan real-time tracking, payment integration, dan rating system.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Flutter</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Dart</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Firebase</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Google Maps</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Portfolio Card 7 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="data">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project7.jpg" alt="Data Analytics Dashboard" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Data Analytics Dashboard</h3>
-                        <p class="text-white/80 text-sm mb-4">Dashboard analytics untuk business intelligence.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">Power BI</span>
-                            <span class="text-white/80 text-xs">Tableau</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Membuat dashboard analytics untuk monitoring KPI dan business metrics dengan visualisasi data yang interaktif.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Power BI</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Tableau</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">SQL</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Excel</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            View Dashboard
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-chart-bar mr-2"></i>
-                            Case Study
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Portfolio Card 8 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition" data-category="ui-ux">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project8.jpg" alt="E-Commerce Redesign" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">E-Commerce Redesign</h3>
-                        <p class="text-white/80 text-sm mb-4">Redesign UI/UX untuk platform e-commerce existing.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">UI/UX</span>
-                            <span class="text-white/80 text-xs">Redesign</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Melakukan redesign lengkap UI/UX platform e-commerce untuk meningkatkan conversion rate dan user engagement.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Figma</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">User Testing</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">A/B Testing</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Analytics</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            View Design
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-palette mr-2"></i>
-                            Case Study
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <!-- Portfolio cards will be loaded dynamically from Firestore -->
         </div>
         
         <!-- Pagination -->
@@ -585,9 +304,18 @@
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    {{> firebase-config}}
     <script>
+        // Initialize Firestore explicitly jika belum ada
+        if (!window.db) {
+            window.db = firebase.firestore();
+        }
+        
         // Set active navigation based on current page
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DEBUG: DOMContentLoaded fired for synergy-portfolio');
             const currentPage = 'synergy-portfolio';
             const navLinks = document.querySelectorAll('.nav-link');
             
@@ -598,80 +326,169 @@
                 }
             });
 
+            console.log('DEBUG: About to call loadPortfolios...');
             // Load portfolios from Firestore
             loadPortfolios();
-
-            // Debug hero section background
-            const heroSections = {{#if heroSections}}[{{#each heroSections}}{backgroundImage: '{{this.backgroundImage}}'}{{#unless @last}},{{/unless}}{{/each}}]{{else}}[]{{/if}};
-            console.log('Hero sections data:', heroSections);
-            console.log('Hero sections length:', heroSections.length);
-            
-            const backgroundDiv = document.querySelector('.hero-section .background-image');
-            if (backgroundDiv) {
-                console.log('Background div found:', backgroundDiv);
-                
-                // Set background image manually - use Picsum image for consistency
-                if (heroSections.length > 0) {
-                    const firstHero = heroSections[0];
-                    backgroundDiv.style.backgroundImage = `url('${firstHero.backgroundImage}')`;
-                    console.log('Setting background to:', firstHero.backgroundImage);
-                } else {
-                    backgroundDiv.style.backgroundImage = "url('https://picsum.photos/seed/hero1/1920/1080.jpg')";
-                    console.log('Setting fallback background from Picsum');
-                }
-                
-                console.log('Final background style:', backgroundDiv.style.backgroundImage);
-            } else {
-                console.log('Background div not found');
-            }
+            console.log('DEBUG: loadPortfolios called');
         });
-    </script>
-    <script>
-        // Initialize Firebase
-        {{> firebase-config}}
         
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
         // Load portfolios from Firestore
         async function loadPortfolios() {
             try {
-                console.log('Loading portfolios from Firestore...');
-                const portfoliosSnapshot = await db.collection('portfolios').get();
+                console.log('DEBUG: Loading portfolios from Firestore...');
+                console.log('DEBUG: Firebase db available:', !!window.db);
+                console.log('DEBUG: Firebase app available:', !!firebase);
+                
+                // Test connection first
+                console.log('DEBUG: Testing connection to portfolios collection...');
+                const testDoc = await window.db.collection('portfolios').limit(1).get();
+                console.log('DEBUG: Test connection successful, docs:', testDoc.docs.length);
+                
+                console.log('DEBUG: Fetching all portfolios...');
+                const portfoliosSnapshot = await window.db.collection('portfolios').get();
+                console.log('DEBUG: Snapshot received, docs count:', portfoliosSnapshot.docs.length);
+                
                 const portfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log('Portfolios loaded:', portfolios);
+                console.log('DEBUG: Portfolios loaded:', portfolios);
+                console.log('DEBUG: Portfolios length:', portfolios.length);
+                
+                if (portfolios.length > 0) {
+                    console.log('DEBUG: First portfolio data:', portfolios[0]);
+                }
                 
                 // Update portfolios grid
                 updatePortfolioGrid(portfolios);
             } catch (error) {
-                console.error('Error loading portfolios:', error);
+                console.error('DEBUG: Error loading portfolios:', error);
+                console.error('DEBUG: Error stack:', error.stack);
+                console.error('DEBUG: Error code:', error.code);
+                console.error('DEBUG: Error message:', error.message);
+                // Fallback to mock data if Firestore fails
+                console.log('DEBUG: Falling back to mock data...');
+                loadMockPortfolios();
             }
         }
-
-        // Update portfolios grid with real data
+        
+        // Mock data for portfolios (fallback)
+        const mockPortfolios = [
+            {
+                id: 'mock-portfolio-1',
+                title: 'E-commerce Analytics Platform',
+                category: 'Data Analytics',
+                image: 'https://picsum.photos/seed/portfolio1/400/300.jpg',
+                description: 'Platform analitik untuk e-commerce dengan real-time dashboard.',
+                technologies: ['Python', 'React', 'PostgreSQL'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-2',
+                title: 'Customer Segmentation System',
+                category: 'Machine Learning',
+                image: 'https://picsum.photos/seed/portfolio2/400/300.jpg',
+                description: 'Sistem segmentasi pelanggan menggunakan machine learning.',
+                technologies: ['Python', 'Scikit-learn', 'Pandas'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-3',
+                title: 'Sales Dashboard Automation',
+                category: 'Business Intelligence',
+                image: 'https://picsum.photos/seed/portfolio3/400/300.jpg',
+                description: 'Dashboard otomatis untuk monitoring penjualan.',
+                technologies: ['Tableau', 'SQL', 'Excel'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-4',
+                title: 'Mobile Banking App',
+                category: 'Mobile Development',
+                image: 'https://picsum.photos/seed/portfolio4/400/300.jpg',
+                description: 'Aplikasi mobile banking dengan fitur transfer dan pembayaran.',
+                technologies: ['React Native', 'Node.js', 'MongoDB'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-5',
+                title: 'Inventory Management System',
+                category: 'Web Development',
+                image: 'https://picsum.photos/seed/portfolio5/400/300.jpg',
+                description: 'Sistem manajemen inventory dengan barcode scanning.',
+                technologies: ['Vue.js', 'Laravel', 'MySQL'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-6',
+                title: 'AI Chatbot Integration',
+                category: 'Artificial Intelligence',
+                image: 'https://picsum.photos/seed/portfolio6/400/300.jpg',
+                description: 'Chatbot AI untuk customer service automation.',
+                technologies: ['Python', 'TensorFlow', 'NLP'],
+                projectUrl: '#',
+                githubUrl: '#'
+            }
+        ];
+        
+        // Load mock portfolios (fallback)
+        function loadMockPortfolios() {
+            console.log('DEBUG: Loading mock portfolios...');
+            updatePortfolioGrid(mockPortfolios);
+        }
+        
+        // Update portfolios grid with data
         function updatePortfolioGrid(portfolios) {
+            console.log('DEBUG: updatePortfolioGrid called with:', portfolios);
             const portfolioGrid = document.getElementById('portfolioGrid');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            
+            console.log('DEBUG: Portfolio grid element found:', !!portfolioGrid);
+            console.log('DEBUG: Loading indicator element found:', !!loadingIndicator);
+            
             if (!portfolioGrid) {
-                console.log('Portfolio grid not found');
+                console.log('DEBUG: Portfolio grid not found');
                 return;
+            }
+
+            // Remove loading indicator
+            if (loadingIndicator) {
+                console.log('DEBUG: Removing loading indicator');
+                loadingIndicator.remove();
             }
 
             if (portfolios.length === 0) {
-                console.log('No portfolios data available');
+                console.log('DEBUG: No portfolios data available');
+                // Show no data message
+                const noDataMessage = document.createElement('div');
+                noDataMessage.className = 'col-span-full text-center py-12';
+                noDataMessage.innerHTML = `
+                    <div class="text-6xl mb-4">�</div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-600">Belum Ada Portfolio</h3>
+                    <p class="text-gray-500">Portfolio akan segera ditampilkan. Silakan coba lagi nanti.</p>
+                `;
+                portfolioGrid.appendChild(noDataMessage);
                 return;
             }
 
+            console.log('DEBUG: Clearing existing content');
             // Clear existing content
             portfolioGrid.innerHTML = '';
 
+            console.log('DEBUG: Adding portfolio cards');
             // Add portfolio cards
-            portfolios.forEach(portfolio => {
+            portfolios.forEach((portfolio, index) => {
+                console.log(`DEBUG: Processing portfolio ${index}:`, portfolio);
                 const portfolioCard = createPortfolioCard(portfolio);
                 portfolioGrid.appendChild(portfolioCard);
             });
+            
+            console.log('DEBUG: Portfolio section updated with', portfolios.length, 'items');
         }
-
-        // Create portfolio card HTML
+        
+        // Create portfolio card HTML using DOM methods
         function createPortfolioCard(portfolio) {
             const div = document.createElement('div');
             div.className = 'portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition';
@@ -679,7 +496,7 @@
             // Set category for filtering
             div.setAttribute('data-category', portfolio.category || 'general');
             
-            // Use string concatenation to avoid template literal issues
+            // Use DOM methods to avoid template literal issues
             const portfolioImage = portfolio.image || 'https://picsum.photos/seed/portfolio-' + portfolio.id + '/400/300.jpg';
             const portfolioTitle = portfolio.title || 'Activity Title';
             const portfolioCategory = portfolio.category || 'Activity';
@@ -688,37 +505,97 @@
             const portfolioProjectUrl = portfolio.projectUrl || portfolio.liveDemoUrl || '#';
             const portfolioGithubUrl = portfolio.githubUrl || portfolio.codeUrl || '#';
             
-            let technologiesHtml = '';
-            if (portfolioTechnologies.length > 0) {
-                technologiesHtml = portfolioTechnologies.slice(0, 3).map(function(tech) {
-                    return '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">' + tech + '</span>';
-                }).join('');
-            }
+            // Create image container
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'relative h-64';
             
-            div.innerHTML = 
-                '<div class="relative h-64">' +
-                    '<img src="' + portfolioImage + '" alt="' + portfolioTitle + '" class="w-full h-full object-cover">' +
-                    '<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>' +
-                    '<div class="absolute bottom-0 left-0 right-0 p-4">' +
-                        '<h3 class="text-white font-bold text-lg mb-2">' + portfolioTitle + '</h3>' +
-                        '<p class="text-white/80 text-sm mb-4">' + portfolioDescription + '</p>' +
-                        '<div class="flex justify-between items-center">' +
-                            '<span class="text-white/80 text-xs">' + portfolioCategory + '</span>' +
-                            '<span class="text-white/80 text-xs">' + (portfolioTechnologies[0] || '') + '</span>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="p-6">' +
-                    '<h4 class="font-bold text-gray-800 mb-2">Activity Overview</h4>' +
-                    '<p class="text-gray-600 mb-4">' + portfolioDescription + '</p>' +
-                    '<div class="flex flex-wrap gap-2 mb-4">' +
-                        technologiesHtml +
-                    '</div>' +
-                    '<div class="flex justify-between">' +
-                        '<a href="' + portfolioProjectUrl + '" class="text-blue-600 hover:text-blue-800 font-medium">Documentation</a>' +
-                        '<a href="' + portfolioGithubUrl + '" class="text-gray-600 hover:text-gray-800 font-medium">Results</a>' +
-                    '</div>' +
-                '</div>';
+            const img = document.createElement('img');
+            img.src = portfolioImage;
+            img.alt = portfolioTitle;
+            img.className = 'w-full h-full object-cover';
+            imageContainer.appendChild(img);
+            
+            const gradientOverlay = document.createElement('div');
+            gradientOverlay.className = 'absolute inset-0 bg-gradient-to-t from-black/70 to-transparent';
+            imageContainer.appendChild(gradientOverlay);
+            
+            const textOverlay = document.createElement('div');
+            textOverlay.className = 'absolute bottom-0 left-0 right-0 p-4';
+            
+            const titleEl = document.createElement('h3');
+            titleEl.className = 'text-white font-bold text-lg mb-2';
+            titleEl.textContent = portfolioTitle;
+            textOverlay.appendChild(titleEl);
+            
+            const descEl = document.createElement('p');
+            descEl.className = 'text-white/80 text-sm mb-4';
+            descEl.textContent = portfolioDescription;
+            textOverlay.appendChild(descEl);
+            
+            const categoryContainer = document.createElement('div');
+            categoryContainer.className = 'flex justify-between items-center';
+            
+            const categoryEl = document.createElement('span');
+            categoryEl.className = 'text-white/80 text-xs';
+            categoryEl.textContent = portfolioCategory;
+            categoryContainer.appendChild(categoryEl);
+            
+            const techEl = document.createElement('span');
+            techEl.className = 'text-white/80 text-xs';
+            techEl.textContent = portfolioTechnologies[0] || '';
+            categoryContainer.appendChild(techEl);
+            
+            textOverlay.appendChild(categoryContainer);
+            imageContainer.appendChild(textOverlay);
+            
+            // Create content container
+            const contentContainer = document.createElement('div');
+            contentContainer.className = 'p-6';
+            
+            const overviewTitle = document.createElement('h4');
+            overviewTitle.className = 'font-bold text-gray-800 mb-2';
+            overviewTitle.textContent = 'Activity Overview';
+            contentContainer.appendChild(overviewTitle);
+            
+            const overviewDesc = document.createElement('p');
+            overviewDesc.className = 'text-gray-600 mb-4';
+            overviewDesc.textContent = portfolioDescription;
+            contentContainer.appendChild(overviewDesc);
+            
+            // Create technologies tags
+            const techContainer = document.createElement('div');
+            techContainer.className = 'flex flex-wrap gap-2 mb-4';
+            
+            portfolioTechnologies.slice(0, 3).forEach(tech => {
+                const techTag = document.createElement('span');
+                techTag.className = 'bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded';
+                techTag.textContent = tech;
+                techContainer.appendChild(techTag);
+            });
+            
+            contentContainer.appendChild(techContainer);
+            
+            // Create links
+            const linksContainer = document.createElement('div');
+            linksContainer.className = 'flex justify-between';
+            
+            const docLink = document.createElement('a');
+            docLink.href = portfolioProjectUrl;
+            docLink.className = 'text-blue-600 hover:text-blue-800 font-medium';
+            docLink.textContent = 'Documentation';
+            linksContainer.appendChild(docLink);
+            
+            const resultsLink = document.createElement('a');
+            resultsLink.href = portfolioGithubUrl;
+            resultsLink.className = 'text-gray-600 hover:text-gray-800 font-medium';
+            resultsLink.textContent = 'Results';
+            linksContainer.appendChild(resultsLink);
+            
+            contentContainer.appendChild(linksContainer);
+            
+            // Append all to main div
+            div.appendChild(imageContainer);
+            div.appendChild(contentContainer);
             
             return div;
         }
@@ -738,17 +615,10 @@
                 // Combine all searchable text
                 const allText = title + ' ' + description + ' ' + overview + ' ' + category + ' ' + technologies;
                 
-                console.log('Searching for:', searchTerm);
-                console.log('Portfolio card text:', allText);
-                console.log('Category found:', category);
-                console.log('Technologies found:', technologies);
-                
                 if (allText.includes(searchTerm)) {
                     card.style.display = 'block';
-                    console.log('Showing portfolio for:', searchTerm);
                 } else {
                     card.style.display = 'none';
-                    console.log('Hiding portfolio for:', searchTerm);
                 }
             });
             
@@ -837,33 +707,6 @@
         
         // Load hero section when page loads
         document.addEventListener('DOMContentLoaded', loadHeroSection);
-    </script>
-    
-    <script>
-        // Force Beranda link to work every time
-        function fixBerandaLink() {
-            const berandaLinks = document.querySelectorAll('a[href="/"]');
-            console.log('Fixing Beranda links, found:', berandaLinks.length);
-            
-            berandaLinks.forEach((link, index) => {
-                console.log(`Processing Beranda link ${index}:`, link.href, link.textContent);
-                
-                // Remove all existing event listeners by cloning
-                const freshLink = link.cloneNode(true);
-                freshLink.addEventListener('click', function(e) {
-                    console.log('Beranda link clicked!');
-                    // Allow natural navigation - don't prevent default
-                    return true;
-                });
-                
-                // Replace the old link
-                link.parentNode.replaceChild(freshLink, link);
-            });
-        }
-        
-        // Run fix immediately and every 5 seconds
-        document.addEventListener('DOMContentLoaded', fixBerandaLink);
-        setInterval(fixBerandaLink, 5000);
     </script>
     
     <!-- WhatsApp Floating Button -->

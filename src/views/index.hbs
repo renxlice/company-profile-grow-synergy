@@ -726,13 +726,12 @@
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
-    {{> firebase-config}};
-        }
-
+    {{> firebase-config}}
+    <script>
         // Load dynamic content from Firestore
         async function loadDynamicContent() {
             try {
-                console.log('Loading dynamic content...');
+                console.log('Loading dynamic content for home page...');
                 console.log('DEBUG: Firebase db available:', !!db);
                 console.log('DEBUG: Firebase app available:', !!firebase);
                 
@@ -742,14 +741,13 @@
                     console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
                 } catch (testError) {
                     console.log('DEBUG: Firebase test connection failed:', testError);
-                    loadMockData();
                     return;
                 }
                 
                 // Try to load from Firebase with timeout
                 const loadWithTimeout = async () => {
                     const timeout = new Promise((_, reject) => 
-                        setTimeout(() => reject(new Error('Loading timeout')), 10000) // Increased to 10 seconds
+                        setTimeout(() => reject(new Error('Loading timeout')), 5000)
                     );
                     
                     const firebaseLoad = Promise.all([
@@ -769,10 +767,6 @@
                     console.log('DEBUG: Firebase results received successfully');
                 } catch (error) {
                     console.log('DEBUG: Firebase loading failed:', error.message);
-                    if (error.message === 'Loading timeout') {
-                        console.log('DEBUG: Loading timeout - using mock data');
-                    }
-                    loadMockData();
                     return;
                 }
                 
@@ -789,178 +783,48 @@
                 console.log('DEBUG: Data availability - Hero:', hasHeroData, 'About:', hasAboutData, 'Any:', hasAnyData);
                 
                 if (!hasAnyData) {
-                    console.log('No data available - using mock data');
-                    loadMockData();
+                    console.log('No data available in Firestore');
                     return;
                 }
                 
-                // Load Hero Sections (real or mock)
+                // Update Hero Section
                 if (hasHeroData) {
                     const heroSections = results[0].docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     updateHeroSection(heroSections);
-                } else {
-                    console.log('Using mock hero section data');
-                    updateHeroSection(mockHeroSections);
                 }
                 
-                // Load About Sections (always prioritize real data)
+                // Update About Section
                 if (hasAboutData) {
                     const aboutSections = results[1].docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     console.log('DEBUG: About sections from Firestore:', aboutSections);
                     console.log('DEBUG: First about section data:', aboutSections[0]);
                     updateAboutSection(aboutSections);
-                } else {
-                    console.log('Using mock about section data');
-                    updateAboutSection(mockAboutSections);
                 }
-
-                // Load Experts
+                
+                // Update Experts Section (show only first 3)
                 const experts = results[2].docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 updateExpertsSection(experts);
-
-                // Load Portfolios
+                
+                // Update Portfolio Section (show only first 3)
                 const portfolios = results[3].docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 console.log('DEBUG: Portfolios from Firebase:', portfolios);
                 try {
                     updatePortfolioSection(portfolios);
                 } catch (portfolioError) {
                     console.log('DEBUG: Portfolio update error:', portfolioError);
-                    // Use mock portfolios if real data fails
-                    updatePortfolioSection(mockPortfolios);
                 }
-
-                // Load Academies
+                
+                // Update Academy Section (show only first 3)
                 const academies = results[4].docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 updateAcademySection(academies);
-
+                
                 console.log('Dynamic content loaded successfully from Firebase');
             } catch (error) {
-                console.log('Using mock data for development');
+                console.log('Error loading dynamic content:', error);
                 console.log('DEBUG: Error that occurred:', error);
                 console.log('DEBUG: Error stack:', error.stack);
-                loadMockData();
             }
         }
-
-        // Mock data for development
-        const mockHeroSections = [
-            {
-                id: 'mock-hero-1',
-                title: 'Pelatihan Data Analitik Terbaik di Indonesia',
-                subtitle: 'Kuasai kemampuan analisis data dengan mentor berpengalaman',
-                backgroundImage: 'https://picsum.photos/seed/hero1/1920/1080.jpg',
-                primaryButtonText: 'Mulai Belajar',
-                primaryButtonUrl: '#courses',
-                secondaryButtonText: 'Lihat Program',
-                secondaryButtonUrl: '#programs'
-            }
-        ];
-
-        const mockAboutSections = [
-            {
-                id: 'mock-about-1',
-                title: 'Tentang Kami',
-                description: 'Kami adalah platform pembelajaran data analitik terbaik di Indonesia dengan mentor berpengalaman dan kurikulum yang komprehensif.',
-                image: 'https://picsum.photos/seed/about1/600/400.jpg',
-                primaryButtonText: 'Pelajari Lebih Lanjut',
-                primaryButtonUrl: '#about',
-                secondaryButtonText: 'Hubungi Kami',
-                secondaryButtonUrl: '#contact'
-            }
-        ];
-
-        const mockExperts = [
-            {
-                id: 'mock-expert-1',
-                name: 'Dr. Ahmad Wijaya',
-                title: 'Data Scientist Expert',
-                image: 'https://picsum.photos/seed/expert1/300/300.jpg',
-                description: '10+ tahun pengalaman dalam data science dan machine learning.',
-                specialties: ['Data Science', 'Machine Learning', 'Python'],
-                linkedin: '#',
-                twitter: '#'
-            },
-            {
-                id: 'mock-expert-2',
-                name: 'Sarah Putri',
-                title: 'Business Intelligence Specialist',
-                image: 'https://picsum.photos/seed/expert2/300/300.jpg',
-                description: 'Spesialis dalam business intelligence dan data visualization.',
-                specialties: ['Business Intelligence', 'Tableau', 'Power BI'],
-                linkedin: '#',
-                twitter: '#'
-            },
-            {
-                id: 'mock-expert-3',
-                name: 'Budi Santoso',
-                title: 'Data Analytics Consultant',
-                image: 'https://picsum.photos/seed/expert3/300/300.jpg',
-                description: 'Konsultan data analytics untuk berbagai industri.',
-                specialties: ['Data Analytics', 'SQL', 'R'],
-                linkedin: '#',
-                twitter: '#'
-            }
-        ];
-
-        const mockPortfolios = [
-            {
-                id: 'mock-portfolio-1',
-                title: 'E-commerce Analytics Platform',
-                category: 'Data Analytics',
-                image: 'https://picsum.photos/seed/portfolio1/400/300.jpg',
-                description: 'Platform analitik untuk e-commerce dengan real-time dashboard.',
-                technologies: ['Python', 'React', 'PostgreSQL'],
-                projectUrl: '#',
-                githubUrl: '#'
-            },
-            {
-                id: 'mock-portfolio-2',
-                title: 'Customer Segmentation System',
-                category: 'Machine Learning',
-                image: 'https://picsum.photos/seed/portfolio2/400/300.jpg',
-                description: 'Sistem segmentasi pelanggan menggunakan machine learning.',
-                technologies: ['Python', 'Scikit-learn', 'Pandas'],
-                projectUrl: '#',
-                githubUrl: '#'
-            },
-            {
-                id: 'mock-portfolio-3',
-                title: 'Sales Dashboard Automation',
-                category: 'Business Intelligence',
-                image: 'https://picsum.photos/seed/portfolio3/400/300.jpg',
-                description: 'Dashboard otomatis untuk monitoring penjualan.',
-                technologies: ['Tableau', 'SQL', 'Excel'],
-                projectUrl: '#',
-                githubUrl: '#'
-            }
-        ];
-
-        const mockAcademies = [
-            {
-                id: 'mock-academy-1',
-                title: 'Fundamental Data Science',
-                description: 'Pelatihan dasar-dasar data science untuk pemula.',
-                duration: '3 bulan',
-                level: 'Beginner',
-                image: 'https://picsum.photos/seed/academy1/300/200.jpg',
-                price: 'Rp 5.000.000',
-                instructor: 'Dr. Ahmad Wijaya',
-                rating: 4.8,
-                students: 150
-            },
-            {
-                id: 'mock-academy-2',
-                title: 'Advanced Machine Learning',
-                description: 'Pelatihan machine learning tingkat lanjut.',
-                duration: '6 bulan',
-                level: 'Advanced',
-                image: 'https://picsum.photos/seed/academy2/300/200.jpg',
-                price: 'Rp 10.000.000',
-                instructor: 'Sarah Putri',
-                rating: 4.9,
-                students: 80
-            }
-        ];
 
         // Update Hero Section
         function updateHeroSection(sections) {
@@ -1068,43 +932,88 @@
         }
 
         function createExpertCard(expert) {
-            console.log('DEBUG: Creating expert card for:', expert);
+            console.log('DEBUG: Membuat kartu expert untuk:', expert);
             const div = document.createElement('div');
-            div.className = 'rounded-lg shadow-lg p-6 hover:shadow-xl transition';
+            div.className = 'rounded-lg p-4';
             div.style.backgroundColor = '#225273';
             
-            // Use string concatenation instead of template literals to avoid parsing issues
-            const expertImage = expert.image || 'https://picsum.photos/seed/expert-default/200/200.jpg';
-            const expertName = expert.name || 'Expert Name';
-            const expertPosition = expert.position || 'Expert';
-            const expertDescription = expert.description || 'Expert description';
-            const expertLinkedin = expert.linkedin || '#';
-            const expertTwitter = expert.twitter || '#';
+            // Gunakan nilai default jika data tidak ada
+            const expertImage = expert.image || 'https://picsum.photos/seed/expert-' + (expert.id || 'default') + '/200/200.jpg';
+            const expertName = expert.name || expert.title || 'Nama Expert';
+            const expertPosition = expert.position || expert.specialties?.[0] || 'Posisi Expert';
+            const expertExperience = expert.experience || expert.description || '10+ Tahun Pengalaman';
+            const expertRating = expert.rating || 4.5;
+            const expertReviewCount = expert.reviewCount || 100;
+            const expertDescription = expert.description || 'Deskripsi expert';
             
-            let specialtiesHtml = '';
-            if (expert.specialties && expert.specialties.length > 0) {
-                specialtiesHtml = expert.specialties.map(function(spec) {
-                    return '<span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">' + spec + '</span>';
-                }).join('');
+            // Buat bintang rating
+            const fullStars = Math.floor(expertRating);
+            const hasHalfStar = expertRating % 1 >= 0.5;
+            let starsHtml = '';
+            
+            for (let i = 0; i < 5; i++) {
+                if (i < fullStars) {
+                    starsHtml += '<i class="fas fa-star"></i>';
+                } else if (i === fullStars && hasHalfStar) {
+                    starsHtml += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star"></i>';
+                }
             }
             
-            div.innerHTML = 
-                '<div class="text-center">' +
-                    '<img src="' + expertImage + '" alt="' + expertName + '" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">' +
-                    '<h3 class="text-xl font-bold text-white mb-2">' + expertName + '</h3>' +
-                    '<p class="text-gray-300 mb-4">' + expertPosition + '</p>' +
-                    '<p class="text-gray-400 text-sm mb-4">' + expertDescription + '</p>' +
-                    '<div class="flex flex-wrap justify-center gap-2 mb-4">' +
-                        specialtiesHtml +
-                    '</div>' +
-                    '<div class="flex justify-center space-x-4">' +
-                    '</div>' +
-                '</div>';
+            // PERBAIKAN: Gunakan DOM methods untuk menghindari Handlebars interference
+            const img = document.createElement('img');
+            img.src = expertImage;
+            img.alt = expertName;
+            img.className = 'w-16 h-16 rounded-full object-cover border-2 border-blue-300';
+            
+            const nameEl = document.createElement('h4');
+            nameEl.className = 'text-lg font-semibold text-white';
+            nameEl.textContent = expertName;
+            
+            const positionEl = document.createElement('p');
+            positionEl.className = 'text-blue-200 text-sm';
+            positionEl.textContent = expertPosition;
+            
+            const experienceEl = document.createElement('p');
+            experienceEl.className = 'text-blue-300 text-xs';
+            experienceEl.textContent = expertExperience;
+            
+            const starsContainer = document.createElement('div');
+            starsContainer.className = 'flex text-yellow-400 text-xs';
+            starsContainer.innerHTML = starsHtml;
+            
+            const ratingContainer = document.createElement('div');
+            ratingContainer.className = 'flex items-center mt-1';
+            ratingContainer.appendChild(starsContainer);
+            
+            const ratingSpan = document.createElement('span');
+            ratingSpan.className = 'text-blue-200 text-xs ml-2';
+            ratingSpan.textContent = parseFloat(expertRating).toFixed(1) + ' (' + expertReviewCount + ')';
+            ratingContainer.appendChild(ratingSpan);
+            
+            const flexDiv = document.createElement('div');
+            flexDiv.className = 'flex-1';
+            flexDiv.appendChild(nameEl);
+            flexDiv.appendChild(positionEl);
+            flexDiv.appendChild(experienceEl);
+            flexDiv.appendChild(ratingContainer);
+            
+            const mainFlex = document.createElement('div');
+            mainFlex.className = 'flex items-center space-x-4 mb-3';
+            mainFlex.appendChild(img);
+            mainFlex.appendChild(flexDiv);
+            
+            const descEl = document.createElement('p');
+            descEl.className = 'text-blue-300 text-xs mb-3';
+            descEl.textContent = expertDescription;
+            
+            div.appendChild(mainFlex);
+            div.appendChild(descEl);
             
             return div;
         }
 
-        // Update Portfolio Section
         function updatePortfolioSection(portfolios) {
             const portfolioContainer = document.getElementById('portfolioGrid');
             if (portfolioContainer && portfolios.length > 0) {
@@ -1130,36 +1039,73 @@
             div.className = 'rounded-lg p-4';
             div.style.backgroundColor = '#225273';
             
-            // Use string concatenation to avoid template literal issues
-            const portfolioImage = portfolio.image || 'https://picsum.photos/seed/portfolio-' + portfolio.id + '/400/300.jpg';
-            const portfolioTitle = portfolio.title || 'Portfolio Project';
-            const portfolioCategory = portfolio.category || 'Project';
-            const portfolioDescription = portfolio.description || 'Project description';
-            const portfolioTechnologies = Array.isArray(portfolio.technologies) ? portfolio.technologies : [];
-            const portfolioProjectUrl = portfolio.projectUrl || portfolio.liveDemoUrl || '#';
-            const portfolioGithubUrl = portfolio.githubUrl || portfolio.codeUrl || '#';
+            // PERBAIKAN: Gunakan ID yang valid atau random string
+            const portfolioId = portfolio.id || Math.random().toString(36).substr(2, 9);
+            const portfolioImage = portfolio.image || 'https://picsum.photos/seed/portfolio-' + portfolioId + '/400/300.jpg';
+            const portfolioTitle = portfolio.title || 'Proyek Portfolio';
+            const portfolioDescription = portfolio.description || 'Deskripsi proyek';
+            const portfolioCategory = portfolio.category || 'Pengembangan';
             
-            let technologiesHtml = '';
-            if (portfolioTechnologies.length > 0) {
-                technologiesHtml = portfolioTechnologies.slice(0, 3).map(function(tech) {
-                    return '<span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">' + tech + '</span>';
-                }).join('');
+            // Buat tag teknologi
+            let tagsHtml = '';
+            if (portfolio.tags && Array.isArray(portfolio.tags)) {
+                portfolio.tags.forEach(tag => {
+                    tagsHtml += '<span class="bg-white/20 text-white text-xs px-2 py-1 rounded">' + tag + '</span>';
+                });
+            } else if (portfolio.technologies && Array.isArray(portfolio.technologies)) {
+                portfolio.technologies.forEach(tech => {
+                    tagsHtml += '<span class="bg-white/20 text-white text-xs px-2 py-1 rounded">' + tech + '</span>';
+                });
             }
             
-            div.innerHTML = 
-                '<div class="mb-3">' +
-                    '<img src="' + portfolioImage + '" alt="' + portfolioTitle + '" class="w-full h-32 object-cover rounded-lg">' +
-                '</div>' +
-                '<h3 class="text-xl font-bold text-white mb-2">' + portfolioTitle + '</h3>' +
-                '<p class="text-orange-400 text-sm mb-3">' + portfolioCategory + '</p>' +
-                '<p class="text-gray-300 text-sm mb-4">' + portfolioDescription + '</p>' +
-                '<div class="flex flex-wrap gap-2 mb-4">' +
-                    technologiesHtml +
-                '</div>' +
-                '<div class="flex justify-between space-x-4">' +
-                    '<a href="' + portfolioProjectUrl + '" class="font-medium text-sm" style="color: #fb923c !important;">Documentation</a>' +
-                    '<a href="' + portfolioGithubUrl + '" class="text-green-400 hover:text-green-300 font-medium text-sm" style="color: #4BD68D !important;">Results</a>' +
-                '</div>';
+            // Buat tag teknologi kedua
+            let techTagsHtml = '';
+            if (portfolio.techTags && Array.isArray(portfolio.techTags)) {
+                portfolio.techTags.forEach(tech => {
+                    techTagsHtml += '<span class="bg-white/20 text-white text-xs px-2 py-1 rounded">' + tech + '</span>';
+                });
+            }
+            
+            const portfolioImg = document.createElement('img');
+            portfolioImg.src = portfolioImage;
+            portfolioImg.alt = portfolioTitle;
+            portfolioImg.className = 'w-full h-32 object-cover rounded-lg';
+            
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'mb-3';
+            imageContainer.appendChild(portfolioImg);
+            
+            const titleEl = document.createElement('h4');
+            titleEl.className = 'text-lg font-semibold text-white mb-1';
+            titleEl.textContent = portfolioTitle;
+            
+            const descEl = document.createElement('p');
+            descEl.className = 'text-white text-sm mb-2';
+            descEl.textContent = portfolioDescription;
+            
+            const tagsContainer = document.createElement('div');
+            tagsContainer.className = 'flex flex-wrap gap-1 mb-3';
+            tagsContainer.innerHTML = tagsHtml;
+            
+            const overviewLabel = document.createElement('p');
+            overviewLabel.className = 'text-white text-xs mb-3';
+            overviewLabel.textContent = 'Gambaran Proyek';
+            
+            const overviewDesc = document.createElement('p');
+            overviewDesc.className = 'text-white text-xs mb-3';
+            overviewDesc.textContent = portfolio.overview || portfolioDescription;
+            
+            const techTagsContainer = document.createElement('div');
+            techTagsContainer.className = 'flex flex-wrap gap-1 mb-3';
+            techTagsContainer.innerHTML = techTagsHtml;
+            
+            div.appendChild(imageContainer);
+            div.appendChild(titleEl);
+            div.appendChild(descEl);
+            div.appendChild(tagsContainer);
+            div.appendChild(overviewLabel);
+            div.appendChild(overviewDesc);
+            div.appendChild(techTagsContainer);
             
             return div;
         }
@@ -1187,73 +1133,96 @@
 
         function createAcademyCard(academy) {
             const div = document.createElement('div');
-            div.className = 'rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition';
+            div.className = 'rounded-lg p-4';
             div.style.backgroundColor = '#225273';
             
-            // Use string concatenation to avoid template literal issues
-            const academyImage = academy.image || 'https://picsum.photos/seed/academy-' + academy.id + '/400/300.jpg';
-            const academyTitle = academy.title || 'Academy Course';
-            const academyLevel = academy.level || 'Beginner';
-            const academyDescription = academy.description || 'Course description';
-            const academyPrice = academy.price ? 'Rp ' + academy.price.toLocaleString('id-ID') : 'Free';
-            const academyRating = academy.rating || 0;
-            const academyStudents = academy.students || 0;
-            const academyDuration = academy.duration || '4 weeks';
-            const academyInstructor = academy.author || 'Instructor';
+            // PERBAIKAN: Gunakan ID yang valid
+            const academyId = academy.id || Math.random().toString(36).substr(2, 9);
+            const academyImage = academy.image || 'https://picsum.photos/seed/academy-' + academyId + '/400/300.jpg';
+            const academyTitle = academy.title || 'Program Academy';
+            const academyDescription = academy.description || 'Deskripsi program';
+            const academyAuthor = academy.author || academy.instructor || 'Admin';
+            const academyRating = academy.rating || 4.9;
+            const academyStudents = academy.students || 2500;
+            const academyDuration = academy.duration || '12 Minggu';
+            const academyLevel = academy.level || 'Pemula';
+            const academySchedule = academy.schedule || 'Full Time';
+            const academyFormat = academy.format || 'Online';
             
-            div.innerHTML = 
-                '<img src="' + academyImage + '" alt="' + academyTitle + '" class="w-full h-48 object-cover">' +
-                '<div class="p-6">' +
-                    '<div class="flex items-center justify-between mb-2">' +
-                        '<h3 class="text-xl font-bold text-white">' + academyTitle + '</h3>' +
-                        '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">' + academyLevel + '</span>' +
-                    '</div>' +
-                    '<p class="text-gray-300 text-sm mb-4">' + academyDescription + '</p>' +
-                    '<div class="flex items-center justify-between mb-4">' +
-                        '<span class="text-2xl font-bold text-orange-400">' + academyPrice + '</span>' +
-                        '<div class="text-right">' +
-                            '<div class="flex items-center text-yellow-400 mb-1">' +
-                                generateStars(academyRating) +
-                            '</div>' +
-                            '<span class="text-sm text-gray-400">' + academyStudents + ' students</span>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="flex items-center justify-between text-sm text-gray-400">' +
-                        '<span>' + academyDuration + '</span>' +
-                        '<span>' + academyInstructor + '</span>' +
-                    '</div>' +
-                '</div>';
+            // Buat bintang rating
+            const fullStars = Math.floor(academyRating);
+            const hasHalfStar = academyRating % 1 >= 0.5;
+            let starsHtml = '';
+            
+            for (let i = 0; i < 5; i++) {
+                if (i < fullStars) {
+                    starsHtml += '<i class="fas fa-star"></i>';
+                } else if (i === fullStars && hasHalfStar) {
+                    starsHtml += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star"></i>';
+                }
+            }
+            
+            const academyImg = document.createElement('img');
+            academyImg.src = academyImage;
+            academyImg.alt = academyTitle;
+            academyImg.className = 'w-full h-32 object-cover rounded-lg';
+            
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'mb-3';
+            imageContainer.appendChild(academyImg);
+            
+            const titleEl = document.createElement('h4');
+            titleEl.className = 'text-lg font-semibold text-white mb-1';
+            titleEl.textContent = academyTitle;
+            
+            const descEl = document.createElement('p');
+            descEl.className = 'text-white text-sm mb-2';
+            descEl.textContent = academyDescription;
+            
+            const authorEl = document.createElement('p');
+            authorEl.className = 'text-white text-sm mb-2';
+            authorEl.textContent = 'Penulis: ' + academyAuthor;
+            
+            const starsContainer = document.createElement('div');
+            starsContainer.className = 'flex text-yellow-400 text-xs';
+            starsContainer.innerHTML = starsHtml;
+            
+            const ratingSpan = document.createElement('span');
+            ratingSpan.className = 'text-white text-xs ml-2';
+            ratingSpan.textContent = parseFloat(academyRating).toFixed(1);
+            
+            const ratingContainer = document.createElement('div');
+            ratingContainer.className = 'flex items-center';
+            ratingContainer.appendChild(starsContainer);
+            ratingContainer.appendChild(ratingSpan);
+            
+            const studentsSpan = document.createElement('span');
+            studentsSpan.className = 'mr-2';
+            studentsSpan.textContent = academyStudents.toLocaleString() + ' siswa';
+            
+            const durationSpan = document.createElement('span');
+            durationSpan.className = 'mr-2';
+            durationSpan.textContent = academyDuration;
+            
+            const studentContainer = document.createElement('div');
+            studentContainer.className = 'flex items-center text-xs text-white';
+            studentContainer.appendChild(studentsSpan);
+            studentContainer.appendChild(durationSpan);
+            
+            const ratingSection = document.createElement('div');
+            ratingSection.className = 'flex items-center justify-between mb-3';
+            ratingSection.appendChild(ratingContainer);
+            ratingSection.appendChild(studentContainer);
+            
+            div.appendChild(imageContainer);
+            div.appendChild(titleEl);
+            div.appendChild(descEl);
+            div.appendChild(authorEl);
+            div.appendChild(ratingSection);
             
             return div;
-        }
-
-        function generateStars(rating) {
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 !== 0;
-            let stars = '';
-            
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<i class="fas fa-star"></i>';
-            }
-            if (hasHalfStar) {
-                stars += '<i class="fas fa-star-half-alt"></i>';
-            }
-            for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
-                stars += '<i class="far fa-star"></i>';
-            }
-            
-            return stars;
-        }
-
-        // Load mock data for development
-        function loadMockData() {
-            console.log('DEBUG: Loading mock data');
-            updateHeroSection(mockHeroSections);
-            updateAboutSection(mockAboutSections);
-            updateExpertsSection(mockExperts);
-            updatePortfolioSection(mockPortfolios);
-            updateAcademySection(mockAcademies);
-            console.log('Mock data loaded successfully');
         }
 
         // Initialize the page
@@ -1262,9 +1231,6 @@
             loadDynamicContent();
         });
     </script>
-    <!-- WhatsApp Floating Button -->
-    {{> whatsapp-button}}
 </body>
 </body>
 </html>
-                
