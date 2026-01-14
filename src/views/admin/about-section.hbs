@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle text-green-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-800">About Section Management</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, {{username}}</span>
+                    <a href="/admin/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div class="flex">
+        <aside class="w-64 bg-white shadow-md h-screen sticky top-0">
+            <div class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="/admin/dashboard" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-home w-5"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/hero-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-image w-5"></i>
+                            <span class="ml-3">Hero Section</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/about-section" class="flex items-center p-2 bg-green-100 text-green-700 rounded-md">
+                            <i class="fas fa-info-circle w-5"></i>
+                            <span class="ml-3">Tentang Kami</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/experts" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-users w-5"></i>
+                            <span class="ml-3">Synergy Experts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/portfolios" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-briefcase w-5"></i>
+                            <span class="ml-3">Synergy Portfolio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/academies" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-graduation-cap w-5"></i>
+                            <span class="ml-3">Synergy Academy</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="max-w-7xl mx-auto">
+                <!-- Page Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">About Section Management</h2>
+                        <p class="text-gray-600">Manage main about section content</p>
+                    </div>
+                    {{#unless items.length}}
+                    <a href="/admin/about-section/create" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-plus mr-2"></i>Create About Section
+                    </a>
+                    {{/unless}}
+                </div>
+
+                <!-- Single About Section -->
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    {{#if items.length}}
+                        {{#each items}}
+                        {{#if @first}}
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-800">About Section</h2>
+                                    <p class="text-gray-600">Manage main about section content</p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <a href="/admin/about-section/edit/{{this.id}}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                                        <i class="fas fa-edit mr-2"></i>Edit About Section
+                                    </a>
+                                    <button class="delete-about-section bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" data-id="{{this.id}}">
+                                        <i class="fas fa-trash mr-2"></i>Delete
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Preview</h3>
+                                    <div class="relative h-64 bg-gray-200 rounded-lg overflow-hidden">
+                                        {{#if this.image}}
+                                        <img src="{{this.image}}" alt="{{this.title}}" class="w-full h-full object-cover">
+                                        {{else}}
+                                        <img src="https://picsum.photos/seed/about1/600/400.jpg" alt="About Section" class="w-full h-full object-cover">
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Details</h3>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <span class="text-sm text-gray-500">Title:</span>
+                                            <p class="font-medium">{{this.title}}</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Description:</span>
+                                            <p class="font-medium">{{this.description}}</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Button 1:</span>
+                                            <p class="font-medium">{{this.buttonText1}}</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Button 2:</span>
+                                            <p class="font-medium">{{this.buttonText2}}</p>
+                                        </div>
+                                        <div>
+                                            <span class="text-sm text-gray-500">Created:</span>
+                                            <p class="font-medium">{{this.createdAt}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+                        {{/each}}
+                    {{else}}
+                        <div class="p-12 text-center">
+                            <div class="mb-6">
+                                <i class="fas fa-info-circle text-6xl text-gray-300"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">No About Section Yet</h3>
+                            <p class="text-gray-600 mb-6">Create your first about section to get started</p>
+                            <a href="/admin/about-section/create" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md text-sm font-medium transition inline-block">
+                                <i class="fas fa-plus mr-2"></i>Create About Section
+                            </a>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 transform transition-all">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus</h3>
+                    <p class="text-sm text-gray-700" id="deleteMessage">Item yang dihapus tidak dapat dikembalikan.</p>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    Batal
+                </button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fas fa-trash mr-2"></i>Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <script>
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            
+            notification.innerHTML = `
+                <div class="flex items-center ${bgColor} text-white">
+                    <i class="fas ${icon} mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+
+    <script>
+        let deleteCallback = null;
+        
+        function showDeleteModal(message, callback) {
+            document.getElementById('deleteMessage').textContent = message;
+            deleteCallback = callback;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById('deleteModal').classList.add('flex');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteModal').classList.remove('flex');
+            deleteCallback = null;
+        }
+        
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (deleteCallback) {
+                deleteCallback();
+            }
+        });
+
+        async function deleteAboutSection(id) {
+            const aboutElement = document.querySelector(`[data-id="${id}"]`).closest('.bg-white');
+            const aboutTitle = aboutElement ? aboutElement.querySelector('h2').textContent.trim() : 'About Section ini';
+            
+            showDeleteModal(
+                `Apakah Anda yakin ingin menghapus "${aboutTitle}"? Data yang dihapus tidak dapat dikembalikan.`,
+                async () => {
+                    try {
+                        const response = await fetch(`/admin/about-section/${id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if (response.ok) {
+                            showNotification('About section berhasil dihapus!', 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification('Gagal menghapus about section', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting about section:', error);
+                        showNotification('Terjadi kesalahan saat menghapus about section', 'error');
+                    }
+                    closeDeleteModal();
+                }
+            );
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // About Section Delete Buttons
+            const deleteButtons = document.querySelectorAll('.delete-about-section');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    deleteAboutSection(id);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

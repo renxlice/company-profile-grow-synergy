@@ -37,6 +37,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {{{structuredDataJson}}}
@@ -60,20 +64,20 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-20 h-20 rounded-lg object-cover">
-                    <a href="/" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                    <a href="/home" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
                 </div>
                 
                 <div class="hidden md:flex space-x-6">
-                    <a href="/" class="nav-link" data-page="home">Beranda</a>
+                    <a href="/home" class="nav-link" data-page="home">Beranda</a>
                     <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
                     <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
                     <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
                 </div>
                 
                 <div class="flex items-center space-x-4">
-                    <button class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
-                        Hubungi Kami
-                    </button>
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                        Tentang Kami
+                    </a>
                     <button class="md:hidden text-gray-600">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -86,22 +90,14 @@
     <main>
 
 <!-- Hero Section -->
-<div class="hero-section">
-    <div class="background-image"></div>
+<div class="hero-section" id="hero-section">
+    <div class="background-image" id="hero-background-image" style="background-image: url('/images/hero-background.jpg');"></div>
     <div class="hero-content">
-        <h2 class="text-3xl md:text-4xl font-light mb-4">Platform Pembelajaran Terbaik</h2>
-        <h1 class="text-4xl md:text-6xl font-bold mb-8">Synergy Academy</h1>
-        <p class="text-xl mb-8 text-center max-w-3xl">
+        <h2 class="text-3xl md:text-4xl font-light mb-4" id="hero-subtitle">Platform Pembelajaran Terbaik</h2>
+        <h1 class="text-4xl md:text-6xl font-bold mb-8" id="hero-title">Synergy Academy</h1>
+        <p class="text-xl mb-8 text-center max-w-3xl" id="hero-description">
             Program pelatihan berkualitas dengan kurikulum relevan dan instruktur profesional
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
-                Daftar Kursus
-            </button>
-            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition">
-                Lihat Kurikulum
-            </button>
-        </div>
     </div>
 </div>
 
@@ -114,27 +110,34 @@
                     type="text" 
                     id="searchInput"
                     placeholder="Cari pelatihan atau kursus..." 
-                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-900 placeholder-gray-500"
+                    style="color: #111827 !important; background-color: white !important;"
                 >
-                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-600">
+                <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700 hover:text-blue-600">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
             <div class="mt-4 flex flex-wrap gap-2 justify-center">
                 <button class="filter-btn px-4 py-2 bg-blue-600 text-white rounded-full text-sm hover:bg-blue-700 transition" data-filter="all">
-                    Semua
+                    All
                 </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="data-science">
-                    Data Science
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="Beginner">
+                    Beginner
                 </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="web">
-                    Web Development
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="Intermediate">
+                    Intermediate
                 </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="mobile">
-                    Mobile Development
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="Advanced">
+                    Advanced
                 </button>
-                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="ui-ux">
-                    UI/UX Design
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="Online">
+                    Online
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="Offline">
+                    Offline
+                </button>
+                <button class="filter-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-filter="Hybrid">
+                    Hybrid
                 </button>
             </div>
         </div>
@@ -596,10 +599,10 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <div class="flex items-center space-x-2 mb-4">
-                    <i class="fas fa-chart-line text-blue-400 text-xl"></i>
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="h-8 w-auto">
                     <span class="text-lg font-bold text-black">GROW SYNERGY INDONESIA</span>
                 </div>
-                <p class="text-gray-400">Platform pelatihan teknologi terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
+                <p class="text-gray-400">Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
             </div>
             
             <div>
@@ -668,25 +671,246 @@
                     link.classList.add('active');
                 }
             });
+
+            // Load academies from Firestore
+            loadAcademies();
+
+            // Debug hero section background
+            const heroSections = {{#if heroSections}}[{{#each heroSections}}{backgroundImage: '{{this.backgroundImage}}'}{{#unless @last}},{{/unless}}{{/each}}]{{else}}[]{{/if}};
+            console.log('Hero sections data:', heroSections);
+            console.log('Hero sections length:', heroSections.length);
+            
+            const backgroundDiv = document.querySelector('.hero-section .background-image');
+            if (backgroundDiv) {
+                console.log('Background div found:', backgroundDiv);
+                
+                // Set background image manually - use Picsum image for consistency
+                if (heroSections.length > 0) {
+                    const firstHero = heroSections[0];
+                    backgroundDiv.style.backgroundImage = `url('${firstHero.backgroundImage}')`;
+                    console.log('Setting background to:', firstHero.backgroundImage);
+                } else {
+                    backgroundDiv.style.backgroundImage = "url('https://picsum.photos/seed/hero1/1920/1080.jpg')";
+                    console.log('Setting fallback background from Picsum');
+                }
+                
+                console.log('Final background style:', backgroundDiv.style.backgroundImage);
+            } else {
+                console.log('Background div not found');
+            }
         });
     </script>
     <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBvZjZQYmQZrQZrQZrQZrQZrQZrQZrQZrQ",
+            authDomain: "company-profile-grow-synergy.firebaseapp.com",
+            projectId: "company-profile-grow-synergy",
+            storageBucket: "company-profile-grow-synergy.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+        
+        // Check if Firebase is already initialized
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Load academies from Firestore
+        async function loadAcademies() {
+            try {
+                console.log('Loading academies from Firestore...');
+                const academiesSnapshot = await db.collection('academies').get();
+                const academies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('Academies loaded:', academies);
+                console.log('First academy data:', academies[0]);
+                
+                // Update academies grid
+                updateAcademyGrid(academies);
+            } catch (error) {
+                console.error('Error loading academies:', error);
+            }
+        }
+
+        // Update academies grid with real data
+        function updateAcademyGrid(academies) {
+            const academyGrid = document.getElementById('academyGrid');
+            console.log('Academy grid element:', academyGrid);
+            console.log('Academy grid found:', !!academyGrid);
+            
+            if (!academyGrid) {
+                console.log('Academy grid not found');
+                return;
+            }
+
+            if (academies.length === 0) {
+                console.log('No academies data available');
+                return;
+            }
+
+            // Clear existing content
+            academyGrid.innerHTML = '';
+            console.log('Academy grid cleared');
+
+            // Add academy cards
+            academies.forEach((academy, index) => {
+                console.log('Creating card for academy', index, academy);
+                const academyCard = createAcademyCard(academy);
+                console.log('Academy card created:', academyCard);
+                academyGrid.appendChild(academyCard);
+                console.log('Academy card appended');
+            });
+            
+            console.log('All academy cards added to grid');
+        }
+
+        // Create academy card HTML
+        function createAcademyCard(academy) {
+            try {
+                console.log('Creating academy card for:', academy);
+                console.log('Academy price:', academy.price);
+                console.log('Academy price type:', typeof academy.price);
+                
+                const div = document.createElement('div');
+                div.className = 'academy-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition';
+                
+                // Set category for filtering
+                div.setAttribute('data-category', academy.level || academy.mode || 'general');
+                
+                // Use string concatenation to avoid template literal issues
+                const academyImage = academy.image || 'https://picsum.photos/seed/academy-' + academy.id + '/400/300.jpg';
+                const academyTitle = academy.title || 'Course Title';
+                const academyDescription = academy.description || 'Course description';
+                const academyPrice = academy.price ? 'Rp ' + academy.price.toLocaleString('id-ID') : 'Free';
+                console.log('Raw academy.price:', academy.price);
+                console.log('Processed academyPrice:', academyPrice);
+                const academyRating = academy.rating || 0;
+                const academyStudents = academy.students || 0;
+                const academyDuration = academy.duration || '4 weeks';
+                const academyInstructor = academy.author || 'Instructor';
+                const academyLevel = academy.level || 'Beginner';
+                const academySchedule = academy.schedule || 'Flexible';
+                const academyMode = academy.mode || 'Online';
+                
+                // Change price overlay to orange
+                div.innerHTML = 
+                    '<div class="relative">' +
+                        '<img src="' + academyImage + '" alt="' + academyTitle + '" class="w-full h-48 object-cover">' +
+                        '<div class="absolute top-4 left-4">' +
+                            '<span class="text-xl font-bold text-white" style="background: rgba(251, 146, 60, 0.9) !important; color: white !important; padding: 6px 10px !important; border-radius: 6px !important; font-weight: bold !important; display: inline-block !important;">' + academyPrice + '</span>' +
+                        '</div>' +
+                        '<div class="absolute top-4 right-4">' +
+                            '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">' + academyLevel + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="p-6">' +
+                        '<h3 class="text-xl font-bold text-gray-800 mb-2">' + academyTitle + '</h3>' +
+                        '<p class="text-gray-600 mb-4">' + academyDescription + '</p>' +
+                        '<div class="flex items-center justify-between mb-4">' +
+                            '<div class="text-right">' +
+                                '<div class="flex items-center text-yellow-500 mb-1">' +
+                                    generateStars(academyRating) +
+                                '</div>' +
+                                '<span class="text-sm text-gray-500">' + academyStudents + ' students</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="flex flex-wrap gap-2 mb-4">' +
+                            '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">' + academySchedule + '</span>' +
+                            '<span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">' + academyMode + '</span>' +
+                        '</div>' +
+                        '<div class="flex items-center justify-between text-sm text-gray-500">' +
+                            '<span>' + academyDuration + '</span>' +
+                            '<span>' + academyInstructor + '</span>' +
+                        '</div>' +
+                        '<div class="mt-4">' +
+                            '<button class="w-full text-white font-semibold py-2 px-4 rounded-lg transition duration-200" style="background-color: #4BD68D !important; color: white !important; font-weight: 600 !important; padding: 8px 16px !important; border-radius: 8px !important; border: none !important; cursor: pointer !important;">' +
+                                'Daftar Sekarang!' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>';
+                
+                console.log('HTML created successfully');
+                console.log('Card HTML created:', div.innerHTML);
+                
+                return div;
+            } catch (error) {
+                console.error('Error creating academy card:', error);
+                console.error('Error stack:', error.stack);
+                // Return a simple error card
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 p-4 rounded';
+                errorDiv.innerHTML = 'Error loading academy: ' + error.message;
+                return errorDiv;
+            }
+        }
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
         // Search functionality
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             const academyCards = document.querySelectorAll('.academy-card');
             
             academyCards.forEach(card => {
-                const title = card.querySelector('.academy-title').textContent.toLowerCase();
-                const description = card.querySelector('.academy-description').textContent.toLowerCase();
-                const overview = card.querySelector('p.text-gray-600').textContent.toLowerCase();
+                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                const description = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
+                const instructor = card.querySelector('div.flex.items-center.justify-between.text-sm span:last-child')?.textContent.toLowerCase() || '';
+                const level = card.querySelector('.bg-green-100')?.textContent.toLowerCase() || '';
+                const schedule = card.querySelector('.bg-blue-100')?.textContent.toLowerCase() || '';
+                const mode = card.querySelector('.bg-purple-100')?.textContent.toLowerCase() || '';
+                const duration = card.querySelector('div.flex.items-center.justify-between.text-sm span:first-child')?.textContent.toLowerCase() || '';
                 
-                if (title.includes(searchTerm) || description.includes(searchTerm) || overview.includes(searchTerm)) {
+                // Combine all searchable text
+                const allText = title + ' ' + description + ' ' + instructor + ' ' + level + ' ' + schedule + ' ' + mode + ' ' + duration;
+                
+                console.log('Searching for:', searchTerm);
+                console.log('Card text:', allText);
+                
+                if (allText.includes(searchTerm)) {
                     card.style.display = 'block';
+                    console.log('Showing card for:', searchTerm);
                 } else {
                     card.style.display = 'none';
+                    console.log('Hiding card for:', searchTerm);
                 }
             });
+            
+            // Show message if no results
+            const visibleCards = Array.from(academyCards).filter(card => card.style.display !== 'none');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            
+            if (visibleCards.length === 0 && searchTerm.length > 0) {
+                if (!noResultsMessage) {
+                    const message = document.createElement('div');
+                    message.id = 'noResultsMessage';
+                    message.className = 'col-span-full text-center py-8 text-gray-500';
+                    message.innerHTML = `
+                        <div class="text-6xl mb-4">🔍</div>
+                        <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
+                        <p>Tidak ada pelatihan yang cocok dengan pencarian "${searchTerm}"</p>
+                    `;
+                    document.getElementById('academyGrid').appendChild(message);
+                }
+            } else if (noResultsMessage) {
+                noResultsMessage.remove();
+            }
         });
 
         // Filter functionality
@@ -713,23 +937,69 @@
                 });
             });
         });
-
-        // Pagination functionality
-        document.querySelectorAll('[data-page]').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Update active page
-                document.querySelectorAll('[data-page]').forEach(b => {
-                    b.classList.remove('bg-blue-600', 'text-white');
-                    b.classList.add('bg-gray-200', 'text-gray-700');
-                });
-                this.classList.remove('bg-gray-200', 'text-gray-700');
-                this.classList.add('bg-blue-600', 'text-white');
+    </script>
+    
+    <script>
+        // Load hero section data from API
+        async function loadHeroSection() {
+            console.log('DEBUG: Starting loadHeroSection for synergy-academy...');
+            try {
+                console.log('DEBUG: Fetching from /api/hero-section...');
+                const response = await fetch('/api/hero-section');
+                const heroSections = await response.json();
+                console.log('DEBUG: Hero sections response:', heroSections);
                 
-                // Here you would typically load new content based on page number
-                const pageNumber = this.dataset.page;
-                console.log('Loading page:', pageNumber);
+                if (heroSections.length > 0) {
+                    const hero = heroSections[0]; // Use the first hero section
+                    console.log('DEBUG: Using hero section:', hero);
+                    const backgroundImage = document.getElementById('hero-background-image');
+                    
+                    console.log('DEBUG: Background image element found:', !!backgroundImage);
+                    
+                    // Update background image
+                    if (hero.backgroundImage && backgroundImage) {
+                        console.log('DEBUG: Updating background image to:', hero.backgroundImage);
+                        backgroundImage.style.backgroundImage = `url('${hero.backgroundImage}')`;
+                        console.log('DEBUG: Background image updated successfully');
+                    } else {
+                        console.log('DEBUG: No background image or element not found');
+                    }
+                    
+                    console.log('DEBUG: Hero section loaded successfully for synergy-academy:', hero);
+                } else {
+                    console.log('DEBUG: No hero sections found');
+                }
+            } catch (error) {
+                console.error('DEBUG: Error loading hero section for synergy-academy:', error);
+                // Keep default content if API fails
+            }
+        }
+        
+        // Load hero section when page loads
+        document.addEventListener('DOMContentLoaded', loadHeroSection);
+    </script>
+    
+    <script>
+        // Simple navigation fix - remove all JavaScript interference
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove all event listeners from navigation links
+            const berandaLinks = document.querySelectorAll('a[href="/"]');
+            berandaLinks.forEach(link => {
+                // Replace with fresh link that has no event listeners
+                const freshLink = document.createElement('a');
+                freshLink.href = '/';
+                freshLink.className = link.className;
+                freshLink.textContent = link.textContent;
+                freshLink.setAttribute('data-page', 'home');
+                freshLink.style.cssText = 'pointer-events: auto !important; cursor: pointer !important;';
+                
+                // Replace of old link
+                link.parentNode.replaceChild(freshLink, link);
             });
         });
     </script>
+    
+    <!-- WhatsApp Floating Button -->
+    {{> whatsapp-button}}
 </body>
 </html>

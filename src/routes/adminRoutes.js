@@ -1,0 +1,631 @@
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const admin = require('firebase-admin');
+const jwt = require('jsonwebtoken');
+const { validateInput, secureFileUpload, createRateLimiter, logSecurityEvent } = require('../middleware/security');
+
+// JWT token verification middleware
+const verifyAdminToken = async (req, res, next) => {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', '');
+        
+        if (!token) {
+            return res.status(401).json({ 
+                error: 'Access denied. No token provided.' 
+            });
+        }
+        
+        // Verify JWT token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        
+        // Verify admin exists in Firestore
+        const adminDoc = await admin.firestore()
+            .collection('admins')
+            .doc(decoded.adminId)
+            .get();
+        
+        if (!adminDoc.exists) {
+            return res.status(401).json({ 
+                error: 'Invalid token. Admin not found.' 
+            });
+        }
+        
+        const adminData = adminDoc.data();
+        
+        // Check if admin is active
+        if (!adminData.isActive) {
+            return res.status(401).json({ 
+                error: 'Account is deactivated.' 
+            });
+        }
+        
+        req.admin = {
+            id: decoded.adminId,
+            email: adminData.email,
+            role: adminData.role || 'admin'
+        };
+        
+        next();
+    } catch (error) {
+        console.error('Token verification error:', error);
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ 
+                error: 'Invalid token.' 
+            });
+        } else if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ 
+                error: 'Token expired. Please login again.' 
+            });
+        }
+        res.status(500).json({ error: 'Token verification failed' });
+    }
+};
+
+// Rate limiters
+const adminLimiter = createRateLimiter('admin');
+const uploadLimiter = createRateLimiter('upload');
+
+// Secure file upload configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, '../public/uploads/admin');
+        
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        // Generate unique filename with timestamp
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        const name = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9]/g, '_');
+        cb(null, name + '-' + uniqueSuffix + ext);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB limit
+        files: 1 // Limit to 1 file per request
+    },
+    fileFilter: function (req, file, cb) {
+        // Allowed file types
+        const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        
+        if (allowedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed'), false);
+        }
+    }
+});
+
+// Expert management routes
+
+// Get all experts (admin view)
+router.get('/experts', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+        
+        const expertsSnapshot = await admin.firestore()
+            .collection('experts')
+            .orderBy('createdAt', 'desc')
+            .limit(limit)
+            .offset(offset)
+            .get();
+        
+        const experts = [];
+        expertsSnapshot.forEach(doc => {
+            const expertData = doc.data();
+            experts.push({
+                id: doc.id,
+                name: expertData.name,
+                position: expertData.position,
+                experience: expertData.experience,
+                description: expertData.description,
+                rating: expertData.rating,
+                reviewCount: expertData.reviewCount,
+                image: expertData.image,
+                createdAt: expertData.createdAt?.toDate(),
+                updatedAt: expertData.updatedAt?.toDate()
+            });
+        });
+        
+        // Get total count for pagination
+        const totalSnapshot = await admin.firestore()
+            .collection('experts')
+            .get();
+        const total = totalSnapshot.size;
+        
+        res.json({
+            experts: experts,
+            pagination: {
+                page: page,
+                limit: limit,
+                total: total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+        
+    } catch (error) {
+        console.error('Get experts error:', error);
+        res.status(500).json({ error: 'Failed to get experts' });
+    }
+});
+
+// Get single expert
+router.get('/experts/:expertId', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const expertDoc = await admin.firestore()
+            .collection('experts')
+            .doc(req.params.expertId)
+            .get();
+        
+        if (!expertDoc.exists) {
+            return res.status(404).json({ error: 'Expert not found' });
+        }
+        
+        const expertData = expertDoc.data();
+        res.json({
+            id: expertDoc.id,
+            name: expertData.name,
+            position: expertData.position,
+            experience: expertData.experience,
+            description: expertData.description,
+            rating: expertData.rating,
+            reviewCount: expertData.reviewCount,
+            image: expertData.image,
+            createdAt: expertData.createdAt?.toDate(),
+            updatedAt: expertData.updatedAt?.toDate()
+        });
+        
+    } catch (error) {
+        console.error('Get expert error:', error);
+        res.status(500).json({ error: 'Failed to get expert' });
+    }
+});
+
+// Create expert
+router.post('/experts', 
+    adminLimiter, 
+    verifyAdminToken, 
+    validateInput({
+        name: { required: true, type: 'string', minLength: 1, maxLength: 100 },
+        position: { required: true, type: 'string', minLength: 1, maxLength: 100 },
+        experience: { required: true, type: 'string', minLength: 1, maxLength: 500 },
+        description: { required: false, type: 'string', maxLength: 1000 },
+        rating: { required: true, type: 'number', min: 0, max: 5 },
+        reviewCount: { required: true, type: 'number', min: 0 }
+    }),
+    async (req, res) => {
+        try {
+            const { name, position, experience, description, rating, reviewCount } = req.body;
+            
+            // Create expert data
+            const expertData = {
+                name: name,
+                position: position,
+                experience: experience,
+                description: description || '',
+                rating: rating,
+                reviewCount: reviewCount,
+                image: null,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                createdBy: req.admin.id
+            };
+            
+            const expertRef = await admin.firestore()
+                .collection('experts')
+                .add(expertData);
+            
+            // Log expert creation
+            await logSecurityEvent('EXPERT_CREATED', {
+                expertId: expertRef.id,
+                expertName: name,
+                createdBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.status(201).json({
+                message: 'Expert created successfully',
+                expertId: expertRef.id
+            });
+            
+        } catch (error) {
+            console.error('Create expert error:', error);
+            res.status(500).json({ error: 'Failed to create expert' });
+        }
+    }
+);
+
+// Update expert
+router.put('/experts/:expertId', 
+    adminLimiter, 
+    verifyAdminToken, 
+    validateInput({
+        name: { required: false, type: 'string', minLength: 1, maxLength: 100 },
+        position: { required: false, type: 'string', minLength: 1, maxLength: 100 },
+        experience: { required: false, type: 'string', minLength: 1, maxLength: 500 },
+        description: { required: false, type: 'string', maxLength: 1000 },
+        rating: { required: false, type: 'number', min: 0, max: 5 },
+        reviewCount: { required: false, type: 'number', min: 0 }
+    }),
+    async (req, res) => {
+        try {
+            const expertId = req.params.expertId;
+            const updateData = req.body;
+            
+            // Check if expert exists
+            const expertDoc = await admin.firestore()
+                .collection('experts')
+                .doc(expertId)
+                .get();
+            
+            if (!expertDoc.exists) {
+                return res.status(404).json({ error: 'Expert not found' });
+            }
+            
+            // Add update metadata
+            updateData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+            updateData.updatedBy = req.admin.id;
+            
+            await admin.firestore()
+                .collection('experts')
+                .doc(expertId)
+                .update(updateData);
+            
+            // Log expert update
+            await logSecurityEvent('EXPERT_UPDATED', {
+                expertId: expertId,
+                updatedBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.json({ message: 'Expert updated successfully' });
+            
+        } catch (error) {
+            console.error('Update expert error:', error);
+            res.status(500).json({ error: 'Failed to update expert' });
+        }
+    }
+);
+
+// Delete expert
+router.delete('/experts/:expertId', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const expertId = req.params.expertId;
+        
+        // Check if expert exists
+        const expertDoc = await admin.firestore()
+            .collection('experts')
+            .doc(expertId)
+            .get();
+        
+        if (!expertDoc.exists) {
+            return res.status(404).json({ error: 'Expert not found' });
+        }
+        
+        const expertData = expertDoc.data();
+        
+        // Delete associated image file if exists
+        if (expertData.image && expertData.image.startsWith('/uploads/')) {
+            try {
+                const imagePath = path.join(__dirname, '../public', expertData.image);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                }
+            } catch (fileError) {
+                console.error('Failed to delete image file:', fileError);
+                // Continue with expert deletion even if file deletion fails
+            }
+        }
+        
+        // Delete expert from Firestore
+        await admin.firestore()
+            .collection('experts')
+            .doc(expertId)
+            .delete();
+        
+        // Log expert deletion
+        await logSecurityEvent('EXPERT_DELETED', {
+            expertId: expertId,
+            expertName: expertData.name,
+            deletedBy: req.admin.email,
+            ip: req.ip,
+            userAgent: req.get('User-Agent')
+        });
+        
+        res.json({ message: 'Expert deleted successfully' });
+        
+    } catch (error) {
+        console.error('Delete expert error:', error);
+        res.status(500).json({ error: 'Failed to delete expert' });
+    }
+});
+
+// Upload expert image
+router.post('/experts/:expertId/upload-image', 
+    uploadLimiter, 
+    verifyAdminToken, 
+    upload.single('image'),
+    secureFileUpload,
+    async (req, res) => {
+        try {
+            const expertId = req.params.expertId;
+            
+            if (!req.file) {
+                return res.status(400).json({ error: 'No image file provided' });
+            }
+            
+            // Check if expert exists
+            const expertDoc = await admin.firestore()
+                .collection('experts')
+                .doc(expertId)
+                .get();
+            
+            if (!expertDoc.exists) {
+                // Clean up uploaded file if expert doesn't exist
+                fs.unlinkSync(req.file.path);
+                return res.status(404).json({ error: 'Expert not found' });
+            }
+            
+            const expertData = expertDoc.data();
+            
+            // Delete old image if exists
+            if (expertData.image && expertData.image.startsWith('/uploads/')) {
+                try {
+                    const oldImagePath = path.join(__dirname, '../public', expertData.image);
+                    if (fs.existsSync(oldImagePath)) {
+                        fs.unlinkSync(oldImagePath);
+                    }
+                } catch (fileError) {
+                    console.error('Failed to delete old image file:', fileError);
+                }
+            }
+            
+            // Update expert with new image path
+            const imagePath = '/uploads/admin/' + req.file.filename;
+            
+            await admin.firestore()
+                .collection('experts')
+                .doc(expertId)
+                .update({
+                    image: imagePath,
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: req.admin.id
+                });
+            
+            // Log image upload
+            await logSecurityEvent('EXPERT_IMAGE_UPLOADED', {
+                expertId: expertId,
+                fileName: req.file.filename,
+                fileSize: req.file.size,
+                uploadedBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.json({
+                message: 'Image uploaded successfully',
+                imagePath: imagePath
+            });
+            
+        } catch (error) {
+            console.error('Upload image error:', error);
+            
+            // Clean up uploaded file on error
+            if (req.file) {
+                try {
+                    fs.unlinkSync(req.file.path);
+                } catch (cleanupError) {
+                    console.error('Failed to clean up uploaded file:', cleanupError);
+                }
+            }
+            
+            res.status(500).json({ error: 'Failed to upload image' });
+        }
+    }
+);
+
+// Hero section management
+
+// Get hero sections
+router.get('/hero-sections', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const heroSnapshot = await admin.firestore()
+            .collection('hero_sections')
+            .orderBy('createdAt', 'desc')
+            .get();
+        
+        const heroSections = [];
+        heroSnapshot.forEach(doc => {
+            const heroData = doc.data();
+            heroSections.push({
+                id: doc.id,
+                title: heroData.title,
+                subtitle: heroData.subtitle,
+                description: heroData.description,
+                backgroundImage: heroData.backgroundImage,
+                page: heroData.page,
+                isActive: heroData.isActive,
+                createdAt: heroData.createdAt?.toDate(),
+                updatedAt: heroData.updatedAt?.toDate()
+            });
+        });
+        
+        res.json({ heroSections: heroSections });
+        
+    } catch (error) {
+        console.error('Get hero sections error:', error);
+        res.status(500).json({ error: 'Failed to get hero sections' });
+    }
+});
+
+// Create/update hero section
+router.post('/hero-sections', 
+    adminLimiter, 
+    verifyAdminToken,
+    validateInput({
+        title: { required: true, type: 'string', minLength: 1, maxLength: 200 },
+        subtitle: { required: true, type: 'string', minLength: 1, maxLength: 200 },
+        description: { required: true, type: 'string', minLength: 1, maxLength: 500 },
+        page: { required: true, type: 'string', minLength: 1, maxLength: 50 }
+    }),
+    async (req, res) => {
+        try {
+            const { title, subtitle, description, page, backgroundImage } = req.body;
+            
+            // Check if hero section already exists for this page
+            const existingHero = await admin.firestore()
+                .collection('hero_sections')
+                .where('page', '==', page)
+                .limit(1)
+                .get();
+            
+            const heroData = {
+                title: title,
+                subtitle: subtitle,
+                description: description,
+                page: page,
+                backgroundImage: backgroundImage || null,
+                isActive: true,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                createdBy: req.admin.id
+            };
+            
+            if (existingHero.empty) {
+                // Create new hero section
+                const heroRef = await admin.firestore()
+                    .collection('hero_sections')
+                    .add(heroData);
+                
+                await logSecurityEvent('HERO_SECTION_CREATED', {
+                    heroId: heroRef.id,
+                    page: page,
+                    createdBy: req.admin.email,
+                    ip: req.ip,
+                    userAgent: req.get('User-Agent')
+                });
+                
+                res.status(201).json({
+                    message: 'Hero section created successfully',
+                    heroId: heroRef.id
+                });
+            } else {
+                // Update existing hero section
+                const heroDoc = existingHero.docs[0];
+                heroData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+                heroData.updatedBy = req.admin.id;
+                
+                await admin.firestore()
+                    .collection('hero_sections')
+                    .doc(heroDoc.id)
+                    .update(heroData);
+                
+                await logSecurityEvent('HERO_SECTION_UPDATED', {
+                    heroId: heroDoc.id,
+                    page: page,
+                    updatedBy: req.admin.email,
+                    ip: req.ip,
+                    userAgent: req.get('User-Agent')
+                });
+                
+                res.json({
+                    message: 'Hero section updated successfully',
+                    heroId: heroDoc.id
+                });
+            }
+            
+        } catch (error) {
+            console.error('Save hero section error:', error);
+            res.status(500).json({ error: 'Failed to save hero section' });
+        }
+    }
+);
+
+// Upload hero background image
+router.post('/hero-sections/upload-background', 
+    uploadLimiter, 
+    verifyAdminToken, 
+    upload.single('image'),
+    secureFileUpload,
+    async (req, res) => {
+        try {
+            if (!req.file) {
+                return res.status(400).json({ error: 'No image file provided' });
+            }
+            
+            const imagePath = '/uploads/admin/' + req.file.filename;
+            
+            // Log image upload
+            await logSecurityEvent('HERO_BACKGROUND_UPLOADED', {
+                fileName: req.file.filename,
+                fileSize: req.file.size,
+                uploadedBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.json({
+                message: 'Background image uploaded successfully',
+                imagePath: imagePath
+            });
+            
+        } catch (error) {
+            console.error('Upload background error:', error);
+            
+            // Clean up uploaded file on error
+            if (req.file) {
+                try {
+                    fs.unlinkSync(req.file.path);
+                } catch (cleanupError) {
+                    console.error('Failed to clean up uploaded file:', cleanupError);
+                }
+            }
+            
+            res.status(500).json({ error: 'Failed to upload background image' });
+        }
+    }
+);
+
+// Get admin profile
+router.get('/profile', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const adminDoc = await admin.firestore()
+            .collection('admins')
+            .doc(req.admin.id)
+            .get();
+        
+        if (!adminDoc.exists) {
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+        
+        const adminData = adminDoc.data();
+        
+        res.json({
+            id: adminDoc.id,
+            email: adminData.email,
+            name: adminData.name,
+            role: adminData.role,
+            lastLogin: adminData.lastLogin?.toDate(),
+            createdAt: adminData.createdAt?.toDate()
+        });
+        
+    } catch (error) {
+        console.error('Get profile error:', error);
+        res.status(500).json({ error: 'Failed to get profile' });
+    }
+});
+
+module.exports = router;

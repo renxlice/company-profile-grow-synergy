@@ -18,6 +18,23 @@ lerna-debug.log*
 .env.development
 .env.test
 .env.production
+.env.local
+.env.*.local
+
+# Firebase and sensitive config files
+src/config/*.json
+config/
+firebase.json
+firestore.rules
+firestore.indexes.json
+firestore.rules.dev
+firestore.rules.prod
+firestore.rules.local
+serviceAccountKey.json
+firebase-adminsdk*.json
+*.pem
+*.key
+private-key.pem
 
 # temp directory
 .temp

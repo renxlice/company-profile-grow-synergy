@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-graduation-cap text-red-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-800">Academy Management</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, {{username}}</span>
+                    <a href="/admin/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div class="flex">
+        <aside class="w-64 bg-white shadow-md h-screen sticky top-0">
+            <div class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="/admin/dashboard" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-home w-5"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/hero-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-image w-5"></i>
+                            <span class="ml-3">Hero Section</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/about-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-info-circle w-5"></i>
+                            <span class="ml-3">Tentang Kami</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/experts" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-users w-5"></i>
+                            <span class="ml-3">Synergy Experts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/portfolios" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-briefcase w-5"></i>
+                            <span class="ml-3">Synergy Portfolio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/academies" class="flex items-center p-2 bg-red-100 text-red-700 rounded-md">
+                            <i class="fas fa-graduation-cap w-5"></i>
+                            <span class="ml-3">Synergy Academy</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="max-w-7xl mx-auto">
+                <!-- Page Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Academy Courses</h2>
+                        <p class="text-gray-600">Manage academy courses and training programs</p>
+                    </div>
+                    <a href="/admin/academies/create" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" style="display: inline-flex; align-items: center; background-color: #dc2626; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: 500;">
+                        <i class="fas fa-plus mr-2"></i>Add New Course
+                    </a>
+                </div>
+
+                <!-- Items Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {{#each items}}
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                        <div class="h-48">
+                            <img src="{{image}}" alt="{{title}}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">{{title}}</h3>
+                            <p class="text-gray-600 text-sm mb-3 line-clamp-2">{{description}}</p>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                    <span class="ml-1 text-sm text-gray-600">{{rating}}</span>
+                                </div>
+                                <span class="text-sm font-bold text-blue-600">Rp {{numberFormat price}}</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs text-gray-500">{{students}} students</span>
+                                <span class="text-xs text-gray-500">{{duration}} weeks</span>
+                            </div>
+                            <div class="flex flex-wrap gap-1 mb-3">
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">{{level}}</span>
+                                <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">{{schedule}}</span>
+                                <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">{{mode}}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">{{author}}</span>
+                                <div class="flex space-x-2">
+                                    <a href="/admin/academies/edit/{{id}}" class="text-indigo-600 hover:text-indigo-900 text-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="delete-academy-btn text-red-600 hover:text-red-900 text-sm" data-id="{{id}}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                
+                {{#unless items.length}}
+                <div class="text-center py-12">
+                    <i class="fas fa-graduation-cap text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500">No academy courses found</p>
+                    <a href="/admin/academies/create" class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-plus mr-2"></i>Add First Course
+                    </a>
+                </div>
+                {{/unless}}
+            </div>
+        </main>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 transform transition-all">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus</h3>
+                    <p class="text-sm text-gray-700" id="deleteMessage">Item yang dihapus tidak dapat dikembalikan.</p>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    Batal
+                </button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fas fa-trash mr-2"></i>Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <script>
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            
+            notification.innerHTML = `
+                <div class="flex items-center ${bgColor} text-white">
+                    <i class="fas ${icon} mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+
+    <script>
+        let deleteCallback = null;
+        
+        function showDeleteModal(message, callback) {
+            document.getElementById('deleteMessage').textContent = message;
+            deleteCallback = callback;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById('deleteModal').classList.add('flex');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteModal').classList.remove('flex');
+            deleteCallback = null;
+        }
+        
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (deleteCallback) {
+                deleteCallback();
+            }
+        });
+
+        async function deleteAcademy(id) {
+            const academyElement = document.querySelector(`[data-id="${id}"]`).closest('.bg-white');
+            const academyTitle = academyElement ? academyElement.querySelector('h3').textContent.trim() : 'Course ini';
+            
+            showDeleteModal(
+                `Apakah Anda yakin ingin menghapus "${academyTitle}"? Data yang dihapus tidak dapat dikembalikan.`,
+                async () => {
+                    try {
+                        const response = await fetch(`/admin/academies/${id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if (response.ok) {
+                            showNotification('Course berhasil dihapus!', 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification('Gagal menghapus course', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting academy:', error);
+                        showNotification('Terjadi kesalahan saat menghapus course', 'error');
+                    }
+                    closeDeleteModal();
+                }
+            );
+        }
+
+        // Add event listeners for delete buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-academy-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    deleteAcademy(id);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

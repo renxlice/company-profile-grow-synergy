@@ -52,6 +52,11 @@
       gtag('config', '{{googleAnalyticsId}}');
     </script>
     {{/if}}
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
 </head>
 <body class="bg-gray-50">
     <!-- Header -->
@@ -59,8 +64,8 @@
         <nav class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <i class="fas fa-chart-line text-blue-600 text-2xl"></i>
-                    <a href="/" class="text-xl font-bold text-gray-800">DataAnalitik.id</a>
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="h-8 w-auto">
+                    <a href="/" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
                 </div>
                 
                 <div class="hidden md:flex space-x-6">
@@ -93,8 +98,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <i class="fas fa-chart-line text-blue-400 text-xl"></i>
-                        <span class="text-lg font-bold">DataAnalitik.id</span>
+                        <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="h-8 w-auto">
+                        <span class="text-lg font-bold">GROW SYNERGY INDONESIA</span>
                     </div>
                     <p class="text-gray-400">Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
                 </div>
@@ -148,6 +153,9 @@
             </div>
         </div>
     </footer>
+
+    <!-- WhatsApp Floating Button -->
+    {{> whatsapp-button}}
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>

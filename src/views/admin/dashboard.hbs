@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-tachometer-alt text-blue-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-800">Admin Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, {{username}}</span>
+                    <a href="/admin/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div class="flex">
+        <aside class="w-64 bg-white shadow-md h-screen sticky top-0">
+            <div class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="/admin/dashboard" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-home w-5"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/hero-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-image w-5"></i>
+                            <span class="ml-3">Hero Section</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/about-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-info-circle w-5"></i>
+                            <span class="ml-3">Tentang Kami</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/experts" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-users w-5"></i>
+                            <span class="ml-3">Synergy Experts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/portfolios" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-briefcase w-5"></i>
+                            <span class="ml-3">Synergy Portfolio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/academies" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-graduation-cap w-5"></i>
+                            <span class="ml-3">Synergy Academy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="openPasswordModal()" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-cog w-5"></i>
+                            <span class="ml-3">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="max-w-7xl mx-auto">
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
+                    <p class="text-gray-600">Manage your website content</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-blue-100 rounded-full">
+                                <i class="fas fa-image text-blue-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Hero Sections</p>
+                                <p class="text-2xl font-semibold text-gray-800">{{stats.heroSections}}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <a href="/admin/hero-section" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                <i class="fas fa-edit mr-2"></i>Manage Hero Sections
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hero Sections List -->
+                    <div class="bg-white rounded-lg shadow p-6 lg:col-span-2">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Hero Sections</h3>
+                        <div class="space-y-3">
+                            {{#if heroSections.length}}
+                                {{#each heroSections}}
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg" data-hero-id="{{this.id}}">
+                                    <div class="flex items-center">
+                                        {{#if this.backgroundImage}}
+                                        <img src="{{this.backgroundImage}}" alt="{{this.title}}" class="w-16 h-16 object-cover rounded-lg mr-3">
+                                        {{else}}
+                                        <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg mr-3 flex items-center justify-center">
+                                            <i class="fas fa-image text-white text-xl"></i>
+                                        </div>
+                                        {{/if}}
+                                        <div>
+                                            <p class="font-medium text-gray-800">{{this.title}}</p>
+                                            <p class="text-sm text-gray-600">{{this.subtitle}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="delete-hero-section text-red-600 hover:text-red-700" data-id="{{this.id}}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            {{else}}
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg mr-3 flex items-center justify-center">
+                                            <i class="fas fa-image text-white text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">Hero Section Example</p>
+                                            <p class="text-sm text-gray-600">Background image dengan overlay text</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <a href="/admin/hero-section/create" class="text-blue-600 hover:text-blue-700">
+                                            <i class="fas fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            {{/if}}
+                            {{#unless heroSections.length}}
+                                <p class="text-gray-500 text-center py-4">No hero sections found. <a href="/admin/hero-section/create" class="text-blue-600 hover:text-blue-700">Create one</a></p>
+                            {{/unless}}
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-green-100 rounded-full">
+                                <i class="fas fa-info-circle text-green-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">About Sections</p>
+                                <p class="text-2xl font-semibold text-gray-800">{{stats.aboutSections}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-purple-100 rounded-full">
+                                <i class="fas fa-users text-purple-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Experts</p>
+                                <p class="text-2xl font-semibold text-gray-800">{{stats.experts}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-orange-100 rounded-full">
+                                <i class="fas fa-briefcase text-orange-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Portfolios</p>
+                                <p class="text-2xl font-semibold text-gray-800">{{stats.portfolios}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-red-100 rounded-full">
+                                <i class="fas fa-graduation-cap text-red-600"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Academies</p>
+                                <p class="text-2xl font-semibold text-gray-800">{{stats.academies}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Preview Cards -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Hero Section Preview Card -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Hero Section</h3>
+                            <div class="flex items-center space-x-2">
+                                {{#if heroSections.length}}
+                                    {{#each heroSections}}
+                                    {{#if @first}}
+                                    <a href="/admin/hero-section/edit/{{this.id}}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                        <i class="fas fa-edit mr-1"></i>Edit Hero
+                                    </a>
+                                    {{/if}}
+                                    {{/each}}
+                                {{else}}
+                                    <a href="/admin/hero-section/create" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                        <i class="fas fa-plus mr-1"></i>Add Hero
+                                    </a>
+                                {{/if}}
+                                <a href="/admin/hero-section" class="text-blue-600 hover:text-blue-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {{#if heroSections.length}}
+                            {{#each heroSections}}
+                            {{#if @first}}
+                            <div class="relative h-32 bg-cover bg-center rounded-lg" style="background-image: url('{{this.backgroundImage}}');">
+                                <div class="w-full h-full bg-black bg-opacity-40 rounded-lg flex items-end">
+                                    <div class="text-center text-white p-4">
+                                        <h4 class="text-lg font-bold mb-1">{{this.title}}</h4>
+                                        <p class="text-sm">{{this.subtitle}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/if}}
+                            {{/each}}
+                        {{else}}
+                            <div class="w-full h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-lg flex items-center justify-center">
+                                <div class="text-center text-white">
+                                    <i class="fas fa-image text-2xl mb-2"></i>
+                                    <p class="text-sm">No hero section yet</p>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-sm text-gray-600">{{stats.heroSections}} hero section(s)</span>
+                            <a href="/admin/hero-section" class="text-blue-600 hover:text-blue-700 text-sm">
+                                Manage <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- About Section Preview Card -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Tentang Kami</h3>
+                            <div class="flex items-center space-x-2">
+                                {{#if aboutSections.length}}
+                                    {{#each aboutSections}}
+                                    {{#if @first}}
+                                    <a href="/admin/about-section/edit/{{this.id}}" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                        <i class="fas fa-edit mr-1"></i>Edit About
+                                    </a>
+                                    {{/if}}
+                                    {{/each}}
+                                {{else}}
+                                    <a href="/admin/about-section/create" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                        <i class="fas fa-plus mr-1"></i>Add About
+                                    </a>
+                                {{/if}}
+                                <a href="/admin/about-section" class="text-green-600 hover:text-green-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {{#if aboutSections.length}}
+                            {{#each aboutSections}}
+                            {{#if @first}}
+                            <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-4">
+                                <div class="mb-3">
+                                    {{#if this.image}}
+                                    <img src="{{this.image}}" alt="{{this.title}}" class="w-full h-32 object-cover rounded-lg">
+                                    {{else}}
+                                    <img src="https://picsum.photos/seed/about1/600/400.jpg" alt="Team Working" class="w-full h-32 object-cover rounded-lg">
+                                    {{/if}}
+                                </div>
+                                <h4 class="text-xl font-bold text-green-800 mb-2">{{this.title}}</h4>
+                                <p class="text-green-700 text-sm mb-3">{{this.description}}</p>
+                                <div class="flex space-x-2">
+                                    {{#if this.buttonText1}}
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">{{this.buttonText1}}</button>
+                                    {{/if}}
+                                    {{#if this.buttonText2}}
+                                    <button class="border border-green-600 text-green-600 px-4 py-2 rounded text-sm hover:bg-green-50">{{this.buttonText2}}</button>
+                                    {{/if}}
+                                </div>
+                            </div>
+                            {{/if}}
+                            {{/each}}
+                        {{else}}
+                            <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-4">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/about1/600/400.jpg" alt="Team Working" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-xl font-bold text-green-800 mb-2">No About Section Yet</h4>
+                                <p class="text-green-700 text-sm mb-3">Create your first about section to get started</p>
+                                <div class="flex space-x-2">
+                                    <button class="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700">Create About Section</button>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-sm text-gray-600">{{stats.aboutSections}} about section(s)</span>
+                            <a href="/admin/about-section" class="text-green-600 hover:text-green-700 text-sm">
+                                Manage <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Synergy Experts Preview Card -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Synergy Experts</h3>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="openAddExpertModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                    <i class="fas fa-plus mr-1"></i>Add Expert
+                                </button>
+                                <a href="/admin/experts" class="text-purple-600 hover:text-purple-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {{#if experts.length}}
+                            {{#each experts}}
+                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="{{this.id}}" data-expert-name="{{this.name}}" data-expert-position="{{this.position}}" data-expert-experience="{{this.experience}}" data-expert-rating="{{this.rating}}" data-expert-review-count="{{this.reviewCount}}" data-expert-image="{{this.image}}" data-expert-description="{{this.description}}">
+                                <div class="flex items-center space-x-4 mb-3">
+                                    {{#if this.image}}
+                                    <img src="{{this.image}}" alt="{{this.name}}" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                                    {{else}}
+                                    <img src="https://picsum.photos/seed/{{this.name}}/200/200.jpg" alt="{{this.name}}" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                                    {{/if}}
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-purple-800">{{this.name}}</h4>
+                                        <p class="text-purple-700 text-sm">{{this.position}}</p>
+                                        <p class="text-purple-600 text-xs">{{this.experience}}</p>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400 text-xs">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <span class="text-purple-600 text-xs ml-2">{{this.rating}} ({{this.reviewCount}})</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deleteExpert('{{this.id}}')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        {{else}}
+                            <!-- Data spesifik dari beranda -->
+                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="expert-1">
+                                <div class="flex items-center space-x-4 mb-3">
+                                    <img src="https://picsum.photos/seed/ahmad-wijaya/200/200.jpg" alt="Dr. Ahmad Wijaya" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-purple-800">Dr. Ahmad Wijaya, M.Sc.</h4>
+                                        <p class="text-purple-700 text-sm">Senior Data Analyst</p>
+                                        <p class="text-purple-600 text-xs">15+ Tahun Pengalaman</p>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400 text-xs">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <span class="text-purple-600 text-xs ml-2">4.9 (1,250)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-purple-600 text-xs mb-3">Expert dalam data analitik dengan pengalaman 15+ tahun di perusahaan Fortune 500. Spesialis dalam machine learning dan statistical modeling.</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deleteExpert('expert-1')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="expert-2">
+                                <div class="flex items-center space-x-4 mb-3">
+                                    <img src="https://picsum.photos/seed/sarah-putri/200/200.jpg" alt="Sarah Putri" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-purple-800">Sarah Putri, S.Kom., M.T.</h4>
+                                        <p class="text-purple-700 text-sm">Data Science Lead</p>
+                                        <p class="text-purple-600 text-xs">12+ Tahun Pengalaman</p>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400 text-xs">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <span class="text-purple-600 text-xs ml-2">4.8 (890)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-purple-600 text-xs mb-3">Spesialis dalam Python programming dan data visualization. Pengalaman dalam big data analytics dan deep learning.</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deleteExpert('expert-2')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="expert-3">
+                                <div class="flex items-center space-x-4 mb-3">
+                                    <img src="https://picsum.photos/seed/budi-santoso/200/200.jpg" alt="Budi Santoso" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-purple-800">Budi Santoso, S.E., M.M.</h4>
+                                        <p class="text-purple-700 text-sm">Business Intelligence Expert</p>
+                                        <p class="text-purple-600 text-xs">10+ Tahun Pengalaman</p>
+                                        <div class="flex items-center mt-1">
+                                            <div class="flex text-yellow-400 text-xs">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star-half-alt"></i>
+                                            </div>
+                                            <span class="text-purple-600 text-xs ml-2">4.7 (650)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-purple-600 text-xs mb-3">Expert dalam business intelligence dan dashboard development. Pengalaman dalam Power BI, Tableau, dan data storytelling.</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deleteExpert('expert-3')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">{{stats.experts}} experts</span>
+                            <a href="/admin/experts" class="text-purple-600 hover:text-purple-700 text-sm">
+                                <i class="fas fa-eye mr-1"></i>View All
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Synergy Portfolio Preview Card -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Synergy Portfolio</h3>
+                            <div class="flex items-center space-x-2">
+                                <a href="/admin/portfolios" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                    <i class="fas fa-eye mr-1"></i>View All
+                                </a>
+                                <button onclick="openAddPortfolioModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                    <i class="fas fa-plus mr-1"></i>Add Portfolio
+                                </button>
+                                <a href="/admin/portfolios" class="text-gray-600 hover:text-gray-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {{#if portfolios.length}}
+                            {{#each portfolios}}
+                            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="{{this.id}}" data-portfolio-title="{{this.title}}" data-portfolio-category="{{this.category}}" data-portfolio-technologies="{{#if this.technologies}}{{#each this.technologies}}{{this}}{{#unless @last}},{{/unless}}{{/each}}{{/if}}" data-portfolio-description="{{this.description}}" data-portfolio-live-demo-url="{{this.liveDemoUrl}}" data-portfolio-code-url="{{this.codeUrl}}" data-portfolio-image="{{this.image}}">
+                                <div class="mb-3">
+                                    {{#if this.image}}
+                                    <img src="{{this.image}}" alt="{{this.title}}" class="w-full h-32 object-cover rounded-lg">
+                                    {{else}}
+                                    <img src="https://picsum.photos/seed/{{this.title}}/400/300.jpg" alt="{{this.title}}" class="w-full h-32 object-cover rounded-lg">
+                                    {{/if}}
+                                </div>
+                                <h4 class="text-lg font-semibold text-orange-800 mb-1">{{this.title}}</h4>
+                                <p class="text-orange-700 text-sm mb-2">{{this.category}} • {{#if this.technologies}}{{#each this.technologies}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}{{else}}React, D3.js, Python{{/if}}</p>
+                                <p class="text-orange-600 text-xs mb-3">{{this.description}}</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    {{#if this.technologies}}
+                                        {{#each this.technologies}}
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">{{this}}</span>
+                                        {{/each}}
+                                    {{else}}
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">React</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">D3.js</span>
+                                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Python</span>
+                                    {{/if}}
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deletePortfolio('{{this.id}}')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        {{#if this.liveDemoUrl}}
+                                        <a href="{{this.liveDemoUrl}}" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Demo
+                                        </a>
+                                        {{/if}}
+                                        {{#if this.codeUrl}}
+                                        <a href="{{this.codeUrl}}" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fab fa-github mr-1"></i>Code
+                                        </a>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        {{else}}
+                            <!-- Data spesifik dari beranda -->
+                            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="portfolio-1">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/ecommerce-platform/400/300.jpg" alt="E-Commerce Platform" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-lg font-semibold text-orange-800 mb-1">E-Commerce Platform</h4>
+                                <p class="text-orange-700 text-sm mb-2">Platform e-commerce modern dengan React dan Node.js</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">UI/UX Design</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Full Stack Development</span>
+                                </div>
+                                <p class="text-orange-600 text-xs mb-3">Project Overview</p>
+                                <p class="text-orange-600 text-xs mb-3">Mengembangkan platform e-commerce end-to-end dengan fitur lengkap termasuk payment gateway, inventory management, dan analytics dashboard.</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">React</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Node.js</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">MongoDB</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Docker</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deletePortfolio('portfolio-1')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                                        </a>
+                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fab fa-github mr-1"></i>View Code
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="portfolio-2">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/mobile-banking-app/400/300.jpg" alt="Mobile Banking App" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-lg font-semibold text-orange-800 mb-1">Mobile Banking App</h4>
+                                <p class="text-orange-700 text-sm mb-2">Aplikasi mobile banking dengan fitur transfer, payment, dan analytics real-time</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">React Native</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">TypeScript</span>
+                                </div>
+                                <p class="text-orange-600 text-xs mb-3">Project Overview</p>
+                                <p class="text-orange-600 text-xs mb-3">Mengembangkan aplikasi mobile banking dengan security tinggi dan compliance dengan standard perbankan.</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">React Native</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">TypeScript</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Node.js</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Firebase</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deletePortfolio('portfolio-2')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                                        </a>
+                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fab fa-github mr-1"></i>View Code
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="portfolio-3">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/cyber-security-dashboard/400/300.jpg" alt="Cyber Security Dashboard" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-lg font-semibold text-orange-800 mb-1">Cyber Security Dashboard</h4>
+                                <p class="text-orange-700 text-sm mb-2">Dashboard monitoring keamanan siber dengan real-time threat detection dan automated response</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Vue.js</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Python</span>
+                                </div>
+                                <p class="text-orange-600 text-xs mb-3">Project Overview</p>
+                                <p class="text-orange-600 text-xs mb-3">Mengembangkan dashboard untuk monitoring keamanan jaringan dengan visualisasi data threat secara real-time.</p>
+                                <div class="flex flex-wrap gap-1 mb-3">
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Vue.js</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Python</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">FastAPI</span>
+                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">PostgreSQL</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="deletePortfolio('portfolio-3')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                                        </a>
+                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
+                                            <i class="fab fa-github mr-1"></i>View Code
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">{{stats.portfolios}} projects</span>
+                            <a href="/admin/portfolios" class="text-orange-600 hover:text-orange-700 text-sm">
+                                <i class="fas fa-eye mr-1"></i>View All
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Synergy Academy Preview Card -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Synergy Academy</h3>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="console.log('Add Course button clicked'); openAddAcademyModal()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
+                                    <i class="fas fa-plus mr-1"></i>Add Course
+                                </button>
+                                <a href="/admin/academies" class="text-red-600 hover:text-red-700">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {{#if academies.length}}
+                            {{#each academies}}
+                            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="{{this.id}}" data-academy-title="{{this.title}}" data-academy-author="{{this.author}}" data-academy-price="{{this.price}}" data-academy-rating="{{this.rating}}" data-academy-student-count="{{this.studentCount}}" data-academy-duration="{{this.duration}}" data-academy-certification="{{this.certification}}" data-academy-level="{{this.level}}" data-academy-schedule="{{this.schedule}}" data-academy-mode="{{this.mode}}" data-academy-description="{{this.description}}" data-academy-image="{{this.image}}">
+                                <div class="mb-3">
+                                    {{#if this.image}}
+                                    <img src="{{this.image}}" alt="{{this.title}}" class="w-full h-32 object-cover rounded-lg">
+                                    {{else}}
+                                    <img src="https://picsum.photos/seed/{{this.title}}/400/300.jpg" alt="{{this.title}}" class="w-full h-32 object-cover rounded-lg">
+                                    {{/if}}
+                                </div>
+                                <h4 class="text-lg font-semibold text-red-800 mb-1">{{this.title}}</h4>
+                                <p class="text-red-700 text-sm mb-2">{{this.author}} • {{this.price}}</p>
+                                <p class="text-red-600 text-xs mb-3">{{this.description}}</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 text-xs">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="text-red-600 text-xs ml-2">{{this.rating}} ({{this.studentCount}} students)</span>
+                                    </div>
+                                    <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">{{this.duration}}</span>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-certificate mr-1"></i>
+                                    <span>{{this.certification}}</span>
+                                    <i class="fas fa-signal ml-3 mr-1"></i>
+                                    <span>{{this.level}}</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="editAcademy('{{this.id}}')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-edit mr-1"></i>Edit
+                                        </button>
+                                        <button onclick="deleteAcademy('{{this.id}}')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/each}}
+                        {{else}}
+                            <!-- Data spesifik dari beranda -->
+                            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="academy-1">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/komputer-course/400/300.jpg" alt="Komputer" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-lg font-semibold text-red-800 mb-1">Komputer</h4>
+                                <p class="text-red-700 text-sm mb-2">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</p>
+                                <p class="text-red-700 text-sm mb-2">Penulis: Admin Mobile Faculty</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 text-xs">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="text-red-600 text-xs ml-2">4.9</span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-red-600">
+                                        <span class="mr-2">2,500+</span>
+                                        <span class="mr-2">Siswa</span>
+                                        <span class="mr-2">12</span>
+                                        <span class="mr-2">Minggu</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-certificate mr-1"></i>
+                                    <span class="mr-2">Sertifikat</span>
+                                    <i class="fas fa-signal ml-3 mr-1"></i>
+                                    <span class="mr-2">Program</span>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-signal mr-1"></i>
+                                    <span class="mr-2">Beginner</span>
+                                    <i class="fas fa-clock ml-3 mr-1"></i>
+                                    <span class="mr-2">Full Time</span>
+                                    <i class="fas fa-laptop ml-3 mr-1"></i>
+                                    <span class="mr-2">Online</span>
+                                </div>
+                                <p class="text-red-600 text-xs mb-3">Mobile Development Fundamental</p>
+                                <p class="text-red-600 text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="editAcademy('academy-1')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-edit mr-1"></i>Edit
+                                        </button>
+                                        <button onclick="deleteAcademy('academy-1')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="academy-2">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/data-science-course/400/300.jpg" alt="Data Science" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-lg font-semibold text-red-800 mb-1">Data Science</h4>
+                                <p class="text-red-700 text-sm mb-2">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</p>
+                                <p class="text-red-700 text-sm mb-2">Penulis: Admin Mobile Faculty</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 text-xs">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="text-red-600 text-xs ml-2">4.9</span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-red-600">
+                                        <span class="mr-2">2,500+</span>
+                                        <span class="mr-2">Siswa</span>
+                                        <span class="mr-2">12</span>
+                                        <span class="mr-2">Minggu</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-certificate mr-1"></i>
+                                    <span class="mr-2">Sertifikat</span>
+                                    <i class="fas fa-signal ml-3 mr-1"></i>
+                                    <span class="mr-2">Program</span>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-signal mr-1"></i>
+                                    <span class="mr-2">Beginner</span>
+                                    <i class="fas fa-clock ml-3 mr-1"></i>
+                                    <span class="mr-2">Full Time</span>
+                                    <i class="fas fa-laptop ml-3 mr-1"></i>
+                                    <span class="mr-2">Online</span>
+                                </div>
+                                <p class="text-red-600 text-xs mb-3">Mobile Development Fundamental</p>
+                                <p class="text-red-600 text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="editAcademy('academy-2')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-edit mr-1"></i>Edit
+                                        </button>
+                                        <button onclick="deleteAcademy('academy-2')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="academy-3">
+                                <div class="mb-3">
+                                    <img src="https://picsum.photos/seed/uiux-design-course/400/300.jpg" alt="UI/UX Design" class="w-full h-32 object-cover rounded-lg">
+                                </div>
+                                <h4 class="text-lg font-semibold text-red-800 mb-1">UI/UX Design</h4>
+                                <p class="text-red-700 text-sm mb-2">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</p>
+                                <p class="text-red-700 text-sm mb-2">Penulis: Admin Mobile Faculty</p>
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="flex text-yellow-400 text-xs">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="text-red-600 text-xs ml-2">4.9</span>
+                                    </div>
+                                    <div class="flex items-center text-xs text-red-600">
+                                        <span class="mr-2">2,500+</span>
+                                        <span class="mr-2">Siswa</span>
+                                        <span class="mr-2">12</span>
+                                        <span class="mr-2">Minggu</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-certificate mr-1"></i>
+                                    <span class="mr-2">Sertifikat</span>
+                                    <i class="fas fa-signal ml-3 mr-1"></i>
+                                    <span class="mr-2">Program</span>
+                                </div>
+                                <div class="flex items-center text-xs text-red-600 mb-3">
+                                    <i class="fas fa-signal mr-1"></i>
+                                    <span class="mr-2">Beginner</span>
+                                    <i class="fas fa-clock ml-3 mr-1"></i>
+                                    <span class="mr-2">Full Time</span>
+                                    <i class="fas fa-laptop ml-3 mr-1"></i>
+                                    <span class="mr-2">Online</span>
+                                </div>
+                                <p class="text-red-600 text-xs mb-3">Mobile Development Fundamental</p>
+                                <p class="text-red-600 text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex space-x-2">
+                                        <button onclick="editAcademy('academy-3')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-edit mr-1"></i>Edit
+                                        </button>
+                                        <button onclick="deleteAcademy('academy-3')" class="text-red-600 hover:text-red-700 text-sm">
+                                            <i class="fas fa-trash mr-1"></i>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">{{stats.academies}} courses</span>
+                            <a href="/admin/academies" class="text-red-600 hover:text-red-700 text-sm">
+                                <i class="fas fa-eye mr-1"></i>View All
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 transform transition-all">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus</h3>
+                    <p class="text-sm text-gray-600">Apakah Anda yakin ingin menghapus item ini?</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                <p class="text-sm text-gray-700" id="deleteMessage">Item yang dihapus tidak dapat dikembalikan.</p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    Batal
+                </button>
+                <button id="confirmDeleteBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    <i class="fas fa-trash mr-2"></i>Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expert Modal -->
+    <div id="expertModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800" id="expertModalTitle">Add Expert</h3>
+                        <button onclick="closeExpertModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="expertForm" onsubmit="saveExpert(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                                <input type="text" id="expertName" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Position</label>
+                                <input type="text" id="expertPosition" name="position" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+                                <input type="text" id="expertExperience" name="experience" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                <input type="number" id="expertRating" name="rating" step="0.1" min="0" max="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Review Count</label>
+                                <input type="number" id="expertReviewCount" name="reviewCount" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                                <input type="url" id="expertImage" name="image" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea id="expertDescription" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required></textarea>
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button type="button" onclick="closeExpertModal()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                                Save Expert
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div id="portfolioModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-gray-800" id="portfolioModalTitle">Add Project</h3>
+                        <button onclick="closePortfolioModal()" class="text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form id="portfolioForm" onsubmit="savePortfolio(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                <input type="text" id="portfolioTitle" name="title" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                <input type="text" id="portfolioCategory" name="category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Technologies (comma separated)</label>
+                                <input type="text" id="portfolioTechnologies" name="technologies" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea id="portfolioDescription" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500" required></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Live Demo URL</label>
+                                <input type="url" id="portfolioLiveDemoUrl" name="liveDemoUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Code URL</label>
+                                <input type="url" id="portfolioCodeUrl" name="codeUrl" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                                <input type="url" id="portfolioImage" name="image" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3 mt-6">
+                            <button type="button" onclick="closePortfolioModal()" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
+                                Save Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academy Modal -->
+    <div id="academyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-800" id="academyModalTitle">Add New Course</h3>
+                            <p class="text-sm text-gray-600 mt-1">Fill in the course details below</p>
+                        </div>
+                        <button onclick="closeAcademyModal()" class="text-gray-500 hover:text-gray-700 transition">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <form id="academyForm" onsubmit="saveAcademy(event)">
+                        <div class="space-y-6">
+                            <!-- Course Title -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Course Title *</label>
+                                <input type="text" id="academyTitle" name="title" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="e.g., Web Development Masterclass" required>
+                            </div>
+
+                            <!-- Author & Price -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Instructor *</label>
+                                    <input type="text" id="academyAuthor" name="author" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="e.g., John Doe" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Price (IDR) *</label>
+                                    <input type="number" id="academyPrice" name="price" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="e.g., 500000" required>
+                                </div>
+                            </div>
+
+                            <!-- Duration & Level -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Duration *</label>
+                                    <select id="academyDuration" name="duration" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+                                        <option value="">Select duration</option>
+                                        <option value="2 weeks">2 weeks</option>
+                                        <option value="4 weeks">4 weeks</option>
+                                        <option value="6 weeks">6 weeks</option>
+                                        <option value="8 weeks">8 weeks</option>
+                                        <option value="12 weeks">12 weeks</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Level *</label>
+                                    <select id="academyLevel" name="level" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+                                        <option value="">Select level</option>
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="All Levels">All Levels</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Rating & Students -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                                    <select id="academyRating" name="rating" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                        <option value="5">5.0 - Excellent</option>
+                                        <option value="4.5">4.5 - Very Good</option>
+                                        <option value="4">4.0 - Good</option>
+                                        <option value="3.5">3.5 - Average</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Student Count</label>
+                                    <input type="number" id="academyStudentCount" name="studentCount" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="e.g., 150">
+                                </div>
+                            </div>
+
+                            <!-- Schedule & Mode -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Schedule *</label>
+                                    <select id="academySchedule" name="schedule" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+                                        <option value="">Select schedule</option>
+                                        <option value="Weekend">Weekend</option>
+                                        <option value="Weekday">Weekday</option>
+                                        <option value="Flexible">Flexible</option>
+                                        <option value="Evening">Evening</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Mode *</label>
+                                    <select id="academyMode" name="mode" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+                                        <option value="">Select mode</option>
+                                        <option value="Online">Online</option>
+                                        <option value="Offline">Offline</option>
+                                        <option value="Hybrid">Hybrid</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Certification -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Certification</label>
+                                <select id="academyCertification" name="certification" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                    <option value="">No certification</option>
+                                    <option value="Certificate of Completion">Certificate of Completion</option>
+                                    <option value="Professional Certificate">Professional Certificate</option>
+                                    <option value="Industry Certification">Industry Certification</option>
+                                </select>
+                            </div>
+
+                            <!-- Description -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Course Description *</label>
+                                <textarea id="academyDescription" name="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none" placeholder="Describe what students will learn in this course..." required></textarea>
+                            </div>
+
+                            <!-- Image URL -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Course Image URL</label>
+                                <input type="url" id="academyImage" name="image" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" placeholder="https://example.com/course-image.jpg">
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                                <button type="button" onclick="closeAcademyModal()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium">
+                                    <i class="fas fa-save mr-2"></i>
+                                    <span id="submitButtonText">Add Course</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 transform transition-all">
+            <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-lock text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Ubah Password</h3>
+                    <p class="text-sm text-gray-700">Perbarui password akun admin Anda</p>
+                </div>
+            </div>
+            <form id="passwordForm" onsubmit="changePassword(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Saat Ini</label>
+                        <input type="password" id="currentPassword" name="currentPassword" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Masukkan password saat ini">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru</label>
+                        <input type="password" id="newPassword" name="newPassword" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Masukkan password baru (minimal 6 karakter)">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password Baru</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                               placeholder="Konfirmasi password baru">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                    <button type="button" onclick="closePasswordModal()" 
+                            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">
+                        Batal
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
+                        <i class="fas fa-save mr-2"></i>Ubah Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Global variables
+        let currentExpertId = null;
+        let currentPortfolioId = null;
+        let currentAcademyId = null;
+
+        // Hero Section Delete Function
+        async function deleteHeroSection(id) {
+            const heroElement = document.querySelector(`[data-hero-id="${id}"]`);
+            const heroTitle = heroElement ? heroElement.querySelector('p.font-medium').textContent : 'Hero Section ini';
+            
+            showDeleteModal(
+                `Apakah Anda yakin ingin menghapus "${heroTitle}"? Data yang dihapus tidak dapat dikembalikan.`,
+                async () => {
+                    try {
+                        const response = await fetch(`/admin/hero-section/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.success) {
+                                showNotification('Hero section berhasil dihapus!', 'success');
+                                setTimeout(() => location.reload(), 1500);
+                            } else {
+                                showNotification('Gagal menghapus hero section', 'error');
+                            }
+                        } else {
+                            showNotification('Gagal menghapus hero section', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        showNotification('Terjadi kesalahan saat menghapus hero section', 'error');
+                    }
+                    closeDeleteModal();
+                }
+            );
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hero Section Delete Buttons
+            const deleteButtons = document.querySelectorAll('.delete-hero-section');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    deleteHeroSection(id);
+                });
+            });
+        });
+
+        // Expert Modal Functions
+        function openAddExpertModal() {
+            currentExpertId = null;
+            document.getElementById('expertModalTitle').textContent = 'Add Expert';
+            document.getElementById('expertForm').reset();
+            document.getElementById('expertModal').classList.remove('hidden');
+        }
+
+        function editExpert(id) {
+            currentExpertId = id;
+            document.getElementById('expertModalTitle').textContent = 'Edit Expert';
+            
+            // Find expert data from the page
+            const expert = findExpertById(id);
+            if (expert) {
+                document.getElementById('expertName').value = expert.name || '';
+                document.getElementById('expertPosition').value = expert.position || '';
+                document.getElementById('expertExperience').value = expert.experience || '';
+                document.getElementById('expertRating').value = expert.rating || '';
+                document.getElementById('expertReviewCount').value = expert.reviewCount || '';
+                document.getElementById('expertImage').value = expert.image || '';
+                document.getElementById('expertDescription').value = expert.description || '';
+            }
+            
+            document.getElementById('expertModal').classList.remove('hidden');
+        }
+
+        function closeExpertModal() {
+            document.getElementById('expertModal').classList.add('hidden');
+            document.getElementById('expertForm').reset();
+            currentExpertId = null;
+        }
+
+        async function saveExpert(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Handle technologies array for portfolio
+            if (data.technologies) {
+                data.technologies = data.technologies.split(',').map(t => t.trim());
+            }
+            
+            try {
+                if (currentExpertId) {
+                    // Update existing expert
+                    const response = await fetch(`/admin/experts/${currentExpertId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        alert('Expert updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to update expert');
+                    }
+                } else {
+                    // Create new expert
+                    const response = await fetch('/admin/experts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        alert('Expert created successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to create expert');
+                    }
+                }
+            } catch (error) {
+                console.error('Error saving expert:', error);
+                alert('Error saving expert');
+            }
+            
+            closeExpertModal();
+        }
+
+        // Delete Modal Functions
+        let deleteCallback = null;
+        
+        function showDeleteModal(message, callback) {
+            document.getElementById('deleteMessage').textContent = message;
+            deleteCallback = callback;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById('deleteModal').classList.add('flex');
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteModal').classList.remove('flex');
+            deleteCallback = null;
+        }
+        
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (deleteCallback) {
+                deleteCallback();
+            }
+        });
+
+        async function deleteExpert(id) {
+            const expertElement = document.querySelector(`[data-expert-id="${id}"]`);
+            const expertName = expertElement ? expertElement.querySelector('h4').textContent : 'Expert ini';
+            
+            showDeleteModal(
+                `Apakah Anda yakin ingin menghapus "${expertName}"? Data yang dihapus tidak dapat dikembalikan.`,
+                async () => {
+                    try {
+                        const response = await fetch(`/admin/experts/${id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if (response.ok) {
+                            showNotification('Expert berhasil dihapus!', 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification('Gagal menghapus expert', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting expert:', error);
+                        showNotification('Terjadi kesalahan saat menghapus expert', 'error');
+                    }
+                    closeDeleteModal();
+                }
+            );
+        }
+
+        // Portfolio Modal Functions
+        function openAddPortfolioModal() {
+            currentPortfolioId = null;
+            document.getElementById('portfolioModalTitle').textContent = 'Add Project';
+        }
+
+        function editPortfolio(id) {
+            currentPortfolioId = id;
+            document.getElementById('portfolioModalTitle').textContent = 'Edit Project';
+            
+            const portfolio = findPortfolioById(id);
+            if (portfolio) {
+                document.getElementById('portfolioTitle').value = portfolio.title || '';
+                document.getElementById('portfolioCategory').value = portfolio.category || '';
+                document.getElementById('portfolioTechnologies').value = portfolio.technologies ? portfolio.technologies.join(', ') : '';
+                document.getElementById('portfolioDescription').value = portfolio.description || '';
+                document.getElementById('portfolioLiveDemoUrl').value = portfolio.liveDemoUrl || '';
+                document.getElementById('portfolioCodeUrl').value = portfolio.codeUrl || '';
+                document.getElementById('portfolioImage').value = portfolio.image || '';
+            }
+            
+            document.getElementById('portfolioModal').classList.remove('hidden');
+        }
+
+        // Academy Modal Functions
+        function openAddAcademyModal() {
+            currentAcademyId = null;
+            document.getElementById('academyModalTitle').textContent = 'Add New Course';
+            document.getElementById('submitButtonText').textContent = 'Add Course';
+            document.getElementById('academyForm').reset();
+            document.getElementById('academyModal').classList.remove('hidden');
+        }
+
+        function closePortfolioModal() {
+            document.getElementById('portfolioModal').classList.add('hidden');
+            document.getElementById('portfolioForm').reset();
+            currentPortfolioId = null;
+        }
+
+        async function savePortfolio(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Handle technologies array
+            if (data.technologies) {
+                data.technologies = data.technologies.split(',').map(t => t.trim());
+            }
+            
+            try {
+                if (currentPortfolioId) {
+                    const response = await fetch(`/admin/portfolios/${currentPortfolioId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        alert('Project updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to update project');
+                    }
+                } else {
+                    const response = await fetch('/admin/portfolios', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        alert('Project created successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to create project');
+                    }
+                }
+            } catch (error) {
+                console.error('Error saving portfolio:', error);
+                alert('Error saving project');
+            }
+            
+            closePortfolioModal();
+        }
+
+        async function deletePortfolio(id) {
+            const portfolioElement = document.querySelector(`[data-portfolio-id="${id}"]`);
+            const portfolioTitle = portfolioElement ? portfolioElement.querySelector('h4').textContent : 'Project ini';
+            
+            showDeleteModal(
+                `Apakah Anda yakin ingin menghapus "${portfolioTitle}"? Data yang dihapus tidak dapat dikembalikan.`,
+                async () => {
+                    try {
+                        const response = await fetch(`/admin/portfolios/${id}`, {
+                            method: 'DELETE'
+                        });
+                        
+                        if (response.ok) {
+                            showNotification('Portfolio berhasil dihapus!', 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            showNotification('Gagal menghapus portfolio', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Error deleting portfolio:', error);
+                        showNotification('Terjadi kesalahan saat menghapus portfolio', 'error');
+                    }
+                    closeDeleteModal();
+                }
+            );
+        }
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            
+            const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+            
+            notification.innerHTML = `
+                <div class="flex items-center ${bgColor} text-white">
+                    <i class="fas ${icon} mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('translate-x-0');
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        function editAcademy(id) {
+            currentAcademyId = id;
+            document.getElementById('academyModalTitle').textContent = 'Edit Course';
+            document.getElementById('submitButtonText').textContent = 'Update Course';
+            
+            const academy = findAcademyById(id);
+            if (academy) {
+                document.getElementById('academyTitle').value = academy.title || '';
+                document.getElementById('academyAuthor').value = academy.author || '';
+                document.getElementById('academyPrice').value = academy.price || '';
+                document.getElementById('academyDuration').value = academy.duration || '';
+                document.getElementById('academyLevel').value = academy.level || '';
+                document.getElementById('academyRating').value = academy.rating || '';
+                document.getElementById('academyStudentCount').value = academy.studentCount || '';
+                document.getElementById('academyCertification').value = academy.certification || '';
+                document.getElementById('academySchedule').value = academy.schedule || '';
+                document.getElementById('academyMode').value = academy.mode || '';
+                document.getElementById('academyDescription').value = academy.description || '';
+                document.getElementById('academyImage').value = academy.image || '';
+            }
+            
+            document.getElementById('academyModal').classList.remove('hidden');
+        }
+
+        function closeAcademyModal() {
+            document.getElementById('academyModal').classList.add('hidden');
+            document.getElementById('academyForm').reset();
+            currentAcademyId = null;
+        }
+
+        async function saveAcademy(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                if (currentAcademyId) {
+                    // Update existing academy using JSON route
+                    const response = await fetch(`/admin/academies/${currentAcademyId}/json`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        showNotification('Course updated successfully!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showNotification('Failed to update course', 'error');
+                    }
+                } else {
+                    // Create new academy using JSON route
+                    const response = await fetch('/admin/academies/json', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        showNotification('Course created successfully!', 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showNotification('Failed to create course', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error saving academy:', error);
+                showNotification('Error saving course', 'error');
+            }
+            
+            closeAcademyModal();
+        }
+
+        async function deleteAcademy(id) {
+            if (confirm('Are you sure you want to delete this course?')) {
+                try {
+                    const response = await fetch(`/admin/academies/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        alert('Course deleted successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to delete course');
+                    }
+                } catch (error) {
+                    console.error('Error deleting academy:', error);
+                    alert('Error deleting course');
+                }
+            }
+        }
+
+        // Helper functions to find data
+        function findExpertById(id) {
+            // Find expert from the DOM
+            const expertCards = document.querySelectorAll('[data-expert-id]');
+            for (let card of expertCards) {
+                if (card.dataset.expertId === id) {
+                    return {
+                        id: id,
+                        name: card.dataset.expertName || '',
+                        position: card.dataset.expertPosition || '',
+                        experience: card.dataset.expertExperience || '',
+                        rating: parseFloat(card.dataset.expertRating) || 0,
+                        reviewCount: parseInt(card.dataset.expertReviewCount) || 0,
+                        image: card.dataset.expertImage || '',
+                        description: card.dataset.expertDescription || ''
+                    };
+                }
+            }
+            return null;
+        }
+
+        function findPortfolioById(id) {
+            // Find portfolio from the DOM
+            const portfolioCards = document.querySelectorAll('[data-portfolio-id]');
+            for (let card of portfolioCards) {
+                if (card.dataset.portfolioId === id) {
+                    return {
+                        id: id,
+                        title: card.dataset.portfolioTitle || '',
+                        category: card.dataset.portfolioCategory || '',
+                        technologies: card.dataset.portfolioTechnologies ? card.dataset.portfolioTechnologies.split(',') : [],
+                        description: card.dataset.portfolioDescription || '',
+                        liveDemoUrl: card.dataset.portfolioLiveDemoUrl || '',
+                        codeUrl: card.dataset.portfolioCodeUrl || '',
+                        image: card.dataset.portfolioImage || ''
+                    };
+                }
+            }
+            return null;
+        }
+
+        function findAcademyById(id) {
+            // Find academy from the DOM
+            const academyCards = document.querySelectorAll('[data-academy-id]');
+            for (let card of academyCards) {
+                if (card.dataset.academyId === id) {
+                    return {
+                        id: id,
+                        title: card.dataset.academyTitle || '',
+                        author: card.dataset.academyAuthor || '',
+                        price: card.dataset.academyPrice || '',
+                        rating: parseFloat(card.dataset.academyRating) || 0,
+                        studentCount: parseInt(card.dataset.academyStudentCount) || 0,
+                        duration: card.dataset.academyDuration || '',
+                        certification: card.dataset.academyCertification || '',
+                        level: card.dataset.academyLevel || '',
+                        schedule: card.dataset.academySchedule || '',
+                        mode: card.dataset.academyMode || '',
+                        description: card.dataset.academyDescription || '',
+                        image: card.dataset.academyImage || ''
+                    };
+                }
+            }
+            return null;
+        }
+
+        // View details functions
+        function viewExpertDetails(id) {
+            const expert = findExpertById(id);
+            if (expert) {
+                alert(`Expert Details:\n\nName: ${expert.name}\nPosition: ${expert.position}\nExperience: ${expert.experience}\nRating: ${expert.rating}\nReviews: ${expert.reviewCount}\nDescription: ${expert.description}`);
+            }
+        }
+
+        function viewAcademyDetails(id) {
+            const academy = findAcademyById(id);
+            if (academy) {
+                alert(`Course Details:\n\nTitle: ${academy.title}\nAuthor: ${academy.author}\nPrice: ${academy.price}\nDuration: ${academy.duration}\nLevel: ${academy.level}\nRating: ${academy.rating}\nStudents: ${academy.studentCount}\nDescription: ${academy.description}`);
+            }
+        }
+
+        // Password Modal Functions
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.remove('hidden');
+            document.getElementById('passwordModal').classList.add('flex');
+            document.getElementById('passwordForm').reset();
+        }
+        
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('passwordModal').classList.remove('flex');
+        }
+
+        async function changePassword(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            
+            // Manual extraction from FormData
+            const data = {
+                currentPassword: formData.get('currentPassword'),
+                newPassword: formData.get('newPassword'),
+                confirmPassword: formData.get('confirmPassword')
+            };
+            
+            // Validate passwords match
+            if (data.newPassword !== data.confirmPassword) {
+                showNotification('Password baru dan konfirmasi tidak cocok!', 'error');
+                return;
+            }
+            
+            // Validate password length
+            if (data.newPassword.length < 6) {
+                showNotification('Password baru minimal 6 karakter!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/admin/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        currentPassword: data.currentPassword,
+                        newPassword: data.newPassword
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Password berhasil diubah! Mengarahkan ke halaman login...', 'success');
+                    closePasswordModal();
+                    
+                    // Redirect to login page after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = '/admin/login';
+                    }, 2000);
+                } else {
+                    showNotification(result.message || 'Gagal mengubah password', 'error');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showNotification('Terjadi kesalahan saat mengubah password', 'error');
+            }
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

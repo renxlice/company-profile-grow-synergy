@@ -36,6 +36,36 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        /* Sticky navbar */
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 50;
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -60,20 +90,20 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
                     <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-20 h-20 rounded-lg object-cover">
-                    <a href="/" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                    <a href="/home" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
                 </div>
                 
                 <div class="hidden md:flex space-x-6">
-                    <a href="/" class="nav-link" data-page="home">Beranda</a>
+                    <a href="/home" class="nav-link" data-page="home">Beranda</a>
                     <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
                     <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
                     <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
                 </div>
                 
                 <div class="flex items-center space-x-4">
-                    <button class="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
-                        Hubungi Kami
-                    </button>
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                        Tentang Kami
+                    </a>
                     <button class="md:hidden text-gray-600">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -86,18 +116,17 @@
     <main>
 
 <div class="hero-section">
-    <div class="background-image"></div>
+    {{#if heroSections}}
+        {{#each heroSections}}
+        <div class="background-image" style="background-image: url('{{this.backgroundImage}}');"></div>
+        {{/each}}
+    {{else}}
+        <div class="background-image" style="background-image: url('/images/hero-background.jpg');"></div>
+    {{/if}}
     <div class="hero-content">
         <h2 class="text-3xl md:text-4xl font-light mb-4">Selamat datang di</h2>
         <h1 class="text-4xl md:text-6xl font-bold mb-8">GROW SYNERGY INDONESIA</h1>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
-                Mulai Sekarang
-            </button>
-            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition">
-                Pelajari Lebih Lanjut
-            </button>
-        </div>
+        <p class="text-lg leading-relaxed mb-6">Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
     </div>
 </div>
 
@@ -114,17 +143,12 @@
                     Grow Synergy Indonesia adalah lembaga penyedia pelatihan dan sertifikasi kompetensi yang berfokus pada pengembangan sumber daya manusia unggul. Kami menghadirkan program pelatihan berkualitas, instruktur berpengalaman, serta sertifikasi resmi yang diakui secara nasional.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <button class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition">
-                        Pelajari Lebih Lanjut
-                    </button>
-                    <button class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition">
-                        Hubungi Kami
-                    </button>
+                    
                 </div>
             </div>
             
             <div class="hidden lg:block">
-                <img src="/images/team-working.jpg" alt="Team Working" class="rounded-lg shadow-xl">
+                <img id="about-section-image" src="https://picsum.photos/seed/about1/600/400.jpg" alt="Team Working" class="rounded-lg shadow-xl">
             </div>
         </div>
     </div>
@@ -142,79 +166,88 @@
             </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="expertsGrid">
             <!-- Expert 1 -->
-            <div class="rounded-lg shadow-lg p-6 hover:shadow-xl transition" style="background-color: #225273;">
-                <div class="flex items-center mb-4">
-                    <img src="/images/experts/expert1.jpg" alt="Expert 1" class="w-20 h-20 rounded-full object-cover">
-                    <div class="ml-4 text-center">
-                        <h3 class="text-xl font-bold text-white-800">Dr. Ahmad Wijaya, M.Sc.</h3>
-                        <p class="text-white-600 font-semibold">Senior Data Analyst</p>
-                        <p class="text-sm text-white-600">15+ Tahun Pengalaman</p>
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                <div class="flex items-center space-x-4 mb-3">
+                    <img src="https://picsum.photos/seed/ahmad-wijaya/200/200.jpg" alt="Dr. Ahmad Wijaya" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-purple-800">Dr. Ahmad Wijaya, M.Sc.</h4>
+                        <p class="text-purple-700 text-sm">Senior Data Analyst</p>
+                        <p class="text-purple-600 text-xs">15+ Tahun Pengalaman</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex text-yellow-400 text-xs">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-purple-600 text-xs ml-2">4.9 (1,250)</span>
+                        </div>
                     </div>
                 </div>
-                <div class="text-center mb-4">
-                    <p class="text-white-600 mb-2">Expert dalam data analitik dengan pengalaman 15+ tahun di perusahaan Fortune 500. Spesialis dalam machine learning dan statistical modeling.</p>
-                </div>
+                <p class="text-purple-600 text-xs mb-3">Expert dalam data analitik dengan pengalaman 15+ tahun di perusahaan Fortune 500. Spesialis dalam machine learning dan statistical modeling.</p>
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star-half-alt text-yellow-400"></i>
-                    </div>
-                    <div class="text-sm text-gray-600">4.9 (1,250)</div>
+                    <button class="text-purple-600 hover:text-purple-700 text-sm">
+                        <i class="fas fa-eye mr-1"></i>View
+                    </button>
                 </div>
             </div>
             
             <!-- Expert 2 -->
-            <div class="rounded-lg shadow-lg p-6 hover:shadow-xl transition" style="background-color: #225273;">
-                <div class="flex items-center mb-4">
-                    <img src="/images/experts/expert2.jpg" alt="Expert 2" class="w-20 h-20 rounded-full object-cover">
-                    <div class="ml-4 text-center">
-                        <h3 class="text-xl font-bold text-white-800">Sarah Putri, S.Kom., M.T.</h3>
-                        <p class="text-white-600 font-semibold">Data Science Lead</p>
-                        <p class="text-sm text-white-600">12+ Tahun Pengalaman</p>
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                <div class="flex items-center space-x-4 mb-3">
+                    <img src="https://picsum.photos/seed/sarah-putri/200/200.jpg" alt="Sarah Putri" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-purple-800">Sarah Putri, S.Kom., M.T.</h4>
+                        <p class="text-purple-700 text-sm">Data Science Lead</p>
+                        <p class="text-purple-600 text-xs">12+ Tahun Pengalaman</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex text-yellow-400 text-xs">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-purple-600 text-xs ml-2">4.8 (890)</span>
+                        </div>
                     </div>
                 </div>
-                <div class="text-center mb-4">
-                    <p class="text-white-600 mb-2">Spesialis dalam Python programming dan data visualization. Pengalaman dalam big data analytics dan deep learning.</p>
-                </div>
+                <p class="text-purple-600 text-xs mb-3">Spesialis dalam Python programming dan data visualization. Pengalaman dalam big data analytics dan deep learning.</p>
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                    <div class="text-sm text-gray-600">4.8 (890)</div>
+                    <button class="text-purple-600 hover:text-purple-700 text-sm">
+                        <i class="fas fa-eye mr-1"></i>View
+                    </button>
                 </div>
             </div>
             
             <!-- Expert 3 -->
-            <div class="rounded-lg shadow-lg p-6 hover:shadow-xl transition" style="background-color: #225273;">
-                <div class="flex items-center mb-4">
-                    <img src="/images/experts/expert3.jpg" alt="Expert 3" class="w-20 h-20 rounded-full object-cover">
-                    <div class="ml-4 text-center">
-                        <h3 class="text-xl font-bold text-white-800">Budi Santoso, S.E., M.M.</h3>
-                        <p class="text-white-600 font-semibold">Business Intelligence Expert</p>
-                        <p class="text-sm text-white-600">10+ Tahun Pengalaman</p>
+            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                <div class="flex items-center space-x-4 mb-3">
+                    <img src="https://picsum.photos/seed/budi-santoso/200/200.jpg" alt="Budi Santoso" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-purple-800">Budi Santoso, S.E., M.M.</h4>
+                        <p class="text-purple-700 text-sm">Business Intelligence Expert</p>
+                        <p class="text-purple-600 text-xs">10+ Tahun Pengalaman</p>
+                        <div class="flex items-center mt-1">
+                            <div class="flex text-yellow-400 text-xs">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-purple-600 text-xs ml-2">4.7 (650)</span>
+                        </div>
                     </div>
                 </div>
-                <div class="text-center mb-4">
-                    <p class="text-white-600 mb-2">Expert dalam business intelligence dan dashboard development. Pengalaman dalam Power BI, Tableau, dan data storytelling.</p>
-                </div>
+                <p class="text-purple-600 text-xs mb-3">Expert dalam business intelligence dan dashboard development. Pengalaman dalam Power BI, Tableau, dan data storytelling.</p>
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                    <div class="text-sm text-gray-600">4.7 (650)</div>
+                    <button class="text-purple-600 hover:text-purple-700 text-sm">
+                        <i class="fas fa-eye mr-1"></i>View
+                    </button>
                 </div>
             </div>
         </div>
@@ -239,111 +272,96 @@
             </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="portfolioGrid">
             <!-- Portfolio Card 1 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project1.jpg" alt="E-Commerce Platform" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">E-Commerce Platform</h3>
-                        <p class="text-white/80 text-sm mb-4">Platform e-commerce modern dengan React dan Node.js</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">UI/UX Design</span>
-                            <span class="text-white/80 text-xs">Full Stack Development</span>
-                        </div>
-                    </div>
+            <div class="rounded-lg p-4" style="background-color: #225273;">
+                <div class="mb-3">
+                    <img src="https://picsum.photos/seed/ecommerce-platform/400/300.jpg" alt="E-Commerce Platform" class="w-full h-32 object-cover rounded-lg">
                 </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan platform e-commerce end-to-end dengan fitur lengkap termasuk payment gateway, inventory management, dan analytics dashboard.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">React</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Node.js</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">MongoDB</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Docker</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
+                <h4 class="text-lg font-semibold text-white mb-1">E-Commerce Platform</h4>
+                <p class="text-white text-sm mb-2">Platform e-commerce modern dengan React dan Node.js</p>
+                <div class="flex flex-wrap gap-1 mb-3">
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">UI/UX Design</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Full Stack Development</span>
+                </div>
+                <p class="text-white text-xs mb-3">Project Overview</p>
+                <p class="text-white text-xs mb-3">Mengembangkan platform e-commerce end-to-end dengan fitur lengkap termasuk payment gateway, inventory management, dan analytics dashboard.</p>
+                <div class="flex flex-wrap gap-1 mb-3">
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">React</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Node.js</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">MongoDB</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Docker</span>
+                </div>
+                <div class="flex items-center justify-between">
+                                        <div class="flex space-x-2">
+                        <a href="#" class="text-white hover:text-gray-200 text-sm">
+                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                        </a>
+                        <a href="#" class="text-white hover:text-gray-200 text-sm">
+                            <i class="fab fa-github mr-1"></i>View Code
+                        </a>
                     </div>
                 </div>
             </div>
             
             <!-- Portfolio Card 2 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project2.jpg" alt="Mobile Banking App" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Mobile Banking App</h3>
-                        <p class="text-white/80 text-sm mb-4">Aplikasi mobile banking dengan fitur transfer, payment, dan analytics real-time.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">React Native</span>
-                            <span class="text-white/80 text-xs">TypeScript</span>
-                        </div>
-                    </div>
+            <div class="rounded-lg p-4" style="background-color: #225273;">
+                <div class="mb-3">
+                    <img src="https://picsum.photos/seed/mobile-banking-app/400/300.jpg" alt="Mobile Banking App" class="w-full h-32 object-cover rounded-lg">
                 </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan aplikasi mobile banking dengan security tinggi dan compliance dengan standard perbankan.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">React Native</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">TypeScript</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Node.js</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Firebase</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
+                <h4 class="text-lg font-semibold text-white mb-1">Mobile Banking App</h4>
+                <p class="text-white text-sm mb-2">Aplikasi mobile banking dengan fitur transfer, payment, dan analytics real-time</p>
+                <div class="flex flex-wrap gap-1 mb-3">
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">React Native</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">TypeScript</span>
+                </div>
+                <p class="text-white text-xs mb-3">Project Overview</p>
+                <p class="text-white text-xs mb-3">Mengembangkan aplikasi mobile banking dengan security tinggi dan compliance dengan standard perbankan.</p>
+                <div class="flex flex-wrap gap-1 mb-3">
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">React Native</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">TypeScript</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Node.js</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Firebase</span>
+                </div>
+                <div class="flex items-center justify-between">
+                                        <div class="flex space-x-2">
+                        <a href="#" class="text-white hover:text-gray-200 text-sm">
+                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                        </a>
+                        <a href="#" class="text-white hover:text-gray-200 text-sm">
+                            <i class="fab fa-github mr-1"></i>View Code
+                        </a>
                     </div>
                 </div>
             </div>
             
             <!-- Portfolio Card 3 -->
-            <div class="portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition">
-                <div class="relative h-64">
-                    <img src="/images/portfolio/project3.jpg" alt="Cyber Security Dashboard" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 class="text-white font-bold text-lg mb-2">Cyber Security Dashboard</h3>
-                        <p class="text-white/80 text-sm mb-4">Dashboard monitoring keamanan siber dengan real-time threat detection dan automated response.</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-white/80 text-xs">Vue.js</span>
-                            <span class="text-white/80 text-xs">Python</span>
-                        </div>
-                    </div>
+            <div class="rounded-lg p-4" style="background-color: #225273;">
+                <div class="mb-3">
+                    <img src="https://picsum.photos/seed/cyber-security-dashboard/400/300.jpg" alt="Cyber Security Dashboard" class="w-full h-32 object-cover rounded-lg">
                 </div>
-                <div class="p-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Project Overview</h4>
-                    <p class="text-gray-600 mb-4">Mengembangkan dashboard untuk monitoring keamanan jaringan dengan visualisasi data threat secara real-time.</p>
-                    <div class="flex flex-wrap gap-2 mb-4">
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Vue.js</span>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Python</span>
-                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">FastAPI</span>
-                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">PostgreSQL</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-600 hover:text-blue-700 font-semibold">
-                            <i class="fas fa-external-link-alt mr-2"></i>
-                            Live Demo
-                        </button>
-                        <button class="border border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition">
-                            <i class="fas fa-code mr-2"></i>
-                            View Code
-                        </button>
+                <h4 class="text-lg font-semibold text-white mb-1">Cyber Security Dashboard</h4>
+                <p class="text-white text-sm mb-2">Dashboard monitoring keamanan siber dengan real-time threat detection dan automated response</p>
+                <div class="flex flex-wrap gap-1 mb-3">
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Vue.js</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Python</span>
+                </div>
+                <p class="text-white text-xs mb-3">Project Overview</p>
+                <p class="text-white text-xs mb-3">Mengembangkan dashboard untuk monitoring keamanan jaringan dengan visualisasi data threat secara real-time.</p>
+                <div class="flex flex-wrap gap-1 mb-3">
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Vue.js</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">Python</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">FastAPI</span>
+                    <span class="bg-white/20 text-white text-xs px-2 py-1 rounded">PostgreSQL</span>
+                </div>
+                <div class="flex items-center justify-between">
+                                        <div class="flex space-x-2">
+                        <a href="#" class="text-white hover:text-gray-200 text-sm">
+                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
+                        </a>
+                        <a href="#" class="text-white hover:text-gray-200 text-sm">
+                            <i class="fab fa-github mr-1"></i>View Code
+                        </a>
                     </div>
                 </div>
             </div>
@@ -352,105 +370,6 @@
         <div class="text-center mt-12">
             <button class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
                 Lihat Semua Project
-            </button>
-        </div>
-    </div>
-</section>
-
-<!-- Synergy Experts Section -->
-<section class="py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                Synergy Experts
-            </h2>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Tim instruktur profesional dengan pengalaman lebih dari 10 tahun di berbagai bidang industri
-            </p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Expert 1 -->
-            <div class="rounded-lg shadow-lg p-6 hover:shadow-xl transition" style="background-color: #225273;">
-                <div class="flex items-center mb-4">
-                    <img src="/images/experts/expert1.jpg" alt="Expert 1" class="w-20 h-20 rounded-full object-cover">
-                    <div class="ml-4 text-center">
-                        <h3 class="text-xl font-bold text-gray-800">Dr. Ahmad Wijaya, M.Sc.</h3>
-                        <p class="text-blue-600 font-semibold">Senior Data Analyst</p>
-                        <p class="text-sm text-gray-600">15+ Tahun Pengalaman</p>
-                    </div>
-                </div>
-                <div class="text-center mb-4">
-                    <p class="text-gray-600 mb-2">Expert dalam data analitik dengan pengalaman 15+ tahun di perusahaan Fortune 500. Spesialis dalam machine learning dan statistical modeling.</p>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star-half-alt text-yellow-400"></i>
-                    </div>
-                    <div class="text-sm text-gray-600">4.9 (1,250)</div>
-                </div>
-            </div>
-            
-            <!-- Expert 2 -->
-            <div class="rounded-lg shadow-lg p-6 hover:shadow-xl transition" style="background-color: #225273;">
-                <div class="flex items-center mb-4">
-                    <img src="/images/experts/expert2.jpg" alt="Expert 2" class="w-20 h-20 rounded-full object-cover">
-                    <div class="ml-4 text-center">
-                        <h3 class="text-xl font-bold text-gray-800">Sarah Putri, S.Kom., M.T.</h3>
-                        <p class="text-green-600 font-semibold">Data Science Lead</p>
-                        <p class="text-sm text-gray-600">12+ Tahun Pengalaman</p>
-                    </div>
-                </div>
-                <div class="text-center mb-4">
-                    <p class="text-gray-600 mb-2">Spesialis dalam Python programming dan data visualization. Pengalaman dalam big data analytics dan deep learning.</p>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                    <div class="text-sm text-gray-600">4.8 (890)</div>
-                </div>
-            </div>
-            
-            <!-- Expert 3 -->
-            <div class="rounded-lg shadow-lg p-6 hover:shadow-xl transition" style="background-color: #225273;">
-                <div class="flex items-center mb-4">
-                    <img src="/images/experts/expert3.jpg" alt="Expert 3" class="w-20 h-20 rounded-full object-cover">
-                    <div class="ml-4 text-center">
-                        <h3 class="text-xl font-bold text-gray-800">Budi Santoso, S.E., M.M.</h3>
-                        <p class="text-purple-600 font-semibold">Business Intelligence Expert</p>
-                        <p class="text-sm text-gray-600">10+ Tahun Pengalaman</p>
-                    </div>
-                </div>
-                <div class="text-center mb-4">
-                    <p class="text-gray-600 mb-2">Expert dalam business intelligence dan dashboard development. Pengalaman dalam Power BI, Tableau, dan data storytelling.</p>
-                </div>
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                        <i class="fas fa-star text-yellow-400"></i>
-                    </div>
-                    <div class="text-sm text-gray-600">4.7 (650)</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="text-center mt-12">
-            <button class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
-                Lihat Semua Expert
             </button>
         </div>
     </div>
@@ -468,138 +387,150 @@
             </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Course 1 -->
-            <div class="academy-card">
-                <div class="academy-image-container">
-                    <img src="/images/academy/course1.jpg" alt="Mobile Development" class="w-full h-full object-cover">
-                    <div class="academy-overlay">
-                        <h3 class="academy-title">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</h3>
-                        <p class="academy-description">Penulis: Admin Mobile Faculty</p>
-                        <div class="academy-stats">
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">4.9</div>
-                                <div class="academy-stat-label">Rating</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">2,500+</div>
-                                <div class="academy-stat-label">Siswa</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">12</div>
-                                <div class="academy-stat-label">Minggu</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">Sertifikat</div>
-                                <div class="academy-stat-label">Program</div>
-                            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="academyGrid">
+            <!-- Program 1: Komputer -->
+            <div class="rounded-lg p-4" style="background-color: #225273;">
+                <div class="mb-3">
+                    <img src="https://picsum.photos/seed/komputer-course/400/300.jpg" alt="Komputer" class="w-full h-32 object-cover rounded-lg">
+                </div>
+                <h4 class="text-lg font-semibold text-white mb-1">Komputer</h4>
+                <p class="text-white text-sm mb-2">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</p>
+                <p class="text-white text-sm mb-2">Penulis: Admin Mobile Faculty</p>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                        <div class="flex text-yellow-400 text-xs">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
                         </div>
-                        <div class="academy-badges">
-                            <div class="badge-academy">Beginner</div>
-                            <div class="badge-academy">Full Time</div>
-                            <div class="badge-academy">Online</div>
-                        </div>
+                        <span class="text-white text-xs ml-2">4.9</span>
+                    </div>
+                    <div class="flex items-center text-xs text-white">
+                        <span class="mr-2">2,500+</span>
+                        <span class="mr-2">Siswa</span>
+                        <span class="mr-2">12</span>
+                        <span class="mr-2">Minggu</span>
                     </div>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">Mobile Development Fundamental</h3>
-                    <p class="text-gray-600 mb-4">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-2xl font-bold text-blue-600">Rp 3.999.000</span>
-                        <span class="text-gray-500">Per kursus</span>
-                    </div>
-                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                        Lihat Detail
+                <div class="flex items-center text-xs text-white mb-3">
+                    <i class="fas fa-certificate mr-1"></i>
+                    <span class="mr-2">Sertifikat</span>
+                    <i class="fas fa-signal ml-3 mr-1"></i>
+                    <span class="mr-2">Program</span>
+                </div>
+                <div class="flex items-center text-xs text-white mb-3">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span class="mr-2">Beginner</span>
+                    <i class="fas fa-clock ml-3 mr-1"></i>
+                    <span class="mr-2">Full Time</span>
+                    <i class="fas fa-laptop ml-3 mr-1"></i>
+                    <span class="mr-2">Online</span>
+                </div>
+                <p class="text-white text-xs mb-3">Mobile Development Fundamental</p>
+                <p class="text-white text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                <div class="flex items-center justify-between">
+                                        <button class="text-white hover:text-gray-200 text-sm">
+                        <i class="fas fa-eye mr-1"></i>View
                     </button>
                 </div>
             </div>
             
-            <!-- Course 2 -->
-            <div class="academy-card">
-                <div class="academy-image-container">
-                    <img src="/images/academy/course2.jpg" alt="Data Science" class="w-full h-full object-cover">
-                    <div class="academy-overlay">
-                        <h3 class="academy-title">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</h3>
-                        <p class="academy-description">Penulis: Admin Mobile Faculty</p>
-                        <div class="academy-stats">
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">4.9</div>
-                                <div class="academy-stat-label">Rating</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">2,500+</div>
-                                <div class="academy-stat-label">Siswa</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">12</div>
-                                <div class="academy-stat-label">Minggu</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">Sertifikat</div>
-                                <div class="academy-stat-label">Program</div>
-                            </div>
+            <!-- Program 2: Data Science -->
+            <div class="rounded-lg p-4" style="background-color: #225273;">
+                <div class="mb-3">
+                    <img src="https://picsum.photos/seed/data-science-course/400/300.jpg" alt="Data Science" class="w-full h-32 object-cover rounded-lg">
+                </div>
+                <h4 class="text-lg font-semibold text-white mb-1">Data Science</h4>
+                <p class="text-white text-sm mb-2">Data Science dengan Mobile Development Fundamental</p>
+                <p class="text-white text-sm mb-2">Penulis: Admin Mobile Faculty</p>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                        <div class="flex text-yellow-400 text-xs">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
                         </div>
-                        <div class="academy-badges">
-                            <div class="badge-academy">Beginner</div>
-                            <div class="badge-academy">Full Time</div>
-                            <div class="badge-academy">Online</div>
-                        </div>
+                        <span class="text-white text-xs ml-2">4.9</span>
+                    </div>
+                    <div class="flex items-center text-xs text-white">
+                        <span class="mr-2">2,500+</span>
+                        <span class="mr-2">Siswa</span>
+                        <span class="mr-2">12</span>
+                        <span class="mr-2">Minggu</span>
                     </div>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">Mobile Development Fundamental</h3>
-                    <p class="text-gray-600 mb-4">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-2xl font-bold text-blue-600">Rp 3.999.000</span>
-                        <span class="text-gray-500">Per kursus</span>
-                    </div>
-                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                        Lihat Detail
+                <div class="flex items-center text-xs text-white mb-3">
+                    <i class="fas fa-certificate mr-1"></i>
+                    <span class="mr-2">Sertifikat</span>
+                    <i class="fas fa-signal ml-3 mr-1"></i>
+                    <span class="mr-2">Program</span>
+                </div>
+                <div class="flex items-center text-xs text-white mb-3">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span class="mr-2">Beginner</span>
+                    <i class="fas fa-clock ml-3 mr-1"></i>
+                    <span class="mr-2">Full Time</span>
+                    <i class="fas fa-laptop ml-3 mr-1"></i>
+                    <span class="mr-2">Online</span>
+                </div>
+                <p class="text-white text-xs mb-3">Mobile Development Fundamental</p>
+                <p class="text-white text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                <div class="flex items-center justify-between">
+                                        <button class="text-white hover:text-gray-200 text-sm">
+                        <i class="fas fa-eye mr-1"></i>View
                     </button>
                 </div>
             </div>
             
-            <!-- Course 3 -->
-            <div class="academy-card">
-                <div class="academy-image-container">
-                    <img src="/images/academy/course3.jpg" alt="UI/UX Design" class="w-full h-full object-cover">
-                    <div class="academy-overlay">
-                        <h3 class="academy-title">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</h3>
-                        <p class="academy-description">Penulis: Admin Mobile Faculty</p>
-                        <div class="academy-stats">
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">4.9</div>
-                                <div class="academy-stat-label">Rating</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">2,500+</div>
-                                <div class="academy-stat-label">Siswa</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">12</div>
-                                <div class="academy-stat-label">Minggu</div>
-                            </div>
-                            <div class="academy-stat">
-                                <div class="academy-stat-value">Sertifikat</div>
-                                <div class="academy-stat-label">Program</div>
-                            </div>
+            <!-- Program 3: UI/UX Design -->
+            <div class="rounded-lg p-4" style="background-color: #225273;">
+                <div class="mb-3">
+                    <img src="https://picsum.photos/seed/uiux-design-course/400/300.jpg" alt="UI/UX Design" class="w-full h-32 object-cover rounded-lg">
+                </div>
+                <h4 class="text-lg font-semibold text-white mb-1">UI/UX Design</h4>
+                <p class="text-white text-sm mb-2">UI/UX Design dengan Mobile Development Fundamental</p>
+                <p class="text-white text-sm mb-2">Penulis: Admin Mobile Faculty</p>
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center">
+                        <div class="flex text-yellow-400 text-xs">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
                         </div>
-                        <div class="academy-badges">
-                            <div class="badge-academy">Beginner</div>
-                            <div class="badge-academy">Full Time</div>
-                            <div class="badge-academy">Online</div>
-                        </div>
+                        <span class="text-white text-xs ml-2">4.9</span>
+                    </div>
+                    <div class="flex items-center text-xs text-white">
+                        <span class="mr-2">2,500+</span>
+                        <span class="mr-2">Siswa</span>
+                        <span class="mr-2">12</span>
+                        <span class="mr-2">Minggu</span>
                     </div>
                 </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">Mobile Development Fundamental</h3>
-                    <p class="text-gray-600 mb-4">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-2xl font-bold text-blue-600">Rp 3.999.000</span>
-                        <span class="text-gray-500">Per kursus</span>
-                    </div>
-                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">
-                        Lihat Detail
+                <div class="flex items-center text-xs text-white mb-3">
+                    <i class="fas fa-certificate mr-1"></i>
+                    <span class="mr-2">Sertifikat</span>
+                    <i class="fas fa-signal ml-3 mr-1"></i>
+                    <span class="mr-2">Program</span>
+                </div>
+                <div class="flex items-center text-xs text-white mb-3">
+                    <i class="fas fa-signal mr-1"></i>
+                    <span class="mr-2">Beginner</span>
+                    <i class="fas fa-clock ml-3 mr-1"></i>
+                    <span class="mr-2">Full Time</span>
+                    <i class="fas fa-laptop ml-3 mr-1"></i>
+                    <span class="mr-2">Online</span>
+                </div>
+                <p class="text-white text-xs mb-3">Mobile Development Fundamental</p>
+                <p class="text-white text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
+                <div class="flex items-center justify-between">
+                                        <button class="text-white hover:text-gray-200 text-sm">
+                        <i class="fas fa-eye mr-1"></i>View
                     </button>
                 </div>
             </div>
@@ -723,14 +654,9 @@
         <p class="text-xl mb-8 text-white/90">
             Bergabunglah dengan ribuan alumni yang telah sukses
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-                Daftar Sekarang
-            </button>
-            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition" style="background-color: #FEA521;">
-                Konsultasi Gratis
-            </button>
-        </div>
+        <h2 class="text-lg font-semibold text-white">
+            Konsultasi dengan kami sekarang!
+        </p>
     </div>
 </section>
 
@@ -740,8 +666,8 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <div class="flex items-center space-x-2 mb-4">
-                    <i class="fas fa-chart-line text-blue-400 text-xl"></i>
-                    <span class="text-lg font-bold">DataAnalitik.id</span>
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="h-8 w-auto">
+                    <span class="text-lg text-black font-bold">GROW SYNERGY INDONESIA</span>
                 </div>
                 <p class="text-gray-400">Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
             </div>
@@ -801,18 +727,579 @@
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
     <script>
-        // Set active navigation based on current page
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPage = 'home';
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.dataset.page === currentPage) {
-                    link.classList.add('active');
-                }
+        // Initialize Firebase
+        let db;
+        try {
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined') {
+                throw new Error('Firebase SDK not loaded');
+            }
+
+            firebase.initializeApp({
+                apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+                authDomain: "company-profile-grow-synergy.firebaseapp.com",
+                projectId: "company-profile-grow-synergy",
+                storageBucket: "company-profile-grow-synergy.firebasestorage.app",
+                messagingSenderId: "584312572709",
+                appId: "1:584312572709:web:1e0ad87867af7b878668cc",
+                measurementId: "G-PKLP3Y3F4F"
             });
+
+            db = firebase.firestore();
+            const analytics = firebase.analytics();
+            console.log('Firebase initialized successfully');
+        } catch (error) {
+            console.warn('Firebase initialization skipped:', error.message);
+            // Fallback to mock mode if Firebase fails
+            db = {
+                collection: () => ({
+                    get: async () => ({ docs: [] }),
+                    add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
+                    doc: () => ({
+                        get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
+                        update: async () => {},
+                        delete: async () => {}
+                    }),
+                }),
+            };
+        }
+
+        // Load dynamic content from Firestore
+        async function loadDynamicContent() {
+            try {
+                console.log('Loading dynamic content...');
+                console.log('DEBUG: Firebase db available:', !!db);
+                console.log('DEBUG: Firebase app available:', !!firebase);
+                
+                // Test Firebase connection
+                try {
+                    const testDoc = await db.collection('heroSection').limit(1).get();
+                    console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
+                } catch (testError) {
+                    console.log('DEBUG: Firebase test connection failed:', testError);
+                    loadMockData();
+                    return;
+                }
+                
+                // Try to load from Firebase with timeout
+                const loadWithTimeout = async () => {
+                    const timeout = new Promise((_, reject) => 
+                        setTimeout(() => reject(new Error('Loading timeout')), 10000) // Increased to 10 seconds
+                    );
+                    
+                    const firebaseLoad = Promise.all([
+                        db.collection('heroSection').get(),
+                        db.collection('aboutSection').get(),
+                        db.collection('experts').get(),
+                        db.collection('portfolios').get(),
+                        db.collection('academies').get()
+                    ]);
+                    
+                    return Promise.race([firebaseLoad, timeout]);
+                };
+                
+                let results;
+                try {
+                    results = await loadWithTimeout();
+                    console.log('DEBUG: Firebase results received successfully');
+                } catch (error) {
+                    console.log('DEBUG: Firebase loading failed:', error.message);
+                    if (error.message === 'Loading timeout') {
+                        console.log('DEBUG: Loading timeout - using mock data');
+                    }
+                    loadMockData();
+                    return;
+                }
+                
+                console.log('DEBUG: Firebase results received:', results);
+                console.log('DEBUG: Results length:', results.length);
+                console.log('DEBUG: Hero section docs:', results[0]?.docs?.length);
+                console.log('DEBUG: About section docs:', results[1]?.docs?.length);
+                
+                // Check if results are valid (has real data)
+                const hasHeroData = results[0].docs && results[0].docs.length > 0;
+                const hasAboutData = results[1].docs && results[1].docs.length > 0;
+                const hasAnyData = hasHeroData || hasAboutData;
+                
+                console.log('DEBUG: Data availability - Hero:', hasHeroData, 'About:', hasAboutData, 'Any:', hasAnyData);
+                
+                if (!hasAnyData) {
+                    console.log('No data available - using mock data');
+                    loadMockData();
+                    return;
+                }
+                
+                // Load Hero Sections (real or mock)
+                if (hasHeroData) {
+                    const heroSections = results[0].docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    updateHeroSection(heroSections);
+                } else {
+                    console.log('Using mock hero section data');
+                    updateHeroSection(mockHeroSections);
+                }
+                
+                // Load About Sections (always prioritize real data)
+                if (hasAboutData) {
+                    const aboutSections = results[1].docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    console.log('DEBUG: About sections from Firestore:', aboutSections);
+                    console.log('DEBUG: First about section data:', aboutSections[0]);
+                    updateAboutSection(aboutSections);
+                } else {
+                    console.log('Using mock about section data');
+                    updateAboutSection(mockAboutSections);
+                }
+
+                // Load Experts
+                const experts = results[2].docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateExpertsSection(experts);
+
+                // Load Portfolios
+                const portfolios = results[3].docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('DEBUG: Portfolios from Firebase:', portfolios);
+                try {
+                    updatePortfolioSection(portfolios);
+                } catch (portfolioError) {
+                    console.log('DEBUG: Portfolio update error:', portfolioError);
+                    // Use mock portfolios if real data fails
+                    updatePortfolioSection(mockPortfolios);
+                }
+
+                // Load Academies
+                const academies = results[4].docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateAcademySection(academies);
+
+                console.log('Dynamic content loaded successfully from Firebase');
+            } catch (error) {
+                console.log('Using mock data for development');
+                console.log('DEBUG: Error that occurred:', error);
+                console.log('DEBUG: Error stack:', error.stack);
+                loadMockData();
+            }
+        }
+
+        // Mock data for development
+        const mockHeroSections = [
+            {
+                id: 'mock-hero-1',
+                title: 'Pelatihan Data Analitik Terbaik di Indonesia',
+                subtitle: 'Kuasai kemampuan analisis data dengan mentor berpengalaman',
+                backgroundImage: 'https://picsum.photos/seed/hero1/1920/1080.jpg',
+                primaryButtonText: 'Mulai Belajar',
+                primaryButtonUrl: '#courses',
+                secondaryButtonText: 'Lihat Program',
+                secondaryButtonUrl: '#programs'
+            }
+        ];
+
+        const mockAboutSections = [
+            {
+                id: 'mock-about-1',
+                title: 'Tentang Kami',
+                description: 'Kami adalah platform pembelajaran data analitik terbaik di Indonesia dengan mentor berpengalaman dan kurikulum yang komprehensif.',
+                image: 'https://picsum.photos/seed/about1/600/400.jpg',
+                primaryButtonText: 'Pelajari Lebih Lanjut',
+                primaryButtonUrl: '#about',
+                secondaryButtonText: 'Hubungi Kami',
+                secondaryButtonUrl: '#contact'
+            }
+        ];
+
+        const mockExperts = [
+            {
+                id: 'mock-expert-1',
+                name: 'Dr. Ahmad Wijaya',
+                title: 'Data Scientist Expert',
+                image: 'https://picsum.photos/seed/expert1/300/300.jpg',
+                description: '10+ tahun pengalaman dalam data science dan machine learning.',
+                specialties: ['Data Science', 'Machine Learning', 'Python'],
+                linkedin: '#',
+                twitter: '#'
+            },
+            {
+                id: 'mock-expert-2',
+                name: 'Sarah Putri',
+                title: 'Business Intelligence Specialist',
+                image: 'https://picsum.photos/seed/expert2/300/300.jpg',
+                description: 'Spesialis dalam business intelligence dan data visualization.',
+                specialties: ['Business Intelligence', 'Tableau', 'Power BI'],
+                linkedin: '#',
+                twitter: '#'
+            },
+            {
+                id: 'mock-expert-3',
+                name: 'Budi Santoso',
+                title: 'Data Analytics Consultant',
+                image: 'https://picsum.photos/seed/expert3/300/300.jpg',
+                description: 'Konsultan data analytics untuk berbagai industri.',
+                specialties: ['Data Analytics', 'SQL', 'R'],
+                linkedin: '#',
+                twitter: '#'
+            }
+        ];
+
+        const mockPortfolios = [
+            {
+                id: 'mock-portfolio-1',
+                title: 'E-commerce Analytics Platform',
+                category: 'Data Analytics',
+                image: 'https://picsum.photos/seed/portfolio1/400/300.jpg',
+                description: 'Platform analitik untuk e-commerce dengan real-time dashboard.',
+                technologies: ['Python', 'React', 'PostgreSQL'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-2',
+                title: 'Customer Segmentation System',
+                category: 'Machine Learning',
+                image: 'https://picsum.photos/seed/portfolio2/400/300.jpg',
+                description: 'Sistem segmentasi pelanggan menggunakan machine learning.',
+                technologies: ['Python', 'Scikit-learn', 'Pandas'],
+                projectUrl: '#',
+                githubUrl: '#'
+            },
+            {
+                id: 'mock-portfolio-3',
+                title: 'Sales Dashboard Automation',
+                category: 'Business Intelligence',
+                image: 'https://picsum.photos/seed/portfolio3/400/300.jpg',
+                description: 'Dashboard otomatis untuk monitoring penjualan.',
+                technologies: ['Tableau', 'SQL', 'Excel'],
+                projectUrl: '#',
+                githubUrl: '#'
+            }
+        ];
+
+        const mockAcademies = [
+            {
+                id: 'mock-academy-1',
+                title: 'Fundamental Data Science',
+                description: 'Pelatihan dasar-dasar data science untuk pemula.',
+                duration: '3 bulan',
+                level: 'Beginner',
+                image: 'https://picsum.photos/seed/academy1/300/200.jpg',
+                price: 'Rp 5.000.000',
+                instructor: 'Dr. Ahmad Wijaya',
+                rating: 4.8,
+                students: 150
+            },
+            {
+                id: 'mock-academy-2',
+                title: 'Advanced Machine Learning',
+                description: 'Pelatihan machine learning tingkat lanjut.',
+                duration: '6 bulan',
+                level: 'Advanced',
+                image: 'https://picsum.photos/seed/academy2/300/200.jpg',
+                price: 'Rp 10.000.000',
+                instructor: 'Sarah Putri',
+                rating: 4.9,
+                students: 80
+            }
+        ];
+
+        // Update Hero Section
+        function updateHeroSection(sections) {
+            const heroSection = document.querySelector('.hero-section');
+            if (sections.length > 0 && heroSection) {
+                const section = sections[0];
+                const backgroundImage = heroSection.querySelector('.background-image');
+                const heroContent = heroSection.querySelector('.hero-content');
+                
+                if (backgroundImage && section.backgroundImage) {
+                    backgroundImage.style.backgroundImage = `url(${section.backgroundImage})`;
+                }
+                
+                if (heroContent) {
+                    const h2 = heroContent.querySelector('h2');
+                    const h1 = heroContent.querySelector('h1');
+                    const buttons = heroContent.querySelectorAll('button');
+                    
+                    if (h2 && section.subtitle) h2.textContent = section.subtitle;
+                    if (h1 && section.title) h1.textContent = section.title;
+                    if (buttons[0] && section.buttonText1) buttons[0].textContent = section.buttonText1;
+                    if (buttons[1] && section.buttonText2) buttons[1].textContent = section.buttonText2;
+                }
+            }
+        }
+
+        // Update About Section
+        function updateAboutSection(sections) {
+            console.log('DEBUG: updateAboutSection called with:', sections);
+            const aboutSection = document.querySelector('.py-16 .rounded-2xl');
+            console.log('DEBUG: About section element found:', aboutSection);
+            
+            if (sections.length > 0 && aboutSection) {
+                const section = sections[0];
+                console.log('DEBUG: Processing section:', section);
+                
+                const img = aboutSection.querySelector('#about-section-image');
+                const p = aboutSection.querySelector('p');
+                const h2 = aboutSection.querySelector('h2');
+                const buttons = aboutSection.querySelectorAll('button');
+                
+                console.log('DEBUG: Elements found:', { img: !!img, p: !!p, h2: !!h2, buttons: buttons.length });
+                console.log('DEBUG: Section data:', { image: section.image, title: section.title, description: section.description });
+                
+                // Update image
+                if (img && section.image) {
+                    console.log('DEBUG: Updating image to:', section.image);
+                    img.src = section.image;
+                } else {
+                    console.log('DEBUG: No image update - img:', !!img, 'section.image:', section.image);
+                }
+                
+                // Update description
+                if (p && section.description) {
+                    console.log('DEBUG: Updating description to:', section.description);
+                    p.textContent = section.description;
+                }
+                
+                // Update title if available
+                if (h2 && section.title) {
+                    console.log('DEBUG: Updating title to:', section.title);
+                    h2.innerHTML = `${section.title} <div class="ml-4 h-1 w-24 bg-orange-500"></div>`;
+                }
+                
+                // Update buttons if available
+                if (buttons.length > 0) {
+                    if (section.buttonText1 && buttons[0]) {
+                        console.log('DEBUG: Updating button 1 to:', section.buttonText1);
+                        buttons[0].textContent = section.buttonText1;
+                    }
+                    if (section.buttonText2 && buttons[1]) {
+                        console.log('DEBUG: Updating button 2 to:', section.buttonText2);
+                        buttons[1].textContent = section.buttonText2;
+                    }
+                }
+            } else {
+                console.log('DEBUG: No sections or about section element not found');
+            }
+        }
+
+        // Update Experts Section
+        function updateExpertsSection(experts) {
+            console.log('DEBUG: updateExpertsSection called with:', experts);
+            const expertsContainer = document.getElementById('expertsGrid');
+            console.log('DEBUG: Experts container found:', !!expertsContainer);
+            
+            if (experts.length > 0 && expertsContainer) {
+                console.log('DEBUG: Clearing existing expert content');
+                // Clear existing content
+                expertsContainer.innerHTML = '';
+                
+                // Show only first 3 experts
+                const limitedExperts = experts.slice(0, 3);
+                
+                limitedExperts.forEach((expert, index) => {
+                    console.log(`DEBUG: Processing expert ${index}:`, expert);
+                    const expertCard = createExpertCard(expert);
+                    expertsContainer.appendChild(expertCard);
+                });
+                
+                console.log('Experts section updated with', limitedExperts.length, 'items');
+            } else {
+                console.log('DEBUG: No experts data or container not found');
+            }
+        }
+
+        function createExpertCard(expert) {
+            console.log('DEBUG: Creating expert card for:', expert);
+            const div = document.createElement('div');
+            div.className = 'rounded-lg shadow-lg p-6 hover:shadow-xl transition';
+            div.style.backgroundColor = '#225273';
+            
+            // Use string concatenation instead of template literals to avoid parsing issues
+            const expertImage = expert.image || 'https://picsum.photos/seed/expert-default/200/200.jpg';
+            const expertName = expert.name || 'Expert Name';
+            const expertPosition = expert.position || 'Expert';
+            const expertDescription = expert.description || 'Expert description';
+            const expertLinkedin = expert.linkedin || '#';
+            const expertTwitter = expert.twitter || '#';
+            
+            let specialtiesHtml = '';
+            if (expert.specialties && expert.specialties.length > 0) {
+                specialtiesHtml = expert.specialties.map(function(spec) {
+                    return '<span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">' + spec + '</span>';
+                }).join('');
+            }
+            
+            div.innerHTML = 
+                '<div class="text-center">' +
+                    '<img src="' + expertImage + '" alt="' + expertName + '" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">' +
+                    '<h3 class="text-xl font-bold text-white mb-2">' + expertName + '</h3>' +
+                    '<p class="text-gray-300 mb-4">' + expertPosition + '</p>' +
+                    '<p class="text-gray-400 text-sm mb-4">' + expertDescription + '</p>' +
+                    '<div class="flex flex-wrap justify-center gap-2 mb-4">' +
+                        specialtiesHtml +
+                    '</div>' +
+                    '<div class="flex justify-center space-x-4">' +
+                    '</div>' +
+                '</div>';
+            
+            return div;
+        }
+
+        // Update Portfolio Section
+        function updatePortfolioSection(portfolios) {
+            const portfolioContainer = document.getElementById('portfolioGrid');
+            if (portfolioContainer && portfolios.length > 0) {
+                // Clear existing content
+                portfolioContainer.innerHTML = '';
+                
+                // Show only first 3 portfolios
+                const limitedPortfolios = portfolios.slice(0, 3);
+                
+                limitedPortfolios.forEach(portfolio => {
+                    const portfolioCard = createPortfolioCard(portfolio);
+                    portfolioContainer.appendChild(portfolioCard);
+                });
+                
+                console.log('Portfolio section updated with', limitedPortfolios.length, 'items');
+            } else {
+                console.log('Portfolio section: No data or container not found');
+            }
+        }
+
+        function createPortfolioCard(portfolio) {
+            const div = document.createElement('div');
+            div.className = 'rounded-lg p-4';
+            div.style.backgroundColor = '#225273';
+            
+            // Use string concatenation to avoid template literal issues
+            const portfolioImage = portfolio.image || 'https://picsum.photos/seed/portfolio-' + portfolio.id + '/400/300.jpg';
+            const portfolioTitle = portfolio.title || 'Portfolio Project';
+            const portfolioCategory = portfolio.category || 'Project';
+            const portfolioDescription = portfolio.description || 'Project description';
+            const portfolioTechnologies = Array.isArray(portfolio.technologies) ? portfolio.technologies : [];
+            const portfolioProjectUrl = portfolio.projectUrl || portfolio.liveDemoUrl || '#';
+            const portfolioGithubUrl = portfolio.githubUrl || portfolio.codeUrl || '#';
+            
+            let technologiesHtml = '';
+            if (portfolioTechnologies.length > 0) {
+                technologiesHtml = portfolioTechnologies.slice(0, 3).map(function(tech) {
+                    return '<span class="bg-blue-600 text-white px-2 py-1 rounded text-xs">' + tech + '</span>';
+                }).join('');
+            }
+            
+            div.innerHTML = 
+                '<div class="mb-3">' +
+                    '<img src="' + portfolioImage + '" alt="' + portfolioTitle + '" class="w-full h-32 object-cover rounded-lg">' +
+                '</div>' +
+                '<h3 class="text-xl font-bold text-white mb-2">' + portfolioTitle + '</h3>' +
+                '<p class="text-orange-400 text-sm mb-3">' + portfolioCategory + '</p>' +
+                '<p class="text-gray-300 text-sm mb-4">' + portfolioDescription + '</p>' +
+                '<div class="flex flex-wrap gap-2 mb-4">' +
+                    technologiesHtml +
+                '</div>' +
+                '<div class="flex justify-between space-x-4">' +
+                    '<a href="' + portfolioProjectUrl + '" class="font-medium text-sm" style="color: #fb923c !important;">Documentation</a>' +
+                    '<a href="' + portfolioGithubUrl + '" class="text-green-400 hover:text-green-300 font-medium text-sm" style="color: #4BD68D !important;">Results</a>' +
+                '</div>';
+            
+            return div;
+        }
+
+        // Update Academy Section
+        function updateAcademySection(academies) {
+            const academyContainer = document.getElementById('academyGrid');
+            if (academies.length > 0 && academyContainer) {
+                // Clear existing content
+                academyContainer.innerHTML = '';
+                
+                // Show only first 3 academies
+                const limitedAcademies = academies.slice(0, 3);
+                
+                limitedAcademies.forEach(academy => {
+                    const academyCard = createAcademyCard(academy);
+                    academyContainer.appendChild(academyCard);
+                });
+                
+                console.log('Academy section updated with', limitedAcademies.length, 'items');
+            } else {
+                console.log('Academy section: No data or container not found');
+            }
+        }
+
+        function createAcademyCard(academy) {
+            const div = document.createElement('div');
+            div.className = 'rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition';
+            div.style.backgroundColor = '#225273';
+            
+            // Use string concatenation to avoid template literal issues
+            const academyImage = academy.image || 'https://picsum.photos/seed/academy-' + academy.id + '/400/300.jpg';
+            const academyTitle = academy.title || 'Academy Course';
+            const academyLevel = academy.level || 'Beginner';
+            const academyDescription = academy.description || 'Course description';
+            const academyPrice = academy.price ? 'Rp ' + academy.price.toLocaleString('id-ID') : 'Free';
+            const academyRating = academy.rating || 0;
+            const academyStudents = academy.students || 0;
+            const academyDuration = academy.duration || '4 weeks';
+            const academyInstructor = academy.author || 'Instructor';
+            
+            div.innerHTML = 
+                '<img src="' + academyImage + '" alt="' + academyTitle + '" class="w-full h-48 object-cover">' +
+                '<div class="p-6">' +
+                    '<div class="flex items-center justify-between mb-2">' +
+                        '<h3 class="text-xl font-bold text-white">' + academyTitle + '</h3>' +
+                        '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">' + academyLevel + '</span>' +
+                    '</div>' +
+                    '<p class="text-gray-300 text-sm mb-4">' + academyDescription + '</p>' +
+                    '<div class="flex items-center justify-between mb-4">' +
+                        '<span class="text-2xl font-bold text-orange-400">' + academyPrice + '</span>' +
+                        '<div class="text-right">' +
+                            '<div class="flex items-center text-yellow-400 mb-1">' +
+                                generateStars(academyRating) +
+                            '</div>' +
+                            '<span class="text-sm text-gray-400">' + academyStudents + ' students</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="flex items-center justify-between text-sm text-gray-400">' +
+                        '<span>' + academyDuration + '</span>' +
+                        '<span>' + academyInstructor + '</span>' +
+                    '</div>' +
+                '</div>';
+            
+            return div;
+        }
+
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let stars = '';
+            
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star"></i>';
+            }
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt"></i>';
+            }
+            for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+                stars += '<i class="far fa-star"></i>';
+            }
+            
+            return stars;
+        }
+
+        // Load mock data for development
+        function loadMockData() {
+            console.log('DEBUG: Loading mock data');
+            updateHeroSection(mockHeroSections);
+            updateAboutSection(mockAboutSections);
+            updateExpertsSection(mockExperts);
+            updatePortfolioSection(mockPortfolios);
+            updateAcademySection(mockAcademies);
+            console.log('Mock data loaded successfully');
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing dynamic content...');
+            loadDynamicContent();
         });
     </script>
+    <!-- WhatsApp Floating Button -->
+    {{> whatsapp-button}}
+</body>
 </body>
 </html>
+                

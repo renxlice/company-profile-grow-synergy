@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -6,8 +6,11 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SeoModule } from './seo/seo.module';
-import { TrainingModule } from './training/training.module';
-import { AnalyticsModule } from './analytics/analytics.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { SeedModule } from './modules/seed/seed.module';
+import { AuthMiddleware } from './common/middleware/auth.middleware';
+import { ContentService } from './common/services/content.service';
 
 @Module({
   imports: [
@@ -26,10 +29,22 @@ import { AnalyticsModule } from './analytics/analytics.module';
       exclude: ['/api/*'],
     }),
     SeoModule,
-    TrainingModule,
+    AdminModule,
     AnalyticsModule,
+    SeedModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ContentService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: '/admin/login', method: RequestMethod.GET },
+        { path: '/admin/login', method: RequestMethod.POST },
+        { path: '/admin/logout', method: RequestMethod.GET }
+      )
+      .forRoutes('/admin/*');
+  } 
+}

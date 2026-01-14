@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tentang Kami - GROW SYNERGY INDONESIA</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Tentang Grow Synergy Indonesia - Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.">
+    <meta name="keywords" content="tentang kami, grow synergy indonesia, data analitik, pelatihan, kursus">
+    <meta name="author" content="GROW SYNERGY INDONESIA">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Tentang Kami - GROW SYNERGY INDONESIA">
+    <meta property="og:description" content="Tentang Grow Synergy Indonesia - Platform pembelajaran data analitik terbaik di Indonesia">
+    <meta property="og:image" content="/images/og-image.jpg">
+    <meta property="og:url" content="https://grow-synergy-indonesia.com/about">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="GROW SYNERGY INDONESIA">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tentang Kami - GROW SYNERGY INDONESIA">
+    <meta name="twitter:description" content="Tentang Grow Synergy Indonesia">
+    <meta name="twitter:image" content="/images/twitter-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://grow-synergy-indonesia.com/about">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        /* Sticky navbar */
+        .sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 50;
+        }
+        
+        /* Add padding to main content when navbar is sticky */
+        main {
+            padding-top: 80px;
+        }
+        
+        /* Ensure navigation links work properly */
+        .nav-link {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+        }
+        
+        .nav-link:hover {
+            color: #f97316 !important;
+        }
+        
+        /* Remove any event interference */
+        a {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+    </style>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-20 h-20 rounded-lg object-cover">
+                    <a href="/home" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                </div>
+                
+                <div class="hidden md:flex space-x-6">
+                    <a href="/home" class="nav-link" data-page="home">Beranda</a>
+                    <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
+                    <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
+                    <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                        Tentang Kami
+                    </a>
+                    <button class="md:hidden text-gray-600">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+<!-- Hero Section -->
+<div class="hero-section" id="hero-section">
+    <div class="background-image" id="hero-background-image" style="background-image: url('/images/hero-background.jpg');"></div>
+    <div class="hero-content">
+        <h2 class="text-3xl md:text-4xl font-light mb-4" id="hero-subtitle">Tentang</h2>
+        <h1 class="text-4xl md:text-6xl font-bold mb-8" id="hero-title">GROW SYNERGY INDONESIA</h1>
+        <p class="text-xl mb-8 text-center max-w-3xl" id="hero-description">
+            Platform terbaik untuk pengembangan profesional dan karir di Indonesia
+        </p>
+    </div>
+</div>
+
+<!-- Tentang Kami Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-transparent text-white bg-clip-text bg-gradient-to-r from-orange-500 to-green-500 mb-4" style="background: linear-gradient(to right, #f97316, #4bd68d);">
+                Tentang Kami
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Mengenal lebih dekat Grow Synergy Indonesia
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <!-- Visi & Misi Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                <h3 class="text-2xl md:text-3xl font-bold mb-8 text-transparent text-white bg-clip-text bg-gradient-to-r from-orange-500 to-green-500 text-center" style="background: linear-gradient(to right, #f97316, #4bd68d);">
+                    Visi & Misi
+                </h3>
+                
+                <!-- Visi -->
+                <div class="mb-8">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                            <span class="text-white-800 text-xl font-bold">V</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-green-600">Visi</h4>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed pl-16">
+                        Menjadi lembaga pembelajaran terdepan di Indonesia yang menghasilkan sumber daya manusia unggul dan kompetitif di era digital.
+                    </p>
+                </div>
+                
+                <!-- Misi -->
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                            <span class="text-white-800 text-xl font-bold">M</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-green-600">Misi</h4>
+                    </div>
+                    <ul class="space-y-3 pl-16">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                            <span class="text-gray-700">Menyediakan program pelatihan berkualitas tinggi dengan kurikulum yang relevan industri</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                            <span class="text-gray-700">Menghadirkan instruktur profesional dengan pengalaman lebih dari 10 tahun</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                            <span class="text-gray-700">Memberikan sertifikasi kompetensi yang diakui secara nasional</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3 flex-shrink-0"></i>
+                            <span class="text-gray-700">Membangun ekosistem pembelajaran yang inklusif dan berkelanjutan</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Image Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
+                <img id="about-section-image" src="https://picsum.photos/seed/about-vision/600/400.jpg" alt="Visi & Misi" class="rounded-xl w-full h-auto">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Company Profile Section -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Profil Perusahaan
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Informasi lengkap tentang Grow Synergy Indonesia
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Company Info Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-building text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Identitas Perusahaan</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Nama Perusahaan:</span>
+                        <span class="text-gray-800">PT. Grow Synergy Indonesia</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Tahun Berdiri:</span>
+                        <span class="text-gray-800">2020</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Jenis Usaha:</span>
+                        <span class="text-gray-800">Jasa Pendidikan & Pelatihan</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Legalitas:</span>
+                        <span class="text-gray-800">PT & BNSP Terakreditasi</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-graduation-cap text-4xl text-green-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Layanan Utama</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span class="text-gray-700">Pelatihan Data Analitik</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span class="text-gray-700">Sertifikasi Kompetensi BNSP</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span class="text-gray-700">Konsultasi Korporat</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span class="text-gray-700">Pengembangan Kurikulum</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-check text-green-500 mr-3"></i>
+                        <span class="text-gray-700">Assessment Center</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Achievement Card -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="text-center mb-4">
+                    <i class="fas fa-trophy text-4xl text-gray-600 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Pencapaian</h3>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Alumni:</span>
+                        <span class="text-gray-800">2,500+</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Tingkat Kepuasan:</span>
+                        <span class="text-gray-800">95%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Employment Rate:</span>
+                        <span class="text-gray-800">85%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Partner Perusahaan:</span>
+                        <span class="text-gray-800">150+</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="font-semibold text-gray-600">Sertifikasi:</span>
+                        <span class="text-gray-800">50+ Skema</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Tim Profesional Kami
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Instruktur berpengalaman yang siap membantu kesuksesan Anda
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="expertsGrid">
+            <!-- Expert cards akan di-load dari Firestore -->
+            <div class="text-center">
+                <div class="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-200 animate-pulse"></div>
+                <div class="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-4 animate-pulse"></div>
+            </div>
+            <div class="text-center">
+                <div class="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-200 animate-pulse"></div>
+                <div class="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-4 animate-pulse"></div>
+            </div>
+            <div class="text-center">
+                <div class="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-200 animate-pulse"></div>
+                <div class="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-4 animate-pulse"></div>
+            </div>
+            <div class="text-center">
+                <div class="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-200 animate-pulse"></div>
+                <div class="h-6 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-2 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded mb-4 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Nilai-Nilai Kami
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Prinsip yang memandu setiap langkah kami
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Value 1 -->
+            <div class="text-center">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lightbulb text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Inovasi</h3>
+                <p class="text-gray-600">Terus berinovasi dalam metode pembelajaran dan teknologi yang digunakan untuk memberikan pengalaman terbaik.</p>
+            </div>
+            
+            <!-- Value 2 -->
+            <div class="text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Kolaborasi</h3>
+                <p class="text-gray-600">Membangun kerjasama yang kuat antara instruktur, peserta, dan industri untuk menciptakan ekosistem pembelajaran.</p>
+            </div>
+            
+            <!-- Value 3 -->
+            <div class="text-center">
+                <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-award text-3xl text-orange-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Kualitas</h3>
+                <p class="text-gray-600">Berkomitmen pada standar kualitas tertinggi dalam setiap aspek pembelajaran dan layanan.</p>
+            </div>
+            
+            <!-- Value 4 -->
+            <div class="text-center">
+                <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-heart text-3xl text-purple-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Integritas</h3>
+                <p class="text-gray-600">Menjunjung tinggi kejujuran, transparansi, dan tanggung jawab dalam setiap interaksi.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 text-white" style="background-color: #225273;">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">
+            Siap Bergabung dengan Kami?
+        </h2>
+        <p class="text-xl mb-8 text-white/90">
+            Mulai perjalanan kesuksesan Anda bersama Grow Synergy Indonesia
+        </p>
+        <p class="text-lg font-semibold text-white">
+            Konsultasi dengan kami sekarang!
+        </p>
+    </div>
+</section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="h-8 w-auto">
+                        <span class="text-lg text-black font-bold">GROW SYNERGY INDONESIA</span>
+                    </div>
+                    <p class="text-gray-400">Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Pelatihan</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/synergy-academy" class="hover:text-white transition">Data Analitik Pemula</a></li>
+                        <li><a href="/synergy-academy" class="hover:text-white transition">Python untuk Data Analitik</a></li>
+                        <li><a href="/synergy-academy" class="hover:text-white transition">Business Intelligence</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Perusahaan</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
+                        <li><a href="/contact" class="hover:text-white transition">Kontak</a></li>
+                        <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
+                        <li><a href="/karir" class="hover:text-white transition">Karir</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Ikuti Kami</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        <i class="fas fa-envelope mr-2"></i>info@grow-synergy-indonesia.com
+                    </p>
+                    <p class="text-gray-400">
+                        <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 GROW SYNERGY INDONESIA. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button -->
+    {{> whatsapp-button}}
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    <script>
+        // Initialize Firebase
+        let db;
+        try {
+            // Check if Firebase is available
+            if (typeof firebase === 'undefined') {
+                throw new Error('Firebase SDK not loaded');
+            }
+
+            firebase.initializeApp({
+                apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+                authDomain: "company-profile-grow-synergy.firebaseapp.com",
+                projectId: "company-profile-grow-synergy",
+                storageBucket: "company-profile-grow-synergy.firebasestorage.app",
+                messagingSenderId: "584312572709",
+                appId: "1:584312572709:web:1e0ad87867af7b878668cc",
+                measurementId: "G-PKLP3Y3F4F"
+            });
+
+            db = firebase.firestore();
+            const analytics = firebase.analytics();
+            console.log('Firebase initialized successfully');
+        } catch (error) {
+            console.warn('Firebase initialization skipped:', error.message);
+            // Fallback to mock mode if Firebase fails
+            db = {
+                collection: () => ({
+                    get: async () => ({ docs: [] }),
+                    add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
+                    doc: () => ({
+                        get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
+                        update: async () => {},
+                        delete: async () => {}
+                    }),
+                }),
+            };
+        }
+
+        // Load experts from Firestore
+        async function loadExperts() {
+            console.log('DEBUG: Starting loadExperts for about page...');
+            try {
+                const expertsCollection = db.collection('experts');
+                const snapshot = await expertsCollection.get();
+                const expertsGrid = document.getElementById('expertsGrid');
+                
+                if (!expertsGrid) {
+                    console.error('DEBUG: expertsGrid element not found');
+                    return;
+                }
+                
+                // Clear loading placeholders
+                expertsGrid.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    console.log('DEBUG: No experts found in Firestore');
+                    // Show fallback message
+                    expertsGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Belum ada data tim profesional</div>';
+                    return;
+                }
+                
+                // Limit to 4 experts for about page
+                const experts = snapshot.docs.slice(0, 4);
+                
+                experts.forEach((doc, index) => {
+                    const expert = doc.data();
+                    const expertId = doc.id;
+                    
+                    console.log('DEBUG: Loading expert:', expert);
+                    
+                    // Determine border color based on position
+                    const borderColors = ['border-blue-500', 'border-green-500', 'border-orange-500', 'border-indigo-500'];
+                    const positionColors = ['text-blue-600', 'text-green-600', 'text-orange-600', 'text-indigo-600'];
+                    const borderColor = borderColors[index % borderColors.length];
+                    const positionColor = positionColors[index % positionColors.length];
+                    
+                    // Generate star rating
+                    const rating = parseFloat(expert.rating) || 0;
+                    const reviewCount = parseInt(expert.reviewCount) || 0;
+                    const stars = generateStarRating(rating);
+                    
+                    // Create expert card HTML
+                    const expertCard = `
+                        <div class="text-center">
+                            <img src="${expert.image || `https://picsum.photos/seed/expert${expertId}/300/300.jpg`}" 
+                                 alt="${expert.name}" 
+                                 class="w-32 h-32 rounded-full mx-auto mb-4 object-cover border-4 ${borderColor}">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">${expert.name}</h3>
+                            <p class="${positionColor} font-semibold mb-2">${expert.position}</p>
+                            <p class="text-sm text-gray-500 mb-4">${expert.experience}</p>
+                            <div class="text-center mb-4">
+                                <div class="flex justify-center space-x-1">
+                                    ${stars}
+                                </div>
+                                <div class="text-sm text-gray-600">${rating} (${reviewCount})</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    expertsGrid.innerHTML += expertCard;
+                });
+                
+                console.log('DEBUG: Experts loaded successfully');
+            } catch (error) {
+                console.error('DEBUG: Error loading experts:', error);
+                const expertsGrid = document.getElementById('expertsGrid');
+                if (expertsGrid) {
+                    expertsGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Gagal memuat data tim profesional</div>';
+                }
+            }
+        }
+        
+        // Generate star rating HTML
+        function generateStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            
+            // Add full stars
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star text-yellow-400"></i>';
+            }
+            
+            // Add half star if needed
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
+            }
+            
+            // Add empty stars to make 5 stars total
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star text-yellow-400"></i>';
+            }
+            
+            return stars;
+        }
+        
+        // Load hero section from Firebase
+        async function loadHeroSection() {
+            console.log('DEBUG: Starting loadHeroSection for about page...');
+            try {
+                console.log('DEBUG: Fetching from /api/hero-section...');
+                const response = await fetch('/api/hero-section');
+                const heroSections = await response.json();
+                console.log('DEBUG: Hero sections response:', heroSections);
+                
+                if (heroSections.length > 0) {
+                    const hero = heroSections[0];
+                    const backgroundImage = document.getElementById('hero-background-image');
+                    console.log('DEBUG: Elements found:', {
+                        backgroundImage: !!backgroundImage
+                    });
+                    
+                    if (hero.backgroundImage && backgroundImage) {
+                        backgroundImage.style.cssText = `background-image: url('${hero.backgroundImage}') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;`;
+                        console.log('DEBUG: Background image updated successfully');
+                    }
+                    
+                    // Update text content
+                    const subtitle = document.getElementById('hero-subtitle');
+                    const title = document.getElementById('hero-title');
+                    const description = document.getElementById('hero-description');
+                    
+                    if (subtitle && hero.subtitle) {
+                        subtitle.textContent = hero.subtitle;
+                    }
+                    if (title && hero.title) {
+                        title.textContent = hero.title;
+                    }
+                    if (description && hero.description) {
+                        description.textContent = hero.description;
+                    }
+                }
+            } catch (error) {
+                console.error('DEBUG: Error loading hero section:', error);
+            }
+        }
+        
+        // Load all data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadHeroSection();
+            loadExperts();
+        });
+    </script>
+</body>
+</html>
