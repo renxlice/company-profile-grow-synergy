@@ -49,39 +49,76 @@ app.post('/admin/login', express.urlencoded({ extended: true }), async (req, res
     try {
         const { username, password } = req.body;
         
-        // Firebase Auth dengan UID spesifik
+        console.log('Login attempt:', { username, password });
+        console.log('Session object:', req.session);
+        
+        // Firebase Auth dengan Firestore
         const admin = require('firebase-admin');
+        const bcrypt = require('bcryptjs');
         
-        // Cek apakah email dan password cocok dengan admin yang sudah ada
-        const adminEmail = process.env.ADMIN_EMAIL;
-        const adminPassword = process.env.ADMIN_PASSWORD;
+        // Find admin in Firestore (sama seperti adminAuth.js)
+        const adminSnapshot = await admin.firestore()
+            .collection('admins')
+            .where('email', '==', username)
+            .limit(1)
+            .get();
         
-        if (!adminEmail || !adminPassword) {
+        if (adminSnapshot.empty) {
+            console.log('Admin not found for email:', username);
             return res.render('admin/login', { 
-                title: 'Admin Login',
-                error: 'Environment variables not configured' 
-            });
-        }
-        
-        if (username === adminEmail && password === adminPassword) {
-            // Create session dengan UID yang sudah ada
-            req.session = req.session || {};
-            req.session.isLoggedIn = true;
-            req.session.adminId = 'iifnr2764lbUG9cuXEN6DIss4Ex2';
-            req.session.adminEmail = 'admin@grow-synergy.com';
-            req.session.adminName = 'Admin User';
-            req.session.adminRole = 'super_admin';
-            req.session.adminUID = 'iifnr2764lbUG9cuXEN6DIss4Ex2';
-            
-            // Redirect to dashboard
-            res.redirect('/admin/dashboard');
-        } else {
-            // Invalid credentials
-            res.render('admin/login', { 
                 title: 'Admin Login',
                 error: 'Invalid credentials' 
             });
         }
+        
+        const adminDoc = adminSnapshot.docs[0];
+        const adminData = adminDoc.data();
+        
+        console.log('Admin found:', { email: adminData.email, isActive: adminData.isActive });
+        
+        // Check if admin is active
+        if (!adminData.isActive) {
+            console.log('Admin account is deactivated');
+            return res.render('admin/login', { 
+                title: 'Admin Login',
+                error: 'Account is deactivated' 
+            });
+        }
+        
+        // Verify password dengan bcrypt (sama seperti adminAuth.js)
+        const isPasswordValid = await bcrypt.compare(password, adminData.password);
+        
+        console.log('Password verification result:', isPasswordValid);
+        
+        if (!isPasswordValid) {
+            console.log('Invalid password for admin:', username);
+            return res.render('admin/login', { 
+                title: 'Admin Login',
+                error: 'Invalid credentials' 
+            });
+        }
+        
+        console.log('Login successful for admin:', username);
+        
+        // Create session dengan data dari Firestore
+        req.session = req.session || {};
+        req.session.isLoggedIn = true;
+        req.session.adminId = adminDoc.id;
+        req.session.adminEmail = adminData.email;
+        req.session.adminName = adminData.name;
+        req.session.adminRole = adminData.role || 'admin';
+        
+        // Update last login (sama seperti adminAuth.js)
+        await admin.firestore()
+            .collection('admins')
+            .doc(adminDoc.id)
+            .update({
+                lastLogin: admin.firestore.FieldValue.serverTimestamp(),
+                lastLoginIP: req.ip
+            });
+        
+        // Redirect to dashboard
+        res.redirect('/admin/dashboard');
         
     } catch (error) {
         console.error('Login error:', error);

@@ -21,6 +21,9 @@
     "setup:env": "node scripts/setup-env.js",
     "security:check": "node scripts/deploy-check.js",
     "seed:firestore": "echo 'Please add data via admin panel at http://localhost:3001/admin/login'",
+    "ensure:admin": "node scripts/ensure-admin.js",
+    "reset:admin": "node scripts/reset-admin-password.js",
+    "check:admin": "node scripts/check-admin-password.js",
     "predeploy": "npm run security:check"
   },
   "repository": {
