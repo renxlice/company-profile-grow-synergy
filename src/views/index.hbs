@@ -726,42 +726,7 @@
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
-    <script>
-        // Initialize Firebase
-        let db;
-        try {
-            // Check if Firebase is available
-            if (typeof firebase === 'undefined') {
-                throw new Error('Firebase SDK not loaded');
-            }
-
-            firebase.initializeApp({
-                apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-                authDomain: "company-profile-grow-synergy.firebaseapp.com",
-                projectId: "company-profile-grow-synergy",
-                storageBucket: "company-profile-grow-synergy.firebasestorage.app",
-                messagingSenderId: "584312572709",
-                appId: "1:584312572709:web:1e0ad87867af7b878668cc",
-                measurementId: "G-PKLP3Y3F4F"
-            });
-
-            db = firebase.firestore();
-            const analytics = firebase.analytics();
-            console.log('Firebase initialized successfully');
-        } catch (error) {
-            console.warn('Firebase initialization skipped:', error.message);
-            // Fallback to mock mode if Firebase fails
-            db = {
-                collection: () => ({
-                    get: async () => ({ docs: [] }),
-                    add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
-                    doc: () => ({
-                        get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
-                        update: async () => {},
-                        delete: async () => {}
-                    }),
-                }),
-            };
+    {{> firebase-config}};
         }
 
         // Load dynamic content from Firestore

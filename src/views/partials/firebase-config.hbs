@@ -1,0 +1,38 @@
+<script>
+    // Initialize Firebase
+    let db;
+    try {
+        // Check if Firebase is available
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK not loaded');
+        }
+
+        firebase.initializeApp({
+            apiKey: "{{firebaseApiKey}}",
+            authDomain: "{{firebaseAuthDomain}}",
+            projectId: "{{firebaseProjectId}}",
+            storageBucket: "{{firebaseStorageBucket}}",
+            messagingSenderId: "{{firebaseMessagingSenderId}}",
+            appId: "{{firebaseAppId}}",
+            measurementId: "{{firebaseMeasurementId}}"
+        });
+
+        db = firebase.firestore();
+        const analytics = firebase.analytics();
+        console.log('Firebase initialized successfully');
+    } catch (error) {
+        console.warn('Firebase initialization skipped:', error.message);
+        // Fallback to mock mode if Firebase fails
+        db = {
+            collection: () => ({
+                get: async () => ({ docs: [] }),
+                add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
+                doc: () => ({
+                    get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
+                    update: async () => {},
+                    delete: async () => {}
+                }),
+            }),
+        };
+    }
+</script>

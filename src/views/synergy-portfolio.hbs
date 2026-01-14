@@ -628,14 +628,7 @@
     </script>
     <script>
         // Initialize Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBvZjZQYmQZrQZrQZrQZrQZrQZrQZrQZrQ",
-            authDomain: "company-profile-grow-synergy.firebaseapp.com",
-            projectId: "company-profile-grow-synergy",
-            storageBucket: "company-profile-grow-synergy.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
-        };
+        {{> firebase-config}}
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
