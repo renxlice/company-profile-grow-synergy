@@ -426,9 +426,7 @@
                 <h3 class="font-semibold mb-4">Perusahaan</h3>
                 <ul class="space-y-2 text-gray-400">
                     <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
-                    <li><a href="/contact" class="hover:text-white transition">Kontak</a></li>
-                    <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
-                    <li><a href="/karir" class="hover:text-white transition">Karir</a></li>
+                    <li><a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">Kontak</a></li>
                 </ul>
             </div>
             
@@ -452,7 +450,7 @@
                     <i class="fas fa-envelope mr-2"></i>info@growsynergy.id
                 </p>
                 <p class="text-gray-400">
-                    <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                    <i class="fas fa-phone mr-2"></i>+62 856-9749-0726
                 </p>
             </div>
         </div>
@@ -481,41 +479,301 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 8; // Show 8 experts per page
+        let allExperts = [];
+
         // Load experts from Firestore
         async function loadExperts() {
             try {
                 console.log('Loading experts from Firestore...');
                 const expertsSnapshot = await db.collection('experts').get();
-                const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log('Experts loaded:', experts);
+                allExperts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('Experts loaded:', allExperts);
                 
-                // Update experts grid
-                updateExpertsGrid(experts);
+                // If no data from Firestore, use mock data
+                if (allExperts.length === 0) {
+                    console.log('No experts from Firestore, using mock data');
+                    allExperts = getMockExperts();
+                }
+                
+                // Update experts grid with pagination
+                updateExpertsGridWithPagination();
             } catch (error) {
                 console.error('Error loading experts:', error);
+                // Use mock data on error
+                allExperts = getMockExperts();
+                updateExpertsGridWithPagination();
             }
         }
 
-        // Update experts grid with real data
-        function updateExpertsGrid(experts) {
+        // Mock experts data for fallback
+        function getMockExperts() {
+            return [
+                {
+                    id: 'expert-1',
+                    name: 'Dr. Ahmad Wijaya',
+                    position: 'Data Science Expert',
+                    experience: '15+ tahun pengalaman',
+                    description: 'Spesialis dalam machine learning dan artificial intelligence dengan fokus pada implementasi industri.',
+                    rating: 4.9,
+                    reviewCount: 128,
+                    image: 'https://picsum.photos/seed/ahmad-wijaya/200/200.jpg'
+                },
+                {
+                    id: 'expert-2',
+                    name: 'Sarah Putri',
+                    position: 'Business Intelligence Analyst',
+                    experience: '10+ tahun pengalaman',
+                    description: 'Expert dalam data visualization dan dashboard development menggunakan Tableau dan Power BI.',
+                    rating: 4.8,
+                    reviewCount: 96,
+                    image: 'https://picsum.photos/seed/sarah-putri/200/200.jpg'
+                },
+                {
+                    id: 'expert-3',
+                    name: 'Budi Santoso',
+                    position: 'Full Stack Developer',
+                    experience: '12+ tahun pengalaman',
+                    description: 'Spesialis dalam web development dengan React, Node.js, dan database modern.',
+                    rating: 4.7,
+                    reviewCount: 87,
+                    image: 'https://picsum.photos/seed/budi-santoso/200/200.jpg'
+                },
+                {
+                    id: 'expert-4',
+                    name: 'Maya Sari',
+                    position: 'UI/UX Designer',
+                    experience: '8+ tahun pengalaman',
+                    description: 'Ahli dalam user experience design dan prototyping dengan Figma dan Adobe Creative Suite.',
+                    rating: 4.9,
+                    reviewCount: 112,
+                    image: 'https://picsum.photos/seed/maya-sari/200/200.jpg'
+                },
+                {
+                    id: 'expert-5',
+                    name: 'Rizki Firmansyah',
+                    position: 'Mobile App Developer',
+                    experience: '7+ tahun pengalaman',
+                    description: 'Spesialis dalam React Native dan Flutter untuk iOS dan Android development.',
+                    rating: 4.6,
+                    reviewCount: 73,
+                    image: 'https://picsum.photos/seed/rizki-firmansyah/200/200.jpg'
+                },
+                {
+                    id: 'expert-6',
+                    name: 'Dr. Indah Lestari',
+                    position: 'Cloud Architecture Specialist',
+                    experience: '20+ tahun pengalaman',
+                    description: 'Expert dalam AWS, Azure, dan Google Cloud platform dengan sertifikasi profesional.',
+                    rating: 4.8,
+                    reviewCount: 145,
+                    image: 'https://picsum.photos/seed/indah-lestari/200/200.jpg'
+                },
+                {
+                    id: 'expert-7',
+                    name: 'Fajar Rahman',
+                    position: 'DevOps Engineer',
+                    experience: '9+ tahun pengalaman',
+                    description: 'Spesialis dalam CI/CD pipeline, containerization, dan infrastructure automation.',
+                    rating: 4.7,
+                    reviewCount: 68,
+                    image: 'https://picsum.photos/seed/fajar-rahman/200/200.jpg'
+                },
+                {
+                    id: 'expert-8',
+                    name: 'Lisa Permata',
+                    position: 'Data Engineer',
+                    experience: '11+ tahun pengalaman',
+                    description: 'Expert dalam ETL processes, data warehousing, dan big data technologies.',
+                    rating: 4.8,
+                    reviewCount: 94,
+                    image: 'https://picsum.photos/seed/lisa-permata/200/200.jpg'
+                },
+                {
+                    id: 'expert-9',
+                    name: 'Dewi Kartika',
+                    position: 'Machine Learning Engineer',
+                    experience: '6+ tahun pengalaman',
+                    description: 'Spesialis dalam deep learning, computer vision, dan natural language processing.',
+                    rating: 4.9,
+                    reviewCount: 81,
+                    image: 'https://picsum.photos/seed/dewi-kartika/200/200.jpg'
+                },
+                {
+                    id: 'expert-10',
+                    name: 'Reza Pratama',
+                    position: 'Cybersecurity Analyst',
+                    experience: '13+ tahun pengalaman',
+                    description: 'Expert dalam network security, ethical hacking, dan compliance frameworks.',
+                    rating: 4.7,
+                    reviewCount: 76,
+                    image: 'https://picsum.photos/seed/reza-pratama/200/200.jpg'
+                },
+                {
+                    id: 'expert-11',
+                    name: 'Hendra Kusuma',
+                    position: 'Database Administrator',
+                    experience: '14+ tahun pengalaman',
+                    description: 'Spesialis dalam database optimization, backup strategies, dan data governance.',
+                    rating: 4.6,
+                    reviewCount: 89,
+                    image: 'https://picsum.photos/seed/hendra-kusuma/200/200.jpg'
+                },
+                {
+                    id: 'expert-12',
+                    name: 'Nina Wijaya',
+                    position: 'Project Manager',
+                    experience: '16+ tahun pengalaman',
+                    description: 'Expert dalam agile methodologies, team leadership, dan project delivery.',
+                    rating: 4.8,
+                    reviewCount: 103,
+                    image: 'https://picsum.photos/seed/nina-wijaya/200/200.jpg'
+                },
+                {
+                    id: 'expert-13',
+                    name: 'Andi Pratama',
+                    position: 'Frontend Developer',
+                    experience: '5+ tahun pengalaman',
+                    description: 'Spesialis dalam React, Vue.js, dan modern CSS frameworks.',
+                    rating: 4.7,
+                    reviewCount: 62,
+                    image: 'https://picsum.photos/seed/andi-pratama/200/200.jpg'
+                },
+                {
+                    id: 'expert-14',
+                    name: 'Rina Susanti',
+                    position: 'Backend Developer',
+                    experience: '8+ tahun pengalaman',
+                    description: 'Expert dalam Node.js, Python, dan microservices architecture.',
+                    rating: 4.8,
+                    reviewCount: 78,
+                    image: 'https://picsum.photos/seed/rina-susanti/200/200.jpg'
+                },
+                {
+                    id: 'expert-15',
+                    name: 'Doni Hermawan',
+                    position: 'Quality Assurance Engineer',
+                    experience: '7+ tahun pengalaman',
+                    description: 'Spesialis dalam automated testing dan quality assurance methodologies.',
+                    rating: 4.6,
+                    reviewCount: 54,
+                    image: 'https://picsum.photos/seed/doni-hermawan/200/200.jpg'
+                },
+                {
+                    id: 'expert-16',
+                    name: 'Siti Aminah',
+                    position: 'Product Manager',
+                    experience: '10+ tahun pengalaman',
+                    description: 'Expert dalam product strategy, user research, dan agile development.',
+                    rating: 4.9,
+                    reviewCount: 91,
+                    image: 'https://picsum.photos/seed/siti-aminah/200/200.jpg'
+                }
+            ];
+        }
+
+        // Update experts grid with pagination
+        function updateExpertsGridWithPagination() {
             const expertsGrid = document.getElementById('expertsGrid');
             if (!expertsGrid) {
                 console.log('Experts grid not found');
                 return;
             }
 
-            if (experts.length === 0) {
+            if (allExperts.length === 0) {
                 console.log('No experts data available');
                 return;
             }
 
+            // Calculate start and end indices for current page
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentExperts = allExperts.slice(startIndex, endIndex);
+
             // Clear existing content
             expertsGrid.innerHTML = '';
 
-            // Add expert cards
-            experts.forEach(expert => {
+            // Add expert cards for current page
+            currentExperts.forEach((expert, index) => {
                 const expertCard = createExpertCard(expert);
                 expertsGrid.appendChild(expertCard);
+            });
+            
+            // Update pagination buttons
+            updatePaginationButtons();
+            
+            // Setup pagination event listeners (only once)
+            setupPaginationListeners();
+        }
+
+        // Setup pagination event listeners
+        function setupPaginationListeners() {
+            const paginationButtons = document.querySelectorAll('button[data-page]');
+            console.log('Pagination buttons found:', paginationButtons.length);
+            console.log('All experts loaded:', allExperts.length);
+            
+            // Remove existing listeners to prevent duplicates
+            paginationButtons.forEach(button => {
+                button.replaceWith(button.cloneNode(true));
+            });
+            
+            // Add new listeners
+            const newPaginationButtons = document.querySelectorAll('button[data-page]');
+            newPaginationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageNumber = parseInt(this.dataset.page);
+                    const totalPages = Math.ceil(allExperts.length / itemsPerPage);
+                    
+                    console.log('Button clicked:', pageNumber);
+                    console.log('Total pages:', totalPages);
+                    console.log('Current page before:', currentPage);
+                    
+                    if (pageNumber >= 1 && pageNumber <= totalPages) {
+                        currentPage = pageNumber;
+                        console.log('Current page after:', currentPage);
+                        updateExpertsGridWithPagination();
+                        
+                        // Scroll to center of experts section
+                        setTimeout(() => {
+                            const expertsSection = document.getElementById('expertsGrid');
+                            if (expertsSection) {
+                                const sectionRect = expertsSection.getBoundingClientRect();
+                                const offset = sectionRect.top + window.pageYOffset - (window.innerHeight / 2) + (sectionRect.height / 2);
+                                
+                                window.scrollTo({
+                                    top: offset,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 100);
+                    }
+                });
+            });
+        }
+
+        // Update pagination buttons
+        function updatePaginationButtons() {
+            const paginationButtons = document.querySelectorAll('button[data-page]');
+            const totalPages = Math.ceil(allExperts.length / itemsPerPage);
+
+            paginationButtons.forEach(button => {
+                const pageNumber = parseInt(button.dataset.page);
+                
+                // Reset button styles
+                button.className = 'px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition';
+                
+                // Highlight current page
+                if (pageNumber === currentPage) {
+                    button.className = 'px-3 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition';
+                }
+                
+                // Disable buttons beyond total pages
+                if (pageNumber > totalPages) {
+                    button.disabled = true;
+                    button.className = 'px-3 py-2 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed transition';
+                }
             });
         }
 
@@ -635,52 +893,103 @@
         });
     </script>
     <script>
-        // Search functionality
+        // Enhanced search functionality with pagination support and glitch prevention
+        let searchTimeout;
+        let isSearching = false;
+        
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            const expertCards = document.querySelectorAll('.expert-card');
             
-            expertCards.forEach(card => {
-                const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const title = card.querySelector('p.font-semibold')?.textContent.toLowerCase() || '';
-                const description = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
-                const expertise = card.querySelector('.bg-blue-100')?.textContent.toLowerCase() || '';
-                const experience = card.querySelector('.bg-purple-100')?.textContent.toLowerCase() || '';
-                
-                // Combine all searchable text
-                const allText = name + ' ' + title + ' ' + description + ' ' + expertise + ' ' + experience;
-                
-                console.log('Searching for:', searchTerm);
-                console.log('Expert card text:', allText);
-                
-                if (allText.includes(searchTerm)) {
-                    card.style.display = 'block';
-                    console.log('Showing expert for:', searchTerm);
-                } else {
-                    card.style.display = 'none';
-                    console.log('Hiding expert for:', searchTerm);
-                }
-            });
-            
-            // Show message if no results
-            const visibleCards = Array.from(expertCards).filter(card => card.style.display !== 'none');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            
-            if (visibleCards.length === 0 && searchTerm.length > 0) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.id = 'noResultsMessage';
-                    message.className = 'col-span-full text-center py-8 text-gray-500';
-                    message.innerHTML = `
-                        <div class="text-6xl mb-4">🔍</div>
-                        <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
-                        <p>Tidak ada pengajar yang cocok dengan pencarian "${searchTerm}"</p>
-                    `;
-                    document.getElementById('expertGrid').appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
             }
+            
+            // Debounce search to prevent glitches
+            searchTimeout = setTimeout(() => {
+                if (isSearching) return; // Prevent multiple simultaneous searches
+                isSearching = true;
+                
+                if (searchTerm.length === 0) {
+                    // Reset to first page when search is cleared
+                    currentPage = 1;
+                    updateExpertsGridWithPagination();
+                    isSearching = false;
+                    return;
+                }
+                
+                // Search through all experts to find matches
+                const matchingExperts = [];
+                allExperts.forEach((expert, index) => {
+                    const name = expert.name.toLowerCase();
+                    const title = expert.position.toLowerCase();
+                    const description = expert.description.toLowerCase();
+                    const expertise = expert.expertise ? expert.expertise.toLowerCase() : '';
+                    const experience = expert.experience ? expert.experience.toLowerCase() : '';
+                    
+                    // Combine all searchable text
+                    const allText = name + ' ' + title + ' ' + description + ' ' + expertise + ' ' + experience;
+                    
+                    if (allText.includes(searchTerm)) {
+                        matchingExperts.push({
+                            ...expert,
+                            originalIndex: index
+                        });
+                    }
+                });
+                
+                console.log('Search term:', searchTerm);
+                console.log('Matching experts:', matchingExperts.length);
+                
+                if (matchingExperts.length === 0) {
+                    // Show no results message
+                    const expertsGrid = document.getElementById('expertGrid');
+                    expertsGrid.innerHTML = `
+                        <div id="noResultsMessage" class="col-span-full text-center py-8 text-gray-500">
+                            <div class="text-6xl mb-4">🔍</div>
+                            <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
+                            <p>Tidak ada pengajar yang cocok dengan pencarian "${searchTerm}"</p>
+                        </div>
+                    `;
+                    isSearching = false;
+                    return;
+                }
+                
+                // Find the page where the first matching expert is located
+                const firstMatchIndex = matchingExperts[0].originalIndex;
+                const targetPage = Math.floor(firstMatchIndex / itemsPerPage) + 1;
+                
+                console.log('First match index:', firstMatchIndex);
+                console.log('Target page:', targetPage);
+                
+                // Switch to the target page
+                currentPage = targetPage;
+                updateExpertsGridWithPagination();
+                
+                // Highlight matching experts on the current page without scrolling
+                setTimeout(() => {
+                    const expertCards = document.querySelectorAll('.expert-card');
+                    expertCards.forEach(card => {
+                        const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                        const title = card.querySelector('p.font-semibold')?.textContent.toLowerCase() || '';
+                        const description = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
+                        const expertise = card.querySelector('.bg-blue-100')?.textContent.toLowerCase() || '';
+                        const experience = card.querySelector('.bg-purple-100')?.textContent.toLowerCase() || '';
+                        
+                        const allText = name + ' ' + title + ' ' + description + ' ' + expertise + ' ' + experience;
+                        
+                        if (allText.includes(searchTerm)) {
+                            // Highlight matching card
+                            card.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                            // Remove scroll to prevent glitch
+                            // card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            card.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2');
+                        }
+                    });
+                    isSearching = false;
+                }, 300); // Increased delay to ensure grid is fully updated
+            }, 300); // Debounce delay
         });
 
         // Filter functionality

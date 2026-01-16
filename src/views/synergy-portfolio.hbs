@@ -93,10 +93,10 @@
 <div class="hero-section" id="hero-section">
     <div class="background-image" id="hero-background-image" style="background-image: url('/images/hero-background.jpg');"></div>
     <div class="hero-content">
-        <h2 class="text-3xl md:text-4xl font-light mb-4" id="hero-subtitle">Koleksi Project Terbaik</h2>
+        <h2 class="text-3xl md:text-4xl font-light mb-4" id="hero-subtitle">Mastery in Motion</h2>
         <h1 class="text-4xl md:text-6xl font-bold mb-8" id="hero-title">Synergy Portofolio</h1>
         <p class="text-xl mb-8 text-center max-w-3xl" id="hero-description">
-            Project-project terbaik dari alumni dan tim kami dalam berbagai bidang teknologi
+            Mengabadikan proses belajar dan karya terbaik hasil program pelatihan intensif kami. 
         </p>
     </div>
 </div>
@@ -155,10 +155,10 @@
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-                Project Terbaik Kami
+                Pelatihan Terbaik Kami
             </h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                Lebih dari 50 project dari alumni dan tim kami dalam berbagai bidang teknologi
+               Synergy Portfolio Galeri karya dan dokumentasi pelatihan teknologi. Transformasi talenta menjadi ahli melalui proyek yang inovatif dan terukur.
             </p>
         </div>
         
@@ -222,18 +222,12 @@
 <section class="py-16 text-white" style="background-color: #225273;">
     <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl md:text-4xl font-bold mb-4">
-            Tampilkan Project Anda
+            A Legacy of Excellence
         </h2>
         <p class="text-xl mb-8 text-white/90">
-            Bergabung dengan komunitas developer dan tampilkan karya terbaik Anda
+           Kurasi mahakarya teknologi dan dedikasi talenta terbaik dari ekosistem pelatihan kami.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-white text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-                Submit Project
-            </button>
-            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-orange-600 transition">
-                Lihat Semua Project
-            </button>
         </div>
     </div>
 </section>
@@ -263,9 +257,7 @@
                 <h3 class="font-semibold mb-4">Perusahaan</h3>
                 <ul class="space-y-2 text-gray-400">
                     <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
-                    <li><a href="/contact" class="hover:text-white transition">Kontak</a></li>
-                    <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
-                    <li><a href="/karir" class="hover:text-white transition">Karir</a></li>
+                    <li><a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">Kontak</a></li>
                 </ul>
             </div>
             
@@ -289,7 +281,7 @@
                     <i class="fas fa-envelope mr-2"></i>info@growsynergy.id
                 </p>
                 <p class="text-gray-400">
-                    <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                    <i class="fas fa-phone mr-2"></i>+62 856-9749-0726
                 </p>
             </div>
         </div>
@@ -313,15 +305,20 @@
             window.db = firebase.firestore();
         }
         
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 8; // Show 8 portfolios per page
+        let allPortfolios = [];
+        
         // Set active navigation based on current page
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DEBUG: DOMContentLoaded fired for synergy-portfolio');
-            const currentPage = 'synergy-portfolio';
+            const currentPageNav = 'synergy-portfolio';
             const navLinks = document.querySelectorAll('.nav-link');
             
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                if (link.dataset.page === currentPage) {
+                if (link.dataset.page === currentPageNav) {
                     link.classList.add('active');
                 }
             });
@@ -337,7 +334,6 @@
             try {
                 console.log('DEBUG: Loading portfolios from Firestore...');
                 console.log('DEBUG: Firebase db available:', !!window.db);
-                console.log('DEBUG: Firebase app available:', !!firebase);
                 
                 // Test connection first
                 console.log('DEBUG: Testing connection to portfolios collection...');
@@ -348,24 +344,31 @@
                 const portfoliosSnapshot = await window.db.collection('portfolios').get();
                 console.log('DEBUG: Snapshot received, docs count:', portfoliosSnapshot.docs.length);
                 
-                const portfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log('DEBUG: Portfolios loaded:', portfolios);
-                console.log('DEBUG: Portfolios length:', portfolios.length);
+                allPortfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('DEBUG: Portfolios loaded:', allPortfolios);
+                console.log('DEBUG: Portfolios length:', allPortfolios.length);
                 
-                if (portfolios.length > 0) {
-                    console.log('DEBUG: First portfolio data:', portfolios[0]);
+                if (allPortfolios.length > 0) {
+                    console.log('DEBUG: First portfolio data:', allPortfolios[0]);
                 }
                 
-                // Update portfolios grid
-                updatePortfolioGrid(portfolios);
+                // If no data from Firestore, use mock data
+                if (allPortfolios.length === 0) {
+                    console.log('DEBUG: No portfolios from Firestore, using mock data');
+                    allPortfolios = getMockPortfolios();
+                }
+                
+                // Update portfolios grid with pagination
+                updatePortfolioGridWithPagination();
             } catch (error) {
                 console.error('DEBUG: Error loading portfolios:', error);
                 console.error('DEBUG: Error stack:', error.stack);
                 console.error('DEBUG: Error code:', error.code);
                 console.error('DEBUG: Error message:', error.message);
-                // Fallback to mock data if Firestore fails
+                // Use mock data if Firestore fails
                 console.log('DEBUG: Falling back to mock data...');
-                loadMockPortfolios();
+                allPortfolios = getMockPortfolios();
+                updatePortfolioGridWithPagination();
             }
         }
         
@@ -434,9 +437,282 @@
         ];
         
         // Load mock portfolios (fallback)
-        function loadMockPortfolios() {
-            console.log('DEBUG: Loading mock portfolios...');
-            updatePortfolioGrid(mockPortfolios);
+        function getMockPortfolios() {
+            return [
+                {
+                    id: 'mock-portfolio-1',
+                    title: 'E-commerce Analytics Platform',
+                    category: 'Data Analytics',
+                    image: 'https://picsum.photos/seed/portfolio1/400/300.jpg',
+                    description: 'Platform analitik untuk e-commerce dengan real-time dashboard.',
+                    technologies: ['Python', 'React', 'PostgreSQL'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-2',
+                    title: 'Customer Segmentation System',
+                    category: 'Machine Learning',
+                    image: 'https://picsum.photos/seed/portfolio2/400/300.jpg',
+                    description: 'Sistem segmentasi pelanggan menggunakan machine learning.',
+                    technologies: ['Python', 'Scikit-learn', 'Pandas'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-3',
+                    title: 'Sales Dashboard Automation',
+                    category: 'Business Intelligence',
+                    image: 'https://picsum.photos/seed/portfolio3/400/300.jpg',
+                    description: 'Dashboard otomatis untuk monitoring penjualan.',
+                    technologies: ['Tableau', 'SQL', 'Excel'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-4',
+                    title: 'Mobile Banking App',
+                    category: 'Mobile Development',
+                    image: 'https://picsum.photos/seed/portfolio4/400/300.jpg',
+                    description: 'Aplikasi mobile banking dengan fitur transfer dan pembayaran.',
+                    technologies: ['React Native', 'Node.js', 'MongoDB'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-5',
+                    title: 'Inventory Management System',
+                    category: 'Web Development',
+                    image: 'https://picsum.photos/seed/portfolio5/400/300.jpg',
+                    description: 'Sistem manajemen inventory dengan barcode scanning.',
+                    technologies: ['Vue.js', 'Laravel', 'MySQL'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-6',
+                    title: 'AI Chatbot Integration',
+                    category: 'Artificial Intelligence',
+                    image: 'https://picsum.photos/seed/portfolio6/400/300.jpg',
+                    description: 'Chatbot AI untuk customer service automation.',
+                    technologies: ['Python', 'TensorFlow', 'NLP'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-7',
+                    title: 'Social Media Analytics',
+                    category: 'Data Science',
+                    image: 'https://picsum.photos/seed/portfolio7/400/300.jpg',
+                    description: 'Platform analitik untuk monitoring social media dan sentiment analysis.',
+                    technologies: ['Python', 'Spark', 'Elasticsearch'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-8',
+                    title: 'Healthcare Management System',
+                    category: 'Web Development',
+                    image: 'https://picsum.photos/seed/portfolio8/400/300.jpg',
+                    description: 'Sistem manajemen rumah sakit dengan electronic health records.',
+                    technologies: ['Angular', 'Spring Boot', 'PostgreSQL'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-9',
+                    title: 'Real Estate Platform',
+                    category: 'Full Stack Development',
+                    image: 'https://picsum.photos/seed/portfolio9/400/300.jpg',
+                    description: 'Platform properti dengan fitur listing, search, dan virtual tours.',
+                    technologies: ['React', 'Node.js', 'MongoDB', 'Three.js'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-10',
+                    title: 'Educational Learning Platform',
+                    category: 'EdTech',
+                    image: 'https://picsum.photos/seed/portfolio10/400/300.jpg',
+                    description: 'Platform pembelajaran online dengan video streaming dan quiz interaktif.',
+                    technologies: ['Vue.js', 'Django', 'WebRTC'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-11',
+                    title: 'Financial Trading Dashboard',
+                    category: 'FinTech',
+                    image: 'https://picsum.photos/seed/portfolio11/400/300.jpg',
+                    description: 'Dashboard trading real-time dengan advanced charting dan risk analysis.',
+                    technologies: ['React', 'WebSocket', 'D3.js'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-12',
+                    title: 'Supply Chain Management',
+                    category: 'Logistics',
+                    image: 'https://picsum.photos/seed/portfolio12/400/300.jpg',
+                    description: 'Sistem manajemen rantai pasokan dengan tracking real-time.',
+                    technologies: ['Angular', 'Java', 'PostgreSQL', 'GPS'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-13',
+                    title: 'Video Streaming Service',
+                    category: 'Media',
+                    image: 'https://picsum.photos/seed/portfolio13/400/300.jpg',
+                    description: 'Platform streaming video dengan adaptive bitrate dan CDN integration.',
+                    technologies: ['React', 'Node.js', 'FFmpeg', 'AWS'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-14',
+                    title: 'IoT Smart Home System',
+                    category: 'IoT',
+                    image: 'https://picsum.photos/seed/portfolio14/400/300.jpg',
+                    description: 'Sistem smart home dengan device control dan energy monitoring.',
+                    technologies: ['React Native', 'MQTT', 'Arduino', 'Raspberry Pi'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-15',
+                    title: 'E-Learning Management System',
+                    category: 'Education',
+                    image: 'https://picsum.photos/seed/portfolio15/400/300.jpg',
+                    description: 'Sistem manajemen pembelajaran dengan course creation dan progress tracking.',
+                    technologies: ['Angular', 'Spring Boot', 'MySQL', 'WebRTC'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                },
+                {
+                    id: 'mock-portfolio-16',
+                    title: 'Restaurant POS System',
+                    category: 'Retail',
+                    image: 'https://picsum.photos/seed/portfolio16/400/300.jpg',
+                    description: 'Sistem point of sale untuk restaurant dengan inventory integration.',
+                    technologies: ['Vue.js', 'Express.js', 'MongoDB', 'Thermal Printer API'],
+                    projectUrl: '#',
+                    githubUrl: '#'
+                }
+            ];
+        }
+        
+        // Update portfolios grid with pagination
+        function updatePortfolioGridWithPagination() {
+            const portfolioGrid = document.getElementById('portfolioGrid');
+            if (!portfolioGrid) {
+                console.log('DEBUG: Portfolio grid not found');
+                return;
+            }
+
+            if (allPortfolios.length === 0) {
+                console.log('DEBUG: No portfolios data available');
+                return;
+            }
+
+            // Calculate start and end indices for current page
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentPortfolios = allPortfolios.slice(startIndex, endIndex);
+
+            // Clear existing content
+            portfolioGrid.innerHTML = '';
+
+            // Add portfolio cards for current page
+            currentPortfolios.forEach((portfolio, index) => {
+                const portfolioCard = createPortfolioCard(portfolio);
+                portfolioGrid.appendChild(portfolioCard);
+            });
+            
+            // Update pagination buttons
+            updatePaginationButtons();
+            
+            // Setup pagination event listeners (only once)
+            setupPaginationListeners();
+        }
+
+        // Setup pagination event listeners
+        function setupPaginationListeners() {
+            const paginationButtons = document.querySelectorAll('button[data-page]');
+            console.log('DEBUG: Pagination buttons found:', paginationButtons.length);
+            console.log('DEBUG: All portfolios loaded:', allPortfolios.length);
+            
+            // Remove existing listeners to prevent duplicates
+            paginationButtons.forEach(button => {
+                button.replaceWith(button.cloneNode(true));
+            });
+            
+            // Add new listeners
+            const newPaginationButtons = document.querySelectorAll('button[data-page]');
+            newPaginationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageNumber = parseInt(this.dataset.page);
+                    const totalPages = Math.ceil(allPortfolios.length / itemsPerPage);
+                    
+                    console.log('DEBUG: Button clicked:', pageNumber);
+                    console.log('DEBUG: Total pages:', totalPages);
+                    console.log('DEBUG: Current page before:', currentPage);
+                    
+                    if (pageNumber >= 1 && pageNumber <= totalPages) {
+                        currentPage = pageNumber;
+                        console.log('DEBUG: Current page after:', currentPage);
+                        updatePortfolioGridWithPagination();
+                        
+                        // Scroll to center of portfolios section
+                        setTimeout(() => {
+                            const portfoliosSection = document.getElementById('portfolioGrid');
+                            if (portfoliosSection) {
+                                // Get the first visible card
+                                const firstVisibleCard = portfoliosSection.querySelector('.portfolio-card:not([style*="display: none"])');
+                                if (firstVisibleCard) {
+                                    // Scroll to the first visible card
+                                    firstVisibleCard.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                } else {
+                                    // Fallback to section center
+                                    const sectionRect = portfoliosSection.getBoundingClientRect();
+                                    const offset = sectionRect.top + window.pageYOffset - (window.innerHeight / 2) + (sectionRect.height / 2);
+                                    window.scrollTo({
+                                        top: offset,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }
+                        }, 100);
+                    }
+                });
+            });
+        }
+
+        // Update pagination buttons
+        function updatePaginationButtons() {
+            const paginationButtons = document.querySelectorAll('button[data-page]');
+            const totalPages = Math.ceil(allPortfolios.length / itemsPerPage);
+
+            paginationButtons.forEach(button => {
+                const pageNumber = parseInt(button.dataset.page);
+                
+                // Reset button styles
+                button.className = 'px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition';
+                
+                // Highlight current page
+                if (pageNumber === currentPage) {
+                    button.className = 'px-3 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition';
+                }
+                
+                // Disable buttons beyond total pages
+                if (pageNumber > totalPages) {
+                    button.disabled = true;
+                    button.className = 'px-3 py-2 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed transition';
+                }
+            });
         }
         
         // Update portfolios grid with data
@@ -600,47 +876,103 @@
             return div;
         }
 
-        // Search functionality
+        // Enhanced search functionality with pagination support and glitch prevention
+        let searchTimeout;
+        let isSearching = false;
+        
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            const portfolioCards = document.querySelectorAll('.portfolio-card');
             
-            portfolioCards.forEach(card => {
-                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const description = card.querySelector('p.text-white\\/80')?.textContent.toLowerCase() || '';
-                const overview = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
-                const category = card.querySelector('div.flex.justify-between.items-center span:first-child')?.textContent.toLowerCase() || '';
-                const technologies = Array.from(card.querySelectorAll('.bg-blue-100')).map(el => el.textContent.toLowerCase()).join(' ') || '';
-                
-                // Combine all searchable text
-                const allText = title + ' ' + description + ' ' + overview + ' ' + category + ' ' + technologies;
-                
-                if (allText.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Show message if no results
-            const visibleCards = Array.from(portfolioCards).filter(card => card.style.display !== 'none');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            
-            if (visibleCards.length === 0 && searchTerm.length > 0) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.id = 'noResultsMessage';
-                    message.className = 'col-span-full text-center py-8 text-gray-500';
-                    message.innerHTML = `
-                        <div class="text-6xl mb-4">🔍</div>
-                        <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
-                        <p>Tidak ada portfolio yang cocok dengan pencarian "${searchTerm}"</p>
-                    `;
-                    document.getElementById('portfolioGrid').appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
             }
+            
+            // Debounce search to prevent glitches
+            searchTimeout = setTimeout(() => {
+                if (isSearching) return; // Prevent multiple simultaneous searches
+                isSearching = true;
+                
+                if (searchTerm.length === 0) {
+                    // Reset to first page when search is cleared
+                    currentPage = 1;
+                    updatePortfolioGridWithPagination();
+                    isSearching = false;
+                    return;
+                }
+                
+                // Search through all portfolios to find matches
+                const matchingPortfolios = [];
+                allPortfolios.forEach((portfolio, index) => {
+                    const title = portfolio.title.toLowerCase();
+                    const description = portfolio.description.toLowerCase();
+                    const overview = portfolio.overview ? portfolio.overview.toLowerCase() : '';
+                    const category = portfolio.category ? portfolio.category.toLowerCase() : '';
+                    const technologies = portfolio.technologies ? portfolio.technologies.join(' ').toLowerCase() : '';
+                    
+                    // Combine all searchable text
+                    const allText = title + ' ' + description + ' ' + overview + ' ' + category + ' ' + technologies;
+                    
+                    if (allText.includes(searchTerm)) {
+                        matchingPortfolios.push({
+                            ...portfolio,
+                            originalIndex: index
+                        });
+                    }
+                });
+                
+                console.log('Search term:', searchTerm);
+                console.log('Matching portfolios:', matchingPortfolios.length);
+                
+                if (matchingPortfolios.length === 0) {
+                    // Show no results message
+                    const portfolioGrid = document.getElementById('portfolioGrid');
+                    portfolioGrid.innerHTML = `
+                        <div id="noResultsMessage" class="col-span-full text-center py-8 text-gray-500">
+                            <div class="text-6xl mb-4">🔍</div>
+                            <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
+                            <p>Tidak ada kegiatan yang cocok dengan pencarian "${searchTerm}"</p>
+                        </div>
+                    `;
+                    isSearching = false;
+                    return;
+                }
+                
+                // Find the page where the first matching portfolio is located
+                const firstMatchIndex = matchingPortfolios[0].originalIndex;
+                const targetPage = Math.floor(firstMatchIndex / itemsPerPage) + 1;
+                
+                console.log('First match index:', firstMatchIndex);
+                console.log('Target page:', targetPage);
+                
+                // Switch to the target page
+                currentPage = targetPage;
+                updatePortfolioGridWithPagination();
+                
+                // Highlight matching portfolios on the current page
+                setTimeout(() => {
+                    const portfolioCards = document.querySelectorAll('.portfolio-card');
+                    portfolioCards.forEach(card => {
+                        const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                        const description = card.querySelector('p.text-white\\/80')?.textContent.toLowerCase() || '';
+                        const overview = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
+                        const category = card.querySelector('div.flex.justify-between.items-center span:first-child')?.textContent.toLowerCase() || '';
+                        const technologies = Array.from(card.querySelectorAll('.bg-blue-100')).map(el => el.textContent.toLowerCase()).join(' ') || '';
+                        
+                        const allText = title + ' ' + description + ' ' + overview + ' ' + category + ' ' + technologies;
+                        
+                        if (allText.includes(searchTerm)) {
+                            // Highlight matching card
+                            card.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                            // Remove auto-scroll to keep search bar visible
+                            // card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            card.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2');
+                        }
+                    });
+                    isSearching = false;
+                }, 300); // Increased delay to ensure grid is fully updated
+            }, 300); // Debounce delay
         });
 
         // Filter functionality

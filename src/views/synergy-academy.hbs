@@ -582,13 +582,6 @@
         <p class="text-xl mb-8 text-white/90">
             Bergabung dengan ribuan siswa yang telah meningkatkan karir mereka melalui program kami
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-green text-orange-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-                Daftar Gratis
-            </button>
-            <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-green hover:text-orange-600 transition">
-                Konsultasi Karir
-            </button>
         </div>
     </div>
 </section>
@@ -618,9 +611,7 @@
                 <h3 class="font-semibold mb-4">Perusahaan</h3>
                 <ul class="space-y-2 text-gray-400">
                     <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
-                    <li><a href="/contact" class="hover:text-white transition">Kontak</a></li>
-                    <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
-                    <li><a href="/karir" class="hover:text-white transition">Karir</a></li>
+                    <li><a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">Kontak</a></li>
                 </ul>
             </div>
             
@@ -644,11 +635,10 @@
                     <i class="fas fa-envelope mr-2"></i>info@growsynergy.id
                 </p>
                 <p class="text-gray-400">
-                    <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                    <i class="fas fa-phone mr-2"></i>+62 856-9749-0726
                 </p>
             </div>
         </div>
-        
         <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
             <p>&copy; 2024 GROW SYNERGY INDONESIA. All rights reserved.</p>
         </div>
@@ -717,52 +707,328 @@
         }
         const db = firebase.firestore();
 
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 8; // Show 8 academies per page
+        let allAcademies = [];
+
         // Load academies from Firestore
         async function loadAcademies() {
             try {
                 console.log('Loading academies from Firestore...');
                 const academiesSnapshot = await db.collection('academies').get();
-                const academies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log('Academies loaded:', academies);
-                console.log('First academy data:', academies[0]);
+                allAcademies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log('Academies loaded:', allAcademies);
                 
-                // Update academies grid
-                updateAcademyGrid(academies);
+                // If no data from Firestore, use mock data
+                if (allAcademies.length === 0) {
+                    console.log('No academies from Firestore, using mock data');
+                    allAcademies = getMockAcademies();
+                }
+                
+                // Update academies grid with pagination
+                updateAcademyGridWithPagination();
             } catch (error) {
                 console.error('Error loading academies:', error);
+                // Use mock data on error
+                allAcademies = getMockAcademies();
+                updateAcademyGridWithPagination();
             }
         }
 
-        // Update academies grid with real data
-        function updateAcademyGrid(academies) {
+        // Mock academies data for fallback
+        function getMockAcademies() {
+            return [
+                {
+                    id: 'academy-1',
+                    title: 'Data Science Fundamentals',
+                    instructor: 'Dr. Ahmad Wijaya',
+                    duration: '8 Minggu',
+                    level: 'Pemula',
+                    rating: 4.9,
+                    students: 2500,
+                    image: 'https://picsum.photos/seed/academy1/400/300.jpg',
+                    description: 'Pelajari dasar-dasar data science dari nol hingga mahir.'
+                },
+                {
+                    id: 'academy-2',
+                    title: 'Machine Learning with Python',
+                    instructor: 'Sarah Putri',
+                    duration: '12 Minggu',
+                    level: 'Menengah',
+                    rating: 4.8,
+                    students: 1800,
+                    image: 'https://picsum.photos/seed/academy2/400/300.jpg',
+                    description: 'Master machine learning menggunakan Python dan library populer.'
+                },
+                {
+                    id: 'academy-3',
+                    title: 'Web Development Bootcamp',
+                    instructor: 'Budi Santoso',
+                    duration: '16 Minggu',
+                    level: 'Pemula',
+                    rating: 4.7,
+                    students: 3200,
+                    image: 'https://picsum.photos/seed/academy3/400/300.jpg',
+                    description: 'Full stack web development dari dasar hingga deployment.'
+                },
+                {
+                    id: 'academy-4',
+                    title: 'UI/UX Design Masterclass',
+                    instructor: 'Maya Sari',
+                    duration: '6 Minggu',
+                    level: 'Menengah',
+                    rating: 4.9,
+                    students: 1500,
+                    image: 'https://picsum.photos/seed/academy4/400/300.jpg',
+                    description: 'Desain interface dan user experience yang modern dan efektif.'
+                },
+                {
+                    id: 'academy-5',
+                    title: 'Mobile App Development',
+                    instructor: 'Rizki Firmansyah',
+                    duration: '10 Minggu',
+                    level: 'Menengah',
+                    rating: 4.6,
+                    students: 2100,
+                    image: 'https://picsum.photos/seed/academy5/400/300.jpg',
+                    description: 'Develop aplikasi mobile untuk iOS dan Android.'
+                },
+                {
+                    id: 'academy-6',
+                    title: 'Cloud Architecture Essentials',
+                    instructor: 'Dr. Indah Lestari',
+                    duration: '8 Minggu',
+                    level: 'Lanjutan',
+                    rating: 4.8,
+                    students: 1200,
+                    image: 'https://picsum.photos/seed/academy6/400/300.jpg',
+                    description: 'Arsitektur cloud dan best practices untuk enterprise.'
+                },
+                {
+                    id: 'academy-7',
+                    title: 'DevOps Engineering',
+                    instructor: 'Fajar Rahman',
+                    duration: '12 Minggu',
+                    level: 'Lanjutan',
+                    rating: 4.7,
+                    students: 900,
+                    image: 'https://picsum.photos/seed/academy7/400/300.jpg',
+                    description: 'CI/CD pipeline, containerization, dan infrastructure automation.'
+                },
+                {
+                    id: 'academy-8',
+                    title: 'Data Engineering Pipeline',
+                    instructor: 'Lisa Permata',
+                    duration: '10 Minggu',
+                    level: 'Menengah',
+                    rating: 4.8,
+                    students: 1600,
+                    image: 'https://picsum.photos/seed/academy8/400/300.jpg',
+                    description: 'Build data pipeline dan ETL processes yang scalable.'
+                },
+                {
+                    id: 'academy-9',
+                    title: 'Business Intelligence Analytics',
+                    instructor: 'Dewi Kartika',
+                    duration: '8 Minggu',
+                    level: 'Menengah',
+                    rating: 4.9,
+                    students: 2000,
+                    image: 'https://picsum.photos/seed/academy9/400/300.jpg',
+                    description: 'Dashboard analytics dan business intelligence tools.'
+                },
+                {
+                    id: 'academy-10',
+                    title: 'Cybersecurity Fundamentals',
+                    instructor: 'Reza Pratama',
+                    duration: '6 Minggu',
+                    level: 'Pemula',
+                    rating: 4.7,
+                    students: 1800,
+                    image: 'https://picsum.photos/seed/academy10/400/300.jpg',
+                    description: 'Keamanan jaringan dan cybersecurity best practices.'
+                },
+                {
+                    id: 'academy-11',
+                    title: 'Database Management Systems',
+                    instructor: 'Hendra Kusuma',
+                    duration: '8 Minggu',
+                    level: 'Menengah',
+                    rating: 4.6,
+                    students: 1400,
+                    image: 'https://picsum.photos/seed/academy11/400/300.jpg',
+                    description: 'Database design, optimization, dan administration.'
+                },
+                {
+                    id: 'academy-12',
+                    title: 'Agile Project Management',
+                    instructor: 'Nina Wijaya',
+                    duration: '4 Minggu',
+                    level: 'Semua Level',
+                    rating: 4.8,
+                    students: 2500,
+                    image: 'https://picsum.photos/seed/academy12/400/300.jpg',
+                    description: 'Project management dengan metodologi agile dan scrum.'
+                },
+                {
+                    id: 'academy-13',
+                    title: 'Frontend Framework Mastery',
+                    instructor: 'Andi Pratama',
+                    duration: '8 Minggu',
+                    level: 'Lanjutan',
+                    rating: 4.7,
+                    students: 1700,
+                    image: 'https://picsum.photos/seed/academy13/400/300.jpg',
+                    description: 'Master React, Vue, dan modern frontend frameworks.'
+                },
+                {
+                    id: 'academy-14',
+                    title: 'Backend API Development',
+                    instructor: 'Rina Susanti',
+                    duration: '10 Minggu',
+                    level: 'Lanjutan',
+                    rating: 4.8,
+                    students: 1300,
+                    image: 'https://picsum.photos/seed/academy14/400/300.jpg',
+                    description: 'RESTful API design, microservices, dan backend architecture.'
+                },
+                {
+                    id: 'academy-15',
+                    title: 'Quality Assurance Testing',
+                    instructor: 'Doni Hermawan',
+                    duration: '6 Minggu',
+                    level: 'Menengah',
+                    rating: 4.6,
+                    students: 1100,
+                    image: 'https://picsum.photos/seed/academy15/400/300.jpg',
+                    description: 'Automated testing, QA methodologies, dan quality assurance.'
+                },
+                {
+                    id: 'academy-16',
+                    title: 'Product Strategy & Design',
+                    instructor: 'Siti Aminah',
+                    duration: '8 Minggu',
+                    level: 'Lanjutan',
+                    rating: 4.9,
+                    students: 1900,
+                    image: 'https://picsum.photos/seed/academy16/400/300.jpg',
+                    description: 'Product development, user research, dan strategic planning.'
+                }
+            ];
+        }
+
+        // Update academies grid with pagination
+        function updateAcademyGridWithPagination() {
             const academyGrid = document.getElementById('academyGrid');
-            console.log('Academy grid element:', academyGrid);
-            console.log('Academy grid found:', !!academyGrid);
-            
             if (!academyGrid) {
                 console.log('Academy grid not found');
                 return;
             }
 
-            if (academies.length === 0) {
+            if (allAcademies.length === 0) {
                 console.log('No academies data available');
                 return;
             }
 
+            // Calculate start and end indices for current page
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentAcademies = allAcademies.slice(startIndex, endIndex);
+
             // Clear existing content
             academyGrid.innerHTML = '';
-            console.log('Academy grid cleared');
 
-            // Add academy cards
-            academies.forEach((academy, index) => {
-                console.log('Creating card for academy', index, academy);
+            // Add academy cards for current page
+            currentAcademies.forEach((academy, index) => {
                 const academyCard = createAcademyCard(academy);
-                console.log('Academy card created:', academyCard);
                 academyGrid.appendChild(academyCard);
-                console.log('Academy card appended');
             });
             
-            console.log('All academy cards added to grid');
+            // Update pagination buttons
+            updatePaginationButtons();
+            
+            // Setup pagination event listeners (only once)
+            setupPaginationListeners();
+        }
+
+        // Setup pagination event listeners
+        function setupPaginationListeners() {
+            const paginationButtons = document.querySelectorAll('button[data-page]');
+            console.log('Pagination buttons found:', paginationButtons.length);
+            console.log('All academies loaded:', allAcademies.length);
+            
+            // Remove existing listeners to prevent duplicates
+            paginationButtons.forEach(button => {
+                button.replaceWith(button.cloneNode(true));
+            });
+            
+            // Add new listeners
+            const newPaginationButtons = document.querySelectorAll('button[data-page]');
+            newPaginationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageNumber = parseInt(this.dataset.page);
+                    const totalPages = Math.ceil(allAcademies.length / itemsPerPage);
+                    
+                    console.log('Button clicked:', pageNumber);
+                    console.log('Total pages:', totalPages);
+                    console.log('Current page before:', currentPage);
+                    
+                    if (pageNumber >= 1 && pageNumber <= totalPages) {
+                        currentPage = pageNumber;
+                        console.log('Current page after:', currentPage);
+                        updateAcademyGridWithPagination();
+                        
+                        // Scroll to center of academies section
+                        setTimeout(() => {
+                            const academiesSection = document.getElementById('academyGrid');
+                            if (academiesSection) {
+                                // Get the first visible card
+                                const firstVisibleCard = academiesSection.querySelector('.academy-card:not([style*="display: none"])');
+                                if (firstVisibleCard) {
+                                    // Scroll to the first visible card
+                                    firstVisibleCard.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                } else {
+                                    // Fallback to section center
+                                    const sectionRect = academiesSection.getBoundingClientRect();
+                                    const offset = sectionRect.top + window.pageYOffset - (window.innerHeight / 2) + (sectionRect.height / 2);
+                                    window.scrollTo({
+                                        top: offset,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }
+                        }, 100);
+                    }
+                });
+            });
+        }
+
+        // Update pagination buttons
+        function updatePaginationButtons() {
+            const paginationButtons = document.querySelectorAll('button[data-page]');
+            const totalPages = Math.ceil(allAcademies.length / itemsPerPage);
+
+            paginationButtons.forEach(button => {
+                const pageNumber = parseInt(button.dataset.page);
+                
+                // Reset button styles
+                button.className = 'px-3 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition';
+                
+                // Highlight current page
+                if (pageNumber === currentPage) {
+                    button.className = 'px-3 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition';
+                }
+                
+                // Disable buttons beyond total pages
+                if (pageNumber > totalPages) {
+                    button.disabled = true;
+                    button.className = 'px-3 py-2 rounded-lg bg-gray-100 text-gray-400 cursor-not-allowed transition';
+                }
+            });
         }
 
         // Create academy card HTML
@@ -863,54 +1129,107 @@
             return stars;
         }
 
-        // Search functionality
+        // Enhanced search functionality with pagination support and glitch prevention
+        let searchTimeout;
+        let isSearching = false;
+        
         document.getElementById('searchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            const academyCards = document.querySelectorAll('.academy-card');
             
-            academyCards.forEach(card => {
-                const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
-                const description = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
-                const instructor = card.querySelector('div.flex.items-center.justify-between.text-sm span:last-child')?.textContent.toLowerCase() || '';
-                const level = card.querySelector('.bg-green-100')?.textContent.toLowerCase() || '';
-                const schedule = card.querySelector('.bg-blue-100')?.textContent.toLowerCase() || '';
-                const mode = card.querySelector('.bg-purple-100')?.textContent.toLowerCase() || '';
-                const duration = card.querySelector('div.flex.items-center.justify-between.text-sm span:first-child')?.textContent.toLowerCase() || '';
-                
-                // Combine all searchable text
-                const allText = title + ' ' + description + ' ' + instructor + ' ' + level + ' ' + schedule + ' ' + mode + ' ' + duration;
-                
-                console.log('Searching for:', searchTerm);
-                console.log('Card text:', allText);
-                
-                if (allText.includes(searchTerm)) {
-                    card.style.display = 'block';
-                    console.log('Showing card for:', searchTerm);
-                } else {
-                    card.style.display = 'none';
-                    console.log('Hiding card for:', searchTerm);
-                }
-            });
-            
-            // Show message if no results
-            const visibleCards = Array.from(academyCards).filter(card => card.style.display !== 'none');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            
-            if (visibleCards.length === 0 && searchTerm.length > 0) {
-                if (!noResultsMessage) {
-                    const message = document.createElement('div');
-                    message.id = 'noResultsMessage';
-                    message.className = 'col-span-full text-center py-8 text-gray-500';
-                    message.innerHTML = `
-                        <div class="text-6xl mb-4">🔍</div>
-                        <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
-                        <p>Tidak ada pelatihan yang cocok dengan pencarian "${searchTerm}"</p>
-                    `;
-                    document.getElementById('academyGrid').appendChild(message);
-                }
-            } else if (noResultsMessage) {
-                noResultsMessage.remove();
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
             }
+            
+            // Debounce search to prevent glitches
+            searchTimeout = setTimeout(() => {
+                if (isSearching) return; // Prevent multiple simultaneous searches
+                isSearching = true;
+                
+                if (searchTerm.length === 0) {
+                    // Reset to first page when search is cleared
+                    currentPage = 1;
+                    updateAcademyGridWithPagination();
+                    isSearching = false;
+                    return;
+                }
+                
+                // Search through all academies to find matches
+                const matchingAcademies = [];
+                allAcademies.forEach((academy, index) => {
+                    const title = academy.title.toLowerCase();
+                    const description = academy.description.toLowerCase();
+                    const instructor = academy.instructor ? academy.instructor.toLowerCase() : '';
+                    const level = academy.level ? academy.level.toLowerCase() : '';
+                    const schedule = academy.schedule ? academy.schedule.toLowerCase() : '';
+                    const mode = academy.mode ? academy.mode.toLowerCase() : '';
+                    const duration = academy.duration ? academy.duration.toLowerCase() : '';
+                    
+                    // Combine all searchable text
+                    const allText = title + ' ' + description + ' ' + instructor + ' ' + level + ' ' + schedule + ' ' + mode + ' ' + duration;
+                    
+                    if (allText.includes(searchTerm)) {
+                        matchingAcademies.push({
+                            ...academy,
+                            originalIndex: index
+                        });
+                    }
+                });
+                
+                console.log('Search term:', searchTerm);
+                console.log('Matching academies:', matchingAcademies.length);
+                
+                if (matchingAcademies.length === 0) {
+                    // Show no results message
+                    const academyGrid = document.getElementById('academyGrid');
+                    academyGrid.innerHTML = `
+                        <div id="noResultsMessage" class="col-span-full text-center py-8 text-gray-500">
+                            <div class="text-6xl mb-4">🔍</div>
+                            <h3 class="text-xl font-semibold mb-2">Tidak ada hasil ditemukan</h3>
+                            <p>Tidak ada pelatihan yang cocok dengan pencarian "${searchTerm}"</p>
+                        </div>
+                    `;
+                    isSearching = false;
+                    return;
+                }
+                
+                // Find the page where the first matching academy is located
+                const firstMatchIndex = matchingAcademies[0].originalIndex;
+                const targetPage = Math.floor(firstMatchIndex / itemsPerPage) + 1;
+                
+                console.log('First match index:', firstMatchIndex);
+                console.log('Target page:', targetPage);
+                
+                // Switch to the target page
+                currentPage = targetPage;
+                updateAcademyGridWithPagination();
+                
+                // Highlight matching academies on the current page
+                setTimeout(() => {
+                    const academyCards = document.querySelectorAll('.academy-card');
+                    academyCards.forEach(card => {
+                        const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                        const description = card.querySelector('p.text-gray-600')?.textContent.toLowerCase() || '';
+                        const instructor = card.querySelector('div.flex.items-center.justify-between.text-sm span:last-child')?.textContent.toLowerCase() || '';
+                        const level = card.querySelector('.bg-green-100')?.textContent.toLowerCase() || '';
+                        const schedule = card.querySelector('.bg-blue-100')?.textContent.toLowerCase() || '';
+                        const mode = card.querySelector('.bg-purple-100')?.textContent.toLowerCase() || '';
+                        const duration = card.querySelector('div.flex.items-center.justify-between.text-sm span:first-child')?.textContent.toLowerCase() || '';
+                        
+                        const allText = title + ' ' + description + ' ' + instructor + ' ' + level + ' ' + schedule + ' ' + mode + ' ' + duration;
+                        
+                        if (allText.includes(searchTerm)) {
+                            // Highlight matching card
+                            card.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                            // Remove auto-scroll to keep search bar visible
+                            // card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            card.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2');
+                        }
+                    });
+                    isSearching = false;
+                }, 300); // Increased delay to ensure grid is fully updated
+            }, 300); // Debounce delay
         });
 
         // Filter functionality

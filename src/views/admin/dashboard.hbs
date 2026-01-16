@@ -341,6 +341,7 @@
                         </div>
                         {{#if experts.length}}
                             {{#each experts}}
+                            {{#if @first}}
                             <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="{{this.id}}" data-expert-name="{{this.name}}" data-expert-position="{{this.position}}" data-expert-experience="{{this.experience}}" data-expert-rating="{{this.rating}}" data-expert-review-count="{{this.reviewCount}}" data-expert-image="{{this.image}}" data-expert-description="{{this.description}}">
                                 <div class="flex items-center space-x-4 mb-3">
                                     {{#if this.image}}
@@ -372,9 +373,10 @@
                                     </div>
                                 </div>
                             </div>
+                            {{/if}}
                             {{/each}}
                         {{else}}
-                            <!-- Data spesifik dari beranda -->
+                            <!-- Data spesifik dari beranda - hanya 1 item -->
                             <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="expert-1">
                                 <div class="flex items-center space-x-4 mb-3">
                                     <img src="https://picsum.photos/seed/ahmad-wijaya/200/200.jpg" alt="Dr. Ahmad Wijaya" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
@@ -403,62 +405,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="expert-2">
-                                <div class="flex items-center space-x-4 mb-3">
-                                    <img src="https://picsum.photos/seed/sarah-putri/200/200.jpg" alt="Sarah Putri" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
-                                    <div class="flex-1">
-                                        <h4 class="text-lg font-semibold text-purple-800">Sarah Putri, S.Kom., M.T.</h4>
-                                        <p class="text-purple-700 text-sm">Data Science Lead</p>
-                                        <p class="text-purple-600 text-xs">12+ Tahun Pengalaman</p>
-                                        <div class="flex items-center mt-1">
-                                            <div class="flex text-yellow-400 text-xs">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                            </div>
-                                            <span class="text-purple-600 text-xs ml-2">4.8 (890)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="text-purple-600 text-xs mb-3">Spesialis dalam Python programming dan data visualization. Pengalaman dalam big data analytics dan deep learning.</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex space-x-2">
-                                        <button onclick="deleteExpert('expert-2')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4 mb-4" data-expert-id="expert-3">
-                                <div class="flex items-center space-x-4 mb-3">
-                                    <img src="https://picsum.photos/seed/budi-santoso/200/200.jpg" alt="Budi Santoso" class="w-16 h-16 rounded-full object-cover border-2 border-purple-300">
-                                    <div class="flex-1">
-                                        <h4 class="text-lg font-semibold text-purple-800">Budi Santoso, S.E., M.M.</h4>
-                                        <p class="text-purple-700 text-sm">Business Intelligence Expert</p>
-                                        <p class="text-purple-600 text-xs">10+ Tahun Pengalaman</p>
-                                        <div class="flex items-center mt-1">
-                                            <div class="flex text-yellow-400 text-xs">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                            </div>
-                                            <span class="text-purple-600 text-xs ml-2">4.7 (650)</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="text-purple-600 text-xs mb-3">Expert dalam business intelligence dan dashboard development. Pengalaman dalam Power BI, Tableau, dan data storytelling.</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex space-x-2">
-                                        <button onclick="deleteExpert('expert-3')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         {{/if}}
                         <div class="flex items-center justify-between">
                             <span class="text-sm text-gray-600">{{stats.experts}} experts</span>
@@ -473,9 +419,6 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-800">Synergy Portfolio</h3>
                             <div class="flex items-center space-x-2">
-                                <a href="/admin/portfolios" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
-                                    <i class="fas fa-eye mr-1"></i>View All
-                                </a>
                                 <button onclick="openAddPortfolioModal()" class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded-md text-sm font-medium transition">
                                     <i class="fas fa-plus mr-1"></i>Add Portfolio
                                 </button>
@@ -486,6 +429,7 @@
                         </div>
                         {{#if portfolios.length}}
                             {{#each portfolios}}
+                            {{#if @first}}
                             <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="{{this.id}}" data-portfolio-title="{{this.title}}" data-portfolio-category="{{this.category}}" data-portfolio-technologies="{{#if this.technologies}}{{#each this.technologies}}{{this}}{{#unless @last}},{{/unless}}{{/each}}{{/if}}" data-portfolio-description="{{this.description}}" data-portfolio-live-demo-url="{{this.liveDemoUrl}}" data-portfolio-code-url="{{this.codeUrl}}" data-portfolio-image="{{this.image}}">
                                 <div class="mb-3">
                                     {{#if this.image}}
@@ -528,9 +472,10 @@
                                     </div>
                                 </div>
                             </div>
+                            {{/if}}
                             {{/each}}
                         {{else}}
-                            <!-- Data spesifik dari beranda -->
+                            <!-- Data spesifik dari beranda - hanya 1 item -->
                             <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="portfolio-1">
                                 <div class="mb-3">
                                     <img src="https://picsum.photos/seed/ecommerce-platform/400/300.jpg" alt="E-Commerce Platform" class="w-full h-32 object-cover rounded-lg">
@@ -552,74 +497,6 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex space-x-2">
                                         <button onclick="deletePortfolio('portfolio-1')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Delete
-                                        </button>
-                                    </div>
-                                    <div class="flex space-x-2">
-                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
-                                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
-                                        </a>
-                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
-                                            <i class="fab fa-github mr-1"></i>View Code
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="portfolio-2">
-                                <div class="mb-3">
-                                    <img src="https://picsum.photos/seed/mobile-banking-app/400/300.jpg" alt="Mobile Banking App" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <h4 class="text-lg font-semibold text-orange-800 mb-1">Mobile Banking App</h4>
-                                <p class="text-orange-700 text-sm mb-2">Aplikasi mobile banking dengan fitur transfer, payment, dan analytics real-time</p>
-                                <div class="flex flex-wrap gap-1 mb-3">
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">React Native</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">TypeScript</span>
-                                </div>
-                                <p class="text-orange-600 text-xs mb-3">Project Overview</p>
-                                <p class="text-orange-600 text-xs mb-3">Mengembangkan aplikasi mobile banking dengan security tinggi dan compliance dengan standard perbankan.</p>
-                                <div class="flex flex-wrap gap-1 mb-3">
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">React Native</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">TypeScript</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Node.js</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Firebase</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex space-x-2">
-                                        <button onclick="deletePortfolio('portfolio-2')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Delete
-                                        </button>
-                                    </div>
-                                    <div class="flex space-x-2">
-                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
-                                            <i class="fas fa-external-link-alt mr-1"></i>Live Demo
-                                        </a>
-                                        <a href="#" class="text-orange-600 hover:text-orange-700 text-sm">
-                                            <i class="fab fa-github mr-1"></i>View Code
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4 mb-4" data-portfolio-id="portfolio-3">
-                                <div class="mb-3">
-                                    <img src="https://picsum.photos/seed/cyber-security-dashboard/400/300.jpg" alt="Cyber Security Dashboard" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <h4 class="text-lg font-semibold text-orange-800 mb-1">Cyber Security Dashboard</h4>
-                                <p class="text-orange-700 text-sm mb-2">Dashboard monitoring keamanan siber dengan real-time threat detection dan automated response</p>
-                                <div class="flex flex-wrap gap-1 mb-3">
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Vue.js</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Python</span>
-                                </div>
-                                <p class="text-orange-600 text-xs mb-3">Project Overview</p>
-                                <p class="text-orange-600 text-xs mb-3">Mengembangkan dashboard untuk monitoring keamanan jaringan dengan visualisasi data threat secara real-time.</p>
-                                <div class="flex flex-wrap gap-1 mb-3">
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Vue.js</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">Python</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">FastAPI</span>
-                                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded">PostgreSQL</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex space-x-2">
-                                        <button onclick="deletePortfolio('portfolio-3')" class="text-red-600 hover:text-red-700 text-sm">
                                             <i class="fas fa-trash mr-1"></i>Delete
                                         </button>
                                     </div>
@@ -657,6 +534,7 @@
                         </div>
                         {{#if academies.length}}
                             {{#each academies}}
+                            {{#if @first}}
                             <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="{{this.id}}" data-academy-title="{{this.title}}" data-academy-author="{{this.author}}" data-academy-price="{{this.price}}" data-academy-rating="{{this.rating}}" data-academy-student-count="{{this.studentCount}}" data-academy-duration="{{this.duration}}" data-academy-certification="{{this.certification}}" data-academy-level="{{this.level}}" data-academy-schedule="{{this.schedule}}" data-academy-mode="{{this.mode}}" data-academy-description="{{this.description}}" data-academy-image="{{this.image}}">
                                 <div class="mb-3">
                                     {{#if this.image}}
@@ -698,9 +576,10 @@
                                     </div>
                                 </div>
                             </div>
+                            {{/if}}
                             {{/each}}
                         {{else}}
-                            <!-- Data spesifik dari beranda -->
+                            <!-- Data spesifik dari beranda - hanya 1 item -->
                             <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="academy-1">
                                 <div class="mb-3">
                                     <img src="https://picsum.photos/seed/komputer-course/400/300.jpg" alt="Komputer" class="w-full h-32 object-cover rounded-lg">
@@ -748,110 +627,6 @@
                                             <i class="fas fa-edit mr-1"></i>Edit
                                         </button>
                                         <button onclick="deleteAcademy('academy-1')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="academy-2">
-                                <div class="mb-3">
-                                    <img src="https://picsum.photos/seed/data-science-course/400/300.jpg" alt="Data Science" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <h4 class="text-lg font-semibold text-red-800 mb-1">Data Science</h4>
-                                <p class="text-red-700 text-sm mb-2">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</p>
-                                <p class="text-red-700 text-sm mb-2">Penulis: Admin Mobile Faculty</p>
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center">
-                                        <div class="flex text-yellow-400 text-xs">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                        </div>
-                                        <span class="text-red-600 text-xs ml-2">4.9</span>
-                                    </div>
-                                    <div class="flex items-center text-xs text-red-600">
-                                        <span class="mr-2">2,500+</span>
-                                        <span class="mr-2">Siswa</span>
-                                        <span class="mr-2">12</span>
-                                        <span class="mr-2">Minggu</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center text-xs text-red-600 mb-3">
-                                    <i class="fas fa-certificate mr-1"></i>
-                                    <span class="mr-2">Sertifikat</span>
-                                    <i class="fas fa-signal ml-3 mr-1"></i>
-                                    <span class="mr-2">Program</span>
-                                </div>
-                                <div class="flex items-center text-xs text-red-600 mb-3">
-                                    <i class="fas fa-signal mr-1"></i>
-                                    <span class="mr-2">Beginner</span>
-                                    <i class="fas fa-clock ml-3 mr-1"></i>
-                                    <span class="mr-2">Full Time</span>
-                                    <i class="fas fa-laptop ml-3 mr-1"></i>
-                                    <span class="mr-2">Online</span>
-                                </div>
-                                <p class="text-red-600 text-xs mb-3">Mobile Development Fundamental</p>
-                                <p class="text-red-600 text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex space-x-2">
-                                        <button onclick="editAcademy('academy-2')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-edit mr-1"></i>Edit
-                                        </button>
-                                        <button onclick="deleteAcademy('academy-2')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-trash mr-1"></i>Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-red-50 to-red-100 rounded-lg p-4 mb-4" data-academy-id="academy-3">
-                                <div class="mb-3">
-                                    <img src="https://picsum.photos/seed/uiux-design-course/400/300.jpg" alt="UI/UX Design" class="w-full h-32 object-cover rounded-lg">
-                                </div>
-                                <h4 class="text-lg font-semibold text-red-800 mb-1">UI/UX Design</h4>
-                                <p class="text-red-700 text-sm mb-2">Pelatihan dan Uji Kompetensi BNSP Skema untuk Teknisi Perbaikan Komputer</p>
-                                <p class="text-red-700 text-sm mb-2">Penulis: Admin Mobile Faculty</p>
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center">
-                                        <div class="flex text-yellow-400 text-xs">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                        </div>
-                                        <span class="text-red-600 text-xs ml-2">4.9</span>
-                                    </div>
-                                    <div class="flex items-center text-xs text-red-600">
-                                        <span class="mr-2">2,500+</span>
-                                        <span class="mr-2">Siswa</span>
-                                        <span class="mr-2">12</span>
-                                        <span class="mr-2">Minggu</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center text-xs text-red-600 mb-3">
-                                    <i class="fas fa-certificate mr-1"></i>
-                                    <span class="mr-2">Sertifikat</span>
-                                    <i class="fas fa-signal ml-3 mr-1"></i>
-                                    <span class="mr-2">Program</span>
-                                </div>
-                                <div class="flex items-center text-xs text-red-600 mb-3">
-                                    <i class="fas fa-signal mr-1"></i>
-                                    <span class="mr-2">Beginner</span>
-                                    <i class="fas fa-clock ml-3 mr-1"></i>
-                                    <span class="mr-2">Full Time</span>
-                                    <i class="fas fa-laptop ml-3 mr-1"></i>
-                                    <span class="mr-2">Online</span>
-                                </div>
-                                <p class="text-red-600 text-xs mb-3">Mobile Development Fundamental</p>
-                                <p class="text-red-600 text-xs mb-3">Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cocok untuk yang baru dalam mobile development.</p>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex space-x-2">
-                                        <button onclick="editAcademy('academy-3')" class="text-red-600 hover:text-red-700 text-sm">
-                                            <i class="fas fa-edit mr-1"></i>Edit
-                                        </button>
-                                        <button onclick="deleteAcademy('academy-3')" class="text-red-600 hover:text-red-700 text-sm">
                                             <i class="fas fa-trash mr-1"></i>Delete
                                         </button>
                                     </div>
