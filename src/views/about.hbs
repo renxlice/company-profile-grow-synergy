@@ -104,23 +104,45 @@
         <nav class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-20 h-20 rounded-lg object-cover">
-                    <a href="/home" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-12 h-12 md:w-20 md:h-20 rounded-lg object-cover">
+                    <a href="/home" class="text-sm md:text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
                 </div>
                 
-                <div class="hidden md:flex space-x-6">
-                    <a href="/home" class="nav-link" data-page="home">Beranda</a>
-                    <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
-                    <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
-                    <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
+                <div class="hidden md:flex space-x-4 lg:space-x-6">
+                    <a href="/home" class="nav-link text-sm lg:text-base" data-page="home">Beranda</a>
+                    <a href="/synergy-experts" class="nav-link text-sm lg:text-base" data-page="synergy-experts">Synergy Experts</a>
+                    <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base" data-page="synergy-portfolio">Synergy Portofolio</a>
+                    <a href="/synergy-academy" class="nav-link text-sm lg:text-base" data-page="synergy-academy">Synergy Academy</a>
                 </div>
                 
-                <div class="flex items-center space-x-4">
-                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden md:hidden">
+                    <div class="flex flex-col h-full">
+                        <div class="flex justify-end items-center p-4 border-b">
+                            <button id="close-menu-btn" class="text-gray-600 p-2">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <nav class="flex-1 p-4">
+                            <div class="flex flex-col space-y-4">
+                                <a href="/home" class="nav-link text-lg py-3 border-b block text-gray-800 hover:text-orange-500 transition-colors" data-page="home">Beranda</a>
+                                <a href="/synergy-experts" class="nav-link text-lg py-3 border-b block text-gray-800 hover:text-orange-500 transition-colors" data-page="synergy-experts">Synergy Experts</a>
+                                <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b block text-gray-800 hover:text-orange-500 transition-colors" data-page="synergy-portfolio">Synergy Portofolio</a>
+                                <a href="/synergy-academy" class="nav-link text-lg py-3 border-b block text-gray-800 hover:text-orange-500 transition-colors" data-page="synergy-academy">Synergy Academy</a>
+                                <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-3 rounded-lg text-center mt-4 block" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                                    Tentang Kami
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-1.5 py-0.5 md:px-4 md:py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important text-xs md:text-sm" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
                         Tentang Kami
                     </a>
-                    <button class="md:hidden text-gray-600">
-                        <i class="fas fa-bars text-xl"></i>
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 p-1">
+                        <i class="fas fa-bars text-base"></i>
                     </button>
                 </div>
             </div>

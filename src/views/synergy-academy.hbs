@@ -63,23 +63,45 @@
         <nav class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-20 h-20 rounded-lg object-cover">
-                    <a href="/home" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-12 h-12 md:w-20 md:h-20 rounded-lg object-cover">
+                    <a href="/home" class="text-sm md:text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
                 </div>
                 
-                <div class="hidden md:flex space-x-6">
-                    <a href="/home" class="nav-link" data-page="home">Beranda</a>
-                    <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
-                    <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
-                    <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
+                <div class="hidden md:flex space-x-4 lg:space-x-6">
+                    <a href="/home" class="nav-link text-sm lg:text-base" data-page="home">Beranda</a>
+                    <a href="/synergy-experts" class="nav-link text-sm lg:text-base" data-page="synergy-experts">Synergy Experts</a>
+                    <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base" data-page="synergy-portfolio">Synergy Portofolio</a>
+                    <a href="/synergy-academy" class="nav-link text-sm lg:text-base" data-page="synergy-academy">Synergy Academy</a>
                 </div>
                 
-                <div class="flex items-center space-x-4">
-                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-50 md:hidden">
+                    <div class="flex flex-col h-full">
+                        <div class="flex justify-end items-center p-4 border-b">
+                            <button id="close-menu-btn" class="text-gray-600 p-2">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <nav class="flex-1 p-4">
+                            <div class="flex flex-col space-y-4">
+                                <a href="/home" class="nav-link text-lg py-3 border-b" data-page="home">Beranda</a>
+                                <a href="/synergy-experts" class="nav-link text-lg py-3 border-b" data-page="synergy-experts">Synergy Experts</a>
+                                <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b" data-page="synergy-portfolio">Synergy Portofolio</a>
+                                <a href="/synergy-academy" class="nav-link text-lg py-3 border-b" data-page="synergy-academy">Synergy Academy</a>
+                                <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-3 rounded-lg text-center mt-4" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                                    Tentang Kami
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-1.5 py-0.5 md:px-4 md:py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important text-xs md:text-sm" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
                         Tentang Kami
                     </a>
-                    <button class="md:hidden text-gray-600">
-                        <i class="fas fa-bars text-xl"></i>
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 p-1">
+                        <i class="fas fa-bars text-base"></i>
                     </button>
                 </div>
             </div>
@@ -93,9 +115,9 @@
 <div class="hero-section" id="hero-section">
     <div class="background-image" id="hero-background-image" style="background-image: url('/images/hero-background.jpg');"></div>
     <div class="hero-content">
-        <h2 class="text-3xl md:text-4xl font-light mb-4" id="hero-subtitle">Platform Pembelajaran Terbaik</h2>
-        <h1 class="text-4xl md:text-6xl font-bold mb-8" id="hero-title">Synergy Academy</h1>
-        <p class="text-xl mb-8 text-center max-w-3xl" id="hero-description">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-light mb-4" id="hero-subtitle">Platform Pembelajaran Terbaik</h2>
+        <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold mb-6 lg:mb-8" id="hero-title">Synergy Academy</h1>
+        <p class="text-base md:text-xl mb-6 lg:mb-8 text-center max-w-3xl px-4 lg:px-0" id="hero-description">
             Program pelatihan berkualitas dengan kurikulum relevan dan instruktur profesional
         </p>
     </div>
@@ -548,6 +570,24 @@
         </div>
     </div>
 </section>
+
+<!-- Academy Detail Modal -->
+<div id="academyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" style="display: none;">
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg max-w-4xl w-full max-h-screen overflow-y-auto" style="max-height: 90vh;">
+            <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center z-10">
+                <h2 id="academyModalTitle" class="text-2xl font-bold text-gray-800"></h2>
+                <button id="closeAcademyModal" class="text-gray-600 hover:text-gray-800 text-2xl bg-white rounded-full p-2 shadow-lg">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6" style="max-height: calc(90vh - 80px); overflow-y: auto;">
+                <div id="academyModalImage" class="mb-6"></div>
+                <div id="academyModalContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Statistics Section -->
 <section class="py-16 bg-blue-600 text-white">
@@ -1039,7 +1079,12 @@
                 console.log('Academy price type:', typeof academy.price);
                 
                 const div = document.createElement('div');
-                div.className = 'academy-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition';
+                div.className = 'academy-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer';
+                
+                // Add click event to show modal
+                div.addEventListener('click', function() {
+                    showAcademyModal(academy);
+                });
                 
                 // Set category for filtering
                 div.setAttribute('data-category', academy.level || academy.mode || 'general');
@@ -1106,7 +1151,7 @@
                 // Return a simple error card
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 p-4 rounded';
-                errorDiv.innerHTML = 'Error loading academy: ' + error.message;
+                errorDiv.textContent = 'Error loading course';
                 return errorDiv;
             }
         }
@@ -1128,6 +1173,97 @@
             
             return stars;
         }
+
+        // Academy Modal functionality
+        function showAcademyModal(academy) {
+            const modal = document.getElementById('academyModal');
+            const modalTitle = document.getElementById('academyModalTitle');
+            const modalImage = document.getElementById('academyModalImage');
+            const modalContent = document.getElementById('academyModalContent');
+            
+            // Set modal content
+            modalTitle.textContent = academy.title || 'Course Detail';
+            
+            // Set modal image
+            const academyImage = academy.image || 'https://picsum.photos/seed/academy-' + academy.id + '/800/400.jpg';
+            modalImage.innerHTML = `
+                <img src="${academyImage}" alt="${academy.title}" class="w-full h-64 object-cover rounded-lg">
+            `;
+            
+            // Set modal content
+            const price = academy.price ? 'Rp ' + academy.price.toLocaleString('id-ID') : 'Free';
+            const duration = academy.duration || 'Tidak tersedia';
+            const level = academy.level || 'All Levels';
+            const instructor = academy.instructor || academy.author || 'Tidak tersedia';
+            
+            modalContent.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-2">${academy.title}</h3>
+                            <p class="text-gray-600 mb-4">${academy.description || 'Tidak ada deskripsi tersedia.'}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">${price}</div>
+                            <div class="text-sm text-gray-600">Harga Kursus</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <i class="fas fa-clock text-blue-600 text-2xl mb-2"></i>
+                            <div class="font-semibold text-gray-800">Durasi</div>
+                            <div class="text-gray-600">${duration}</div>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg text-center">
+                            <i class="fas fa-signal text-green-600 text-2xl mb-2"></i>
+                            <div class="font-semibold text-gray-800">Level</div>
+                            <div class="text-gray-600">${level}</div>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg text-center">
+                            <i class="fas fa-user-tie text-purple-600 text-2xl mb-2"></i>
+                            <div class="font-semibold text-gray-800">Instruktur</div>
+                            <div class="text-gray-600">${instructor}</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Apa yang akan Anda Pelajari</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-700">${academy.description || 'Kursus komprehensif dengan materi terkini dan praktik langsung.'}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Mode Pembelajaran</h3>
+                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full">${academy.mode || 'Online'}</span>
+                    </div>
+                    
+                </div>
+            `;
+            
+            // Show modal
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeAcademyModal() {
+            const modal = document.getElementById('academyModal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('academyModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAcademyModal();
+            }
+        });
+        
+        // Close modal when clicking close button
+        document.getElementById('closeAcademyModal').addEventListener('click', closeAcademyModal);
 
         // Enhanced search functionality with pagination support and glitch prevention
         let searchTimeout;
@@ -1295,7 +1431,36 @@
         }
         
         // Load hero section when page loads
-        document.addEventListener('DOMContentLoaded', loadHeroSection);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHeroSection();
+            
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.remove('hidden');
+                });
+            }
+            
+            if (closeMenuBtn && mobileMenu) {
+                closeMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            }
+            
+            // Close menu when clicking on links
+            const mobileLinks = mobileMenu?.querySelectorAll('a');
+            if (mobileLinks) {
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+            }
+        });
     </script>
     
     <script>

@@ -63,23 +63,45 @@
         <nav class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-2">
-                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-20 h-20 rounded-lg object-cover">
-                    <a href="/home" class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-12 h-12 md:w-20 md:h-20 rounded-lg object-cover">
+                    <a href="/home" class="text-sm md:text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
                 </div>
                 
-                <div class="hidden md:flex space-x-6">
-                    <a href="/home" class="nav-link" data-page="home">Beranda</a>
-                    <a href="/synergy-experts" class="nav-link" data-page="synergy-experts">Synergy Experts</a>
-                    <a href="/synergy-portfolio" class="nav-link" data-page="synergy-portfolio">Synergy Portofolio</a>
-                    <a href="/synergy-academy" class="nav-link" data-page="synergy-academy">Synergy Academy</a>
+                <div class="hidden md:flex space-x-4 lg:space-x-6">
+                    <a href="/home" class="nav-link text-sm lg:text-base" data-page="home">Beranda</a>
+                    <a href="/synergy-experts" class="nav-link text-sm lg:text-base" data-page="synergy-experts">Synergy Experts</a>
+                    <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base" data-page="synergy-portfolio">Synergy Portofolio</a>
+                    <a href="/synergy-academy" class="nav-link text-sm lg:text-base" data-page="synergy-academy">Synergy Academy</a>
                 </div>
                 
-                <div class="flex items-center space-x-4">
-                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-50 md:hidden">
+                    <div class="flex flex-col h-full">
+                        <div class="flex justify-end items-center p-4 border-b">
+                            <button id="close-menu-btn" class="text-gray-600 p-2">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <nav class="flex-1 p-4">
+                            <div class="flex flex-col space-y-4">
+                                <a href="/home" class="nav-link text-lg py-3 border-b" data-page="home">Beranda</a>
+                                <a href="/synergy-experts" class="nav-link text-lg py-3 border-b" data-page="synergy-experts">Synergy Experts</a>
+                                <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b" data-page="synergy-portfolio">Synergy Portofolio</a>
+                                <a href="/synergy-academy" class="nav-link text-lg py-3 border-b" data-page="synergy-academy">Synergy Academy</a>
+                                <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-3 rounded-lg text-center mt-4" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                                    Tentang Kami
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-1.5 py-0.5 md:px-4 md:py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important text-xs md:text-sm" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
                         Tentang Kami
                     </a>
-                    <button class="md:hidden text-gray-600">
-                        <i class="fas fa-bars text-xl"></i>
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 p-1">
+                        <i class="fas fa-bars text-base"></i>
                     </button>
                 </div>
             </div>
@@ -93,10 +115,10 @@
 <div class="hero-section" id="hero-section">
     <div class="background-image" id="hero-background-image" style="background-image: url('/images/hero-background.jpg');"></div>
     <div class="hero-content">
-        <h2 class="text-3xl md:text-4xl font-light mb-4" id="hero-subtitle">Mastery in Motion</h2>
-        <h1 class="text-4xl md:text-6xl font-bold mb-8" id="hero-title">Synergy Portofolio</h1>
-        <p class="text-xl mb-8 text-center max-w-3xl" id="hero-description">
-            Mengabadikan proses belajar dan karya terbaik hasil program pelatihan intensif kami. 
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-light mb-4" id="hero-subtitle">Mastery in Motion</h2>
+        <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold mb-6 lg:mb-8" id="hero-title">Synergy Portofolio</h1>
+        <p class="text-base md:text-xl mb-6 lg:mb-8 text-center max-w-3xl px-4 lg:px-0" id="hero-description">
+            Mengabadikan proses belajar dan karya terbaik hasil program pelatihan intensif kami.
         </p>
     </div>
 </div>
@@ -193,6 +215,22 @@
         </div>
     </div>
 </section>
+
+<!-- Portfolio Detail Modal -->
+<div id="portfolioModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b p-4 flex justify-between items-center">
+            <h2 id="modalTitle" class="text-2xl font-bold text-gray-800"></h2>
+            <button id="closeModal" class="text-gray-600 hover:text-gray-800 text-2xl">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div id="modalImage" class="mb-6"></div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+</div>
 
 <!-- Statistics Section -->
 <section class="py-16 bg-blue-600 text-white">
@@ -767,7 +805,12 @@
         // Create portfolio card HTML using DOM methods
         function createPortfolioCard(portfolio) {
             const div = document.createElement('div');
-            div.className = 'portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition';
+            div.className = 'portfolio-card relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition cursor-pointer';
+            
+            // Add click event to show modal
+            div.addEventListener('click', function() {
+                showPortfolioModal(portfolio);
+            });
             
             // Set category for filtering
             div.setAttribute('data-category', portfolio.category || 'general');
@@ -805,7 +848,13 @@
             
             const descEl = document.createElement('p');
             descEl.className = 'text-white/80 text-sm mb-4';
-            descEl.textContent = portfolioDescription;
+            // Truncate description to show only half
+            const fullDescription = portfolioDescription;
+            const halfLength = Math.ceil(fullDescription.length / 2);
+            const truncatedDescription = fullDescription.length > 100 ? 
+                fullDescription.substring(0, halfLength) + '...' : 
+                fullDescription;
+            descEl.textContent = truncatedDescription;
             textOverlay.appendChild(descEl);
             
             const categoryContainer = document.createElement('div');
@@ -856,16 +905,15 @@
             linksContainer.className = 'flex justify-between';
             
             const docLink = document.createElement('a');
-            docLink.href = portfolioProjectUrl;
-            docLink.className = 'text-blue-600 hover:text-blue-800 font-medium';
-            docLink.textContent = 'Documentation';
+            docLink.href = '#';
+            docLink.className = 'text-blue-600 hover:text-blue-800 font-medium cursor-pointer';
+            docLink.textContent = 'Sentuh untuk melihat detail';
+            docLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                showPortfolioModal(portfolio);
+            });
             linksContainer.appendChild(docLink);
-            
-            const resultsLink = document.createElement('a');
-            resultsLink.href = portfolioGithubUrl;
-            resultsLink.className = 'text-gray-600 hover:text-gray-800 font-medium';
-            resultsLink.textContent = 'Results';
-            linksContainer.appendChild(resultsLink);
             
             contentContainer.appendChild(linksContainer);
             
@@ -875,6 +923,94 @@
             
             return div;
         }
+
+        // Modal functionality
+        function showPortfolioModal(portfolio) {
+            const modal = document.getElementById('portfolioModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalImage = document.getElementById('modalImage');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Set modal content
+            modalTitle.textContent = portfolio.title || 'Portfolio Detail';
+            
+            // Set modal image
+            const portfolioImage = portfolio.image || 'https://picsum.photos/seed/portfolio-' + portfolio.id + '/800/400.jpg';
+            modalImage.innerHTML = `
+                <img src="${portfolioImage}" alt="${portfolio.title}" class="w-full h-64 object-cover rounded-lg">
+            `;
+            
+            // Set modal content
+            const technologies = Array.isArray(portfolio.technologies) ? portfolio.technologies : [];
+            const projectUrl = portfolio.projectUrl || portfolio.liveDemoUrl || '#';
+            const githubUrl = portfolio.githubUrl || portfolio.codeUrl || '#';
+            
+            modalContent.innerHTML = `
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Deskripsi Proyek</h3>
+                        <p class="text-gray-600 leading-relaxed">${portfolio.description || portfolio.overview || 'Tidak ada deskripsi tersedia.'}</p>
+                    </div>
+                    
+                    ${portfolio.overview ? `
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Ringkasan Proyek</h3>
+                        <p class="text-gray-600 leading-relaxed">${portfolio.overview}</p>
+                    </div>
+                    ` : ''}
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Teknologi yang Digunakan</h3>
+                        <div class="flex flex-wrap gap-2">
+                            ${technologies.map(tech => `
+                                <span class="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">${tech}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Kategori</h3>
+                        <span class="bg-gray-100 text-gray-800 text-sm px-3 py-1 rounded-full">${portfolio.category || 'General'}</span>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        ${projectUrl !== '#' ? `
+                        <a href="${projectUrl}" target="_blank" class="flex-1 bg-blue-600 text-white text-center py-3 px-6 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            Lihat Demo
+                        </a>
+                        ` : ''}
+                        
+                        ${githubUrl !== '#' ? `
+                        <a href="${githubUrl}" target="_blank" class="flex-1 bg-gray-800 text-white text-center py-3 px-6 rounded-lg hover:bg-gray-900 transition">
+                            <i class="fab fa-github mr-2"></i>
+                            Lihat Kode
+                        </a>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePortfolioModal() {
+            const modal = document.getElementById('portfolioModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('portfolioModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePortfolioModal();
+            }
+        });
+        
+        // Close modal when clicking close button
+        document.getElementById('closeModal').addEventListener('click', closePortfolioModal);
 
         // Enhanced search functionality with pagination support and glitch prevention
         let searchTimeout;
@@ -1038,7 +1174,36 @@
         }
         
         // Load hero section when page loads
-        document.addEventListener('DOMContentLoaded', loadHeroSection);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHeroSection();
+            
+            // Mobile menu functionality
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.remove('hidden');
+                });
+            }
+            
+            if (closeMenuBtn && mobileMenu) {
+                closeMenuBtn.addEventListener('click', function() {
+                    mobileMenu.classList.add('hidden');
+                });
+            }
+            
+            // Close menu when clicking on links
+            const mobileLinks = mobileMenu?.querySelectorAll('a');
+            if (mobileLinks) {
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+            }
+        });
     </script>
     
     <!-- WhatsApp Floating Button -->

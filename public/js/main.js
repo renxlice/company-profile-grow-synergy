@@ -11,13 +11,67 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Mobile Menu Toggle
 function initMobileMenu() {
-    const mobileMenuButton = document.querySelector('[data-mobile-menu-toggle]');
-    const mobileMenu = document.querySelector('[data-mobile-menu]');
+    const mobileMenuButton = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const closeMenuButton = document.getElementById('close-menu-btn');
     
     if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('active');
+        // Set initial position
+        mobileMenu.style.transform = 'translateX(100%)';
+        
+        // Open menu
+        mobileMenuButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            mobileMenu.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            
+            // Trigger animation after removing hidden class
+            setTimeout(() => {
+                mobileMenu.style.transform = 'translateX(0)';
+            }, 10);
         });
+        
+        // Close menu with X button
+        if (closeMenuButton) {
+            closeMenuButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeMobileMenu();
+            });
+        }
+        
+        // Close menu when clicking on links
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                closeMobileMenu();
+                
+                // Allow navigation to proceed after closing
+                const href = this.getAttribute('href');
+                if (href && href !== '#') {
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 300);
+                }
+            });
+        });
+        
+        // Function to close mobile menu
+        function closeMobileMenu() {
+            mobileMenu.style.transform = 'translateX(100%)';
+            document.body.style.overflow = 'auto'; // Restore background scroll
+            
+            // Add hidden class after animation completes
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
+        }
+        
+        // Make closeMobileMenu available globally
+        window.closeMobileMenu = closeMobileMenu;
     }
 }
 
