@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-comments text-green-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-800">Testimonials Management</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-600">Welcome, {{username}}</span>
+                    <a href="/admin/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Navigation -->
+    <div class="flex">
+        <aside class="w-64 bg-white shadow-md h-screen sticky top-0">
+            <div class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="/admin/dashboard" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-home w-5"></i>
+                            <span class="ml-3">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/hero-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-image w-5"></i>
+                            <span class="ml-3">Hero Section</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/about-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-info-circle w-5"></i>
+                            <span class="ml-3">Tentang Kami</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/experts" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-users w-5"></i>
+                            <span class="ml-3">Synergy Experts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/portfolios" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-briefcase w-5"></i>
+                            <span class="ml-3">Synergy Portfolio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/academies" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-graduation-cap w-5"></i>
+                            <span class="ml-3">Synergy Academy</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/testimonials" class="flex items-center p-2 bg-green-100 text-green-700 rounded-md">
+                            <i class="fas fa-comments w-5"></i>
+                            <span class="ml-3">Testimoni</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Page Header -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Manajemen Testimoni</h2>
+                        <p class="text-gray-600">Kelola testimoni dari pelanggan dan pengguna</p>
+                    </div>
+                    <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition" onclick="openAddModal()">
+                        <i class="fas fa-plus mr-2"></i>Tambah Testimoni
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-full">
+                            <i class="fas fa-comments text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Total Testimoni</p>
+                            <p class="text-2xl font-semibold text-gray-800" id="totalCount">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-full">
+                            <i class="fas fa-star text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Rating Rata-rata</p>
+                            <p class="text-2xl font-semibold text-gray-800" id="avgRating">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-lg shadow p-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <input type="text" id="searchInput" placeholder="Cari testimoni..." class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    <div>
+                        <select id="sortBy" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            <option value="createdAt">Tanggal</option>
+                            <option value="name">Nama</option>
+                            <option value="rating">Rating</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="loadTestimonials()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posisi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pesan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="testimonialsTableBody" class="bg-white divide-y divide-gray-200">
+                            <!-- Data akan dimuat di sini -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Modal -->
+    <div id="addModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+        <div class="relative top-20 mx-auto p-4 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Tambah Testimoni Baru</h3>
+            </div>
+            <form id="addForm" class="mt-4 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <input type="text" id="addName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Posisi/Perusahaan</label>
+                    <input type="text" id="addPosition" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Rating</label>
+                    <select id="addRating" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                        <option value="">Pilih Rating</option>
+                        <option value="1">1 Bintang</option>
+                        <option value="2">2 Bintang</option>
+                        <option value="3">3 Bintang</option>
+                        <option value="4">4 Bintang</option>
+                        <option value="5">5 Bintang</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Pesan Testimoni</label>
+                    <textarea id="addMessage" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"></textarea>
+                </div>
+            </form>
+            <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="closeAddModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Batal
+                </button>
+                <button type="button" onclick="submitAddForm()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+        <div class="relative top-20 mx-auto p-4 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Edit Testimoni</h3>
+            </div>
+            <form id="editForm" class="mt-4 space-y-4">
+                <input type="hidden" id="editId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <input type="text" id="editName" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Posisi/Perusahaan</label>
+                    <input type="text" id="editPosition" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Rating</label>
+                    <select id="editRating" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                        <option value="">Pilih Rating</option>
+                        <option value="1">1 Bintang</option>
+                        <option value="2">2 Bintang</option>
+                        <option value="3">3 Bintang</option>
+                        <option value="4">4 Bintang</option>
+                        <option value="5">5 Bintang</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Pesan Testimoni</label>
+                    <textarea id="editMessage" rows="4" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"></textarea>
+                </div>
+            </form>
+            <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="closeEditModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Batal
+                </button>
+                <button type="button" onclick="submitEditForm()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+        <div class="relative top-20 mx-auto p-4 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Konfirmasi Hapus</h3>
+            </div>
+            <div class="mt-2">
+                <p class="text-sm text-gray-500">Apakah Anda yakin ingin menghapus testimoni ini?</p>
+                <div class="mt-3 p-3 bg-yellow-50 rounded-md">
+                    <p class="text-sm font-medium text-yellow-800" id="deleteName"></p>
+                </div>
+            </div>
+            <div class="mt-5 sm:mt-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="closeDeleteModal()" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Batal
+                </button>
+                <button type="button" onclick="confirmDelete()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "{{firebaseApiKey}}",
+            authDomain: "{{firebaseAuthDomain}}",
+            projectId: "{{firebaseProjectId}}",
+            storageBucket: "{{firebaseStorageBucket}}",
+            messagingSenderId: "{{firebaseMessagingSenderId}}",
+            appId: "{{firebaseAppId}}",
+            measurementId: "{{firebaseMeasurementId}}"
+        };
+
+        // Initialize Firebase
+        console.log('Initializing Firebase with config:', firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const testimonialsCollection = db.collection('testimonials');
+        
+        console.log('Firebase initialized successfully');
+        console.log('Firestore instance:', db);
+        console.log('Testimonials collection:', testimonialsCollection);
+
+        // Global variables
+        let testimonials = [];
+        let deleteId = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTestimonials();
+            setupEventListeners();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('Setting up event listeners');
+            
+            // Search and filters
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortBy = document.getElementById('sortBy');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', filterTestimonials);
+                console.log('Search input listener attached');
+            }
+            
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterTestimonials);
+                console.log('Status filter listener attached');
+            }
+            
+            if (sortBy) {
+                sortBy.addEventListener('change', sortTestimonials);
+                console.log('Sort by listener attached');
+            }
+
+            // Forms
+            const addForm = document.getElementById('addForm');
+            const editForm = document.getElementById('editForm');
+            
+            if (addForm) {
+                addForm.addEventListener('submit', addTestimonial);
+                console.log('Add form listener attached');
+            } else {
+                console.error('Add form not found!');
+            }
+            
+            if (editForm) {
+                editForm.addEventListener('submit', updateTestimonial);
+                console.log('Edit form listener attached');
+            } else {
+                console.error('Edit form not found!');
+            }
+        }
+
+        // Load testimonials from Firestore
+        function loadTestimonials() {
+            console.log('Loading testimonials from Firestore...');
+            console.log('Firebase config:', {
+                apiKey: firebaseConfig.apiKey ? 'Set' : 'Not set',
+                projectId: firebaseConfig.projectId,
+                authDomain: firebaseConfig.authDomain
+            });
+            
+            testimonialsCollection.orderBy('createdAt', 'desc').get()
+                .then((querySnapshot) => {
+                    console.log('Query snapshot received:', querySnapshot);
+                    console.log('Number of documents:', querySnapshot.docs.length);
+                    
+                    testimonials = [];
+                    querySnapshot.forEach((doc) => {
+                        console.log('Document data:', doc.data());
+                        testimonials.push({
+                            id: doc.id,
+                            ...doc.data(),
+                            createdAt: doc.data().createdAt?.toDate() || new Date()
+                        });
+                    });
+                    
+                    console.log('Testimonials array:', testimonials);
+                    displayTestimonials();
+                    updateStats();
+                    showNotification(`Berhasil memuat ${testimonials.length} testimoni`, 'success');
+                })
+                .catch((error) => {
+                    console.error('Error loading testimonials:', error);
+                    console.error('Error details:', error.code, error.message);
+                    showNotification('Gagal memuat testimoni: ' + error.message, 'error');
+                });
+        }
+
+        // Display testimonials in table
+        function displayTestimonials() {
+            const tbody = document.getElementById('testimonialsTableBody');
+            tbody.innerHTML = '';
+
+            if (testimonials.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada testimoni</td></tr>';
+                return;
+            }
+
+            testimonials.forEach(testimonial => {
+                const row = createTestimonialRow(testimonial);
+                tbody.appendChild(row);
+            });
+        }
+
+        // Create testimonial row
+        function createTestimonialRow(testimonial) {
+            const row = document.createElement('tr');
+            
+            const statusBadge = getStatusBadge(testimonial.status);
+            const starsHtml = generateStars(testimonial.rating);
+            const formattedDate = formatDate(testimonial.createdAt);
+
+            row.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">${testimonial.name}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">${testimonial.position}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-yellow-500">${starsHtml}</div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-sm text-gray-900 max-w-xs truncate" title="${testimonial.message}">${testimonial.message}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">${formattedDate}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button onclick="openEditModal('${testimonial.id}')" class="text-green-600 hover:text-green-900 mr-3">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button onclick="openDeleteModal('${testimonial.id}', '${testimonial.name}')" class="text-red-600 hover:text-red-900">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
+            return row;
+        }
+
+        // Add testimonial
+        function addTestimonial(e) {
+            console.log('addTestimonial called');
+            e.preventDefault();
+            console.log('Form submission prevented');
+            
+            const testimonialData = {
+                name: document.getElementById('addName').value,
+                position: document.getElementById('addPosition').value,
+                rating: parseInt(document.getElementById('addRating').value),
+                message: document.getElementById('addMessage').value,
+                status: document.getElementById('addStatus').value,
+                createdAt: new Date()
+            };
+            
+            console.log('Testimonial data to save:', testimonialData);
+
+            testimonialsCollection.add(testimonialData)
+                .then((docRef) => {
+                    console.log('Document written with ID: ', docRef.id);
+                    showNotification('Testimoni berhasil ditambahkan', 'success');
+                    closeAddModal();
+                    document.getElementById('addForm').reset();
+                    loadTestimonials();
+                })
+                .catch((error) => {
+                    console.error('Error adding testimonial:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
+                    showNotification('Gagal menambah testimoni: ' + error.message, 'error');
+                });
+        }
+
+        // Submit add form (called from button onclick)
+        function submitAddForm() {
+            console.log('submitAddForm called');
+            
+            // Get form values
+            const name = document.getElementById('addName').value;
+            const position = document.getElementById('addPosition').value;
+            const rating = document.getElementById('addRating').value;
+            const message = document.getElementById('addMessage').value;
+            
+            console.log('Form values:', { name, position, rating, message });
+            
+            // Validation
+            if (!name || !position || !rating || !message) {
+                showNotification('Semua field harus diisi!', 'error');
+                return;
+            }
+            
+            if (rating < 1 || rating > 5) {
+                showNotification('Rating harus antara 1-5!', 'error');
+                return;
+            }
+            
+            const testimonialData = {
+                name: name,
+                position: position,
+                rating: parseInt(rating),
+                message: message,
+                status: 'approved', // Default status
+                createdAt: new Date()
+            };
+            
+            console.log('Submitting testimonial:', testimonialData);
+            
+            testimonialsCollection.add(testimonialData)
+                .then((docRef) => {
+                    console.log('Document written with ID: ', docRef.id);
+                    showNotification('Testimoni berhasil ditambahkan', 'success');
+                    closeAddModal();
+                    document.getElementById('addForm').reset();
+                    loadTestimonials();
+                })
+                .catch((error) => {
+                    console.error('Error adding testimonial:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
+                    showNotification('Gagal menambah testimoni: ' + error.message, 'error');
+                });
+        }
+
+        // Edit testimonial
+        function openEditModal(id) {
+            console.log('Opening edit modal for ID:', id);
+            const testimonial = testimonials.find(t => t.id === id);
+            if (!testimonial) {
+                console.error('Testimonial not found:', id);
+                showNotification('Testimoni tidak ditemukan', 'error');
+                return;
+            }
+
+            console.log('Found testimonial:', testimonial);
+            
+            // Add null checks for all elements
+            const elements = {
+                editId: document.getElementById('editId'),
+                editName: document.getElementById('editName'),
+                editPosition: document.getElementById('editPosition'),
+                editRating: document.getElementById('editRating'),
+                editMessage: document.getElementById('editMessage')
+            };
+
+            // Check if all elements exist
+            for (const [key, element] of Object.entries(elements)) {
+                if (!element) {
+                    console.error(`Element not found: ${key}`);
+                    showNotification(`Form element ${key} tidak ditemukan`, 'error');
+                    return;
+                }
+            }
+
+            // Set values safely
+            try {
+                elements.editId.value = testimonial.id || '';
+                elements.editName.value = testimonial.name || '';
+                elements.editPosition.value = testimonial.position || '';
+                elements.editRating.value = testimonial.rating || '';
+                elements.editMessage.value = testimonial.message || '';
+            } catch (error) {
+                console.error('Error setting form values:', error);
+                showNotification('Error mengisi form edit', 'error');
+                return;
+            }
+
+            const modal = document.getElementById('editModal');
+            if (!modal) {
+                console.error('Edit modal not found');
+                showNotification('Modal edit tidak ditemukan', 'error');
+                return;
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeEditModal() {
+            console.log('Closing edit modal');
+            const modal = document.getElementById('editModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function updateTestimonial(e) {
+            console.log('updateTestimonial called');
+            e.preventDefault();
+            console.log('Form submission prevented');
+            
+            const id = document.getElementById('editId').value;
+            const testimonialData = {
+                name: document.getElementById('editName').value,
+                position: document.getElementById('editPosition').value,
+                rating: parseInt(document.getElementById('editRating').value),
+                message: document.getElementById('editMessage').value
+            };
+            
+            console.log('Updating testimonial ID:', id);
+            console.log('Update data:', testimonialData);
+
+            testimonialsCollection.doc(id).update(testimonialData)
+                .then(() => {
+                    console.log('Document successfully updated!');
+                    showNotification('Testimoni berhasil diupdate', 'success');
+                    closeEditModal();
+                    loadTestimonials();
+                })
+                .catch((error) => {
+                    console.error('Error updating testimonial:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
+                    showNotification('Gagal mengupdate testimoni: ' + error.message, 'error');
+                });
+        }
+
+        // Submit edit form (called from button onclick)
+        function submitEditForm() {
+            console.log('submitEditForm called');
+            
+            // Get form values with null checks
+            const idElement = document.getElementById('editId');
+            const nameElement = document.getElementById('editName');
+            const positionElement = document.getElementById('editPosition');
+            const ratingElement = document.getElementById('editRating');
+            const messageElement = document.getElementById('editMessage');
+            
+            // Check if all elements exist
+            if (!idElement || !nameElement || !positionElement || !ratingElement || !messageElement) {
+                showNotification('Form element tidak lengkap', 'error');
+                return;
+            }
+            
+            const id = idElement.value;
+            const name = nameElement.value;
+            const position = positionElement.value;
+            const rating = ratingElement.value;
+            const message = messageElement.value;
+            
+            console.log('Edit form values:', { id, name, position, rating, message });
+            
+            // Validation
+            if (!id || !name || !position || !rating || !message) {
+                showNotification('Semua field harus diisi!', 'error');
+                return;
+            }
+            
+            if (rating < 1 || rating > 5) {
+                showNotification('Rating harus antara 1-5!', 'error');
+                return;
+            }
+            
+            const testimonialData = {
+                name: name,
+                position: position,
+                rating: parseInt(rating),
+                message: message
+            };
+            
+            console.log('Submitting update for testimonial:', id, testimonialData);
+            
+            testimonialsCollection.doc(id).update(testimonialData)
+                .then(() => {
+                    console.log('Document successfully updated!');
+                    showNotification('Testimoni berhasil diupdate', 'success');
+                    closeEditModal();
+                    loadTestimonials();
+                })
+                .catch((error) => {
+                    console.error('Error updating testimonial:', error);
+                    console.error('Error code:', error.code);
+                    console.error('Error message:', error.message);
+                    showNotification('Gagal mengupdate testimoni: ' + error.message, 'error');
+                });
+        }
+
+        // Delete testimonial
+        function openDeleteModal(id, name) {
+            deleteId = id;
+            document.getElementById('deleteName').textContent = name;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function confirmDelete() {
+            testimonialsCollection.doc(deleteId).delete()
+                .then(() => {
+                    showNotification('Testimoni berhasil dihapus', 'success');
+                    closeDeleteModal();
+                    loadTestimonials();
+                })
+                .catch((error) => {
+                    console.error('Error deleting testimonial:', error);
+                    showNotification('Gagal menghapus testimoni', 'error');
+                });
+        }
+
+        // Filter testimonials
+        function filterTestimonials() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            let filtered = testimonials;
+
+            if (searchTerm) {
+                filtered = filtered.filter(t => 
+                    t.name.toLowerCase().includes(searchTerm) ||
+                    t.position.toLowerCase().includes(searchTerm) ||
+                    t.message.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            if (statusFilter) {
+                filtered = filtered.filter(t => t.status === statusFilter);
+            }
+
+            displayFilteredTestimonials(filtered);
+        }
+
+        // Sort testimonials
+        function sortTestimonials() {
+            const sortBy = document.getElementById('sortBy').value;
+
+            testimonials.sort((a, b) => {
+                switch(sortBy) {
+                    case 'name':
+                        return a.name.localeCompare(b.name);
+                    case 'rating':
+                        return b.rating - a.rating;
+                    case 'createdAt':
+                    default:
+                        return b.createdAt - a.createdAt;
+                }
+            });
+
+            displayTestimonials();
+        }
+
+        // Display filtered testimonials
+        function displayFilteredTestimonials(filtered) {
+            const tbody = document.getElementById('testimonialsTableBody');
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">Tidak ada testimoni yang cocok</td></tr>';
+                return;
+            }
+
+            filtered.forEach(testimonial => {
+                const row = createTestimonialRow(testimonial);
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update statistics
+        function updateStats() {
+            const stats = {
+                total: testimonials.length,
+                avgRating: testimonials.length > 0 
+                    ? testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length 
+                    : 0
+            };
+
+            document.getElementById('totalCount').textContent = stats.total;
+            document.getElementById('avgRating').textContent = stats.avgRating.toFixed(1);
+            
+            // Hide approved/pending stats since status is not used
+            const approvedElement = document.getElementById('approvedCount');
+            const pendingElement = document.getElementById('pendingCount');
+            if (approvedElement) approvedElement.style.display = 'none';
+            if (pendingElement) pendingElement.style.display = 'none';
+        }
+
+        // Helper functions
+        function getStatusBadge(status) {
+            const badges = {
+                approved: '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Disetujui</span>',
+                pending: '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu</span>',
+                rejected: '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Ditolak</span>'
+            };
+            return badges[status] || '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Unknown</span>';
+        }
+
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fas fa-star"></i>';
+                } else {
+                    stars += '<i class="far fa-star"></i>';
+                }
+            }
+            return stars;
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Modal functions
+        function openAddModal() {
+            console.log('Opening add modal');
+            const modal = document.getElementById('addModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAddModal() {
+            console.log('Closing add modal');
+            const modal = document.getElementById('addModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.getElementById('addForm').reset();
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        // Notification function
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Close modals when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'addModal') closeAddModal();
+            if (e.target.id === 'editModal') closeEditModal();
+            if (e.target.id === 'deleteModal') closeDeleteModal();
+        });
+    </script>
+</body>
+</html>

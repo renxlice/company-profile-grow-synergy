@@ -24,6 +24,7 @@ import {
   Portfolio,
   Academy,
 } from '../../common/interfaces/admin-content.interface';
+import { CreateAcademyDto, UpdateAcademyDto } from './dto/academy.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -844,22 +845,83 @@ export class AdminController {
   }
 
   @Post('academies')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB for image
+      },
+      fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif|webp/;
+        const extname = allowedTypes.test(file.originalname.toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        
+        if (mimetype && extname) {
+          return cb(null, true);
+        } else {
+          cb(new Error('Only image files are allowed!'), false);
+        }
+      }
+    })
+  )
   async createAcademy(
-    @Body() body: Academy,
+    @Body() body: any,
     @UploadedFile() file: Express.Multer.File,
     @Session() session: Record<string, any>,
     @Res() res: Response,
   ) {
     try {
-      console.log('Create Academy - Body:', body);
-      console.log('Create Academy - File:', file);
-      console.log('Create Academy - Session:', session);
+      console.log('=== CREATE ACADEMY DEBUG ===');
+      console.log('Raw body:', body);
+      console.log('Image file:', file);
+      console.log('Session:', session);
       
+      // Check if user is logged in
+      if (!session || !session.isLoggedIn) {
+        console.log('Create Academy - No session found, redirecting to login');
+        return res.redirect('/admin/login');
+      }
+      
+      // Check if body is empty (multipart form issue)
+      if (!body || Object.keys(body).length === 0) {
+        console.error('Empty body received - possible multipart parsing issue');
+        return res.status(400).json({
+          message: 'Empty form data received. Please check form submission.',
+          receivedData: body
+        });
+      }
+      
+      // Handle image file
       if (file) {
         body.image = `/uploads/admin/${file.filename}`;
-        console.log('Create Academy - Image path:', body.image);
+        console.log('Image file processed:', body.image);
       }
+      
+      // Handle PDF URL (from form field)
+      if (body.pdf && typeof body.pdf === 'string') {
+        // Clean and validate Google Drive URL
+        const pdfUrl = body.pdf.trim();
+        if (pdfUrl && pdfUrl !== 'undefined' && pdfUrl !== 'null') {
+          body.pdfUrl = pdfUrl;
+          console.log('PDF URL processed:', body.pdfUrl);
+        }
+      }
+      
+      // Check required fields (remove image from required since it's optional)
+      const requiredFields = ['title', 'description', 'author', 'rating', 'students', 'duration', 'price', 'level', 'schedule', 'mode'];
+      const missingFields = requiredFields.filter(field => !body[field]);
+      
+      if (missingFields.length > 0) {
+        console.error('Missing required fields:', missingFields);
+        console.error('Received body keys:', Object.keys(body));
+        return res.status(400).json({
+          message: 'Missing required fields',
+          missingFields: missingFields,
+          receivedData: body,
+          receivedKeys: Object.keys(body)
+        });
+      }
+      
+      console.log('Final body before save:', body);
       
       const academy = await this.adminService.createAcademy(body);
       console.log('Create Academy - Success:', academy);
@@ -936,30 +998,103 @@ export class AdminController {
     }
   }
 
-  @Post('academies/:id')
-  @UseInterceptors(FileInterceptor('image'))
-  async updateAcademyPost(
+  @Post('academies/:id/clear-pdf')
+  async clearInvalidPdf(
     @Param('id') id: string,
-    @Body() body: Partial<Academy>,
-    @UploadedFile() file: Express.Multer.File,
     @Session() session: Record<string, any>,
     @Res() res: Response,
   ) {
     try {
+      console.log('=== CLEAR INVALID PDF DEBUG ===');
+      console.log('Clear PDF - Session:', session);
+      
+      // Check if user is logged in
+      if (!session || !session.isLoggedIn) {
+        console.log('Clear PDF - No session found, redirecting to login');
+        return res.redirect('/admin/login');
+      }
+      
+      // Get existing academy data
+      const existingAcademy = await this.adminService.getAcademyById(id);
+      console.log('Clear PDF - Existing Academy:', existingAcademy);
+      
+      // Clear PDF field
+      const updateData = {
+        ...existingAcademy,
+        pdf: null
+      };
+      
+      console.log('Clear PDF - Update Data:', updateData);
+      
+      const academy = await this.adminService.updateAcademy(id, updateData);
+      console.log('Clear PDF - Success:', academy);
+      return res.redirect('/admin/academies');
+    } catch (error) {
+      console.error('Clear PDF - Error:', error);
+      return res.status(500).json({
+        message: 'Failed to clear PDF',
+        error: error.message
+      });
+    }
+  }
+
+  @Post('academies/:id')
+  async updateAcademyPost(
+    @Param('id') id: string,
+    @Body() body: any,
+    @Session() session: Record<string, any>,
+    @Res() res: Response,
+  ) {
+    try {
+      console.log('=== UPDATE ACADEMY DEBUG ===');
       console.log('Update Academy - Session:', session);
+      console.log('Update Academy - Body:', body);
       
       // Check if user is logged in
       if (!session || !session.isLoggedIn) {
         console.log('Update Academy - No session found, redirecting to login');
         return res.redirect('/admin/login');
       }
-      console.log('Update Academy - Body:', body);
-      console.log('Update Academy - File:', file);
       
-      if (file) {
-        body.image = `/uploads/admin/${file.filename}`;
-        console.log('Update Academy - Image path:', body.image);
+      // Check if body is empty
+      if (!body || Object.keys(body).length === 0) {
+        console.error('Empty body received');
+        return res.status(400).json({
+          message: 'Empty form data received. Please check form submission.',
+          receivedData: body
+        });
       }
+      
+      // Get existing academy data to preserve image and PDF if not updated
+      const existingAcademy = await this.adminService.getAcademyById(id);
+      console.log('Update Academy - Existing Academy:', existingAcademy);
+      
+      // Handle image upload (if new image uploaded)
+      if (body.image && body.image !== 'undefined' && body.image !== '') {
+        // New image uploaded, use it
+        console.log('Update Academy - New image provided:', body.image);
+      } else if (existingAcademy.image) {
+        // No new image, preserve existing one
+        body.image = existingAcademy.image;
+        console.log('Update Academy - Preserved existing image:', body.image);
+      }
+      
+      // Handle PDF link (if new PDF provided)
+      if (body.pdf && body.pdf !== 'undefined' && body.pdf !== '') {
+        // New PDF link provided, validate it's a Google Drive link
+        if (body.pdf.includes('drive.google.com') || body.pdf.includes('http')) {
+          console.log('Update Academy - New valid PDF provided:', body.pdf);
+        } else {
+          console.warn('Update Academy - Invalid PDF format provided, clearing PDF field');
+          body.pdf = null; // Clear invalid PDF
+        }
+      } else {
+        // PDF field is empty or undefined, clear it completely
+        console.log('Update Academy - PDF field is empty, clearing PDF from database');
+        body.pdf = null;
+      }
+      
+      console.log('Update Academy - Final body before save:', body);
       
       const academy = await this.adminService.updateAcademy(id, body);
       console.log('Update Academy - Success:', academy);
@@ -1093,6 +1228,40 @@ export class AdminController {
         success: false,
         message: 'Terjadi kesalahan saat mengubah password',
         error: error.message
+      });
+    }
+  }
+
+  // Testimonials Management
+  @Get('testimonials')
+  async testimonials(@Session() session: Record<string, any>, @Res() res: Response) {
+    try {
+      console.log('Testimonials - Session:', session);
+      
+      // Check if user is logged in
+      if (!session || !session.isLoggedIn) {
+        console.log('Testimonials - No session found, redirecting to login');
+        return res.redirect('/admin/login');
+      }
+      
+      // Render with custom layout (no hbs layout)
+      return res.render('admin/testimonials', {
+        title: 'Manajemen Testimoni',
+        username: session.username,
+        layout: false,
+        firebaseApiKey: process.env.FIREBASE_API_KEY,
+        firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
+        firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
+        firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+        firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+        firebaseAppId: process.env.FIREBASE_APP_ID,
+        firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID
+      });
+    } catch (error) {
+      console.error('Testimonials - Error:', error);
+      return res.status(500).json({
+        error: 'Failed to load testimonials page',
+        message: error.message
       });
     }
   }

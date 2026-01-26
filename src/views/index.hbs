@@ -60,6 +60,21 @@
             width: 100%;
             z-index: 50;
         }
+        
+        /* Star rating persistence styles */
+        .star-btn.selected {
+            color: #fbbf24 !important;
+        }
+        
+        .star-btn:not(.selected) {
+            color: #d1d5db !important;
+        }
+        
+        /* Force star colors */
+        #ratingStars .star-btn[style*="color: rgb(251, 191, 36)"],
+        #ratingStars .star-btn[style*="color: #fbbf24"] {
+            color: #fbbf24 !important;
+        }
     </style>
     
     <!-- Firebase SDK -->
@@ -569,80 +584,95 @@
 
 
 <!-- Testimonials Section -->
-<section class="py-16">
+<section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
                 Apa Kata Mereka?
             </h2>
-            <p class="text-xl text-gray-600">
-                Testimoni dari alumni yang telah sukses
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                Testimoni dari alumni yang telah sukses mengembangkan karir mereka melalui program pelatihan kami.
             </p>
+            
+            <!-- Add Testimonial Button -->
+            <button id="addTestimonialBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition duration-200 mb-8">
+                <i class="fas fa-plus mr-2"></i>
+                Tambah Testimoni
+            </button>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="flex text-yellow-400 mb-4">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="text-gray-600 mb-4">
-                    "Kursus yang sangat bagus! Instruktur sangat berpengalaman dan materi yang diajarkan sangat relevan dengan industri. Saya langsung dapat kerja setelah lulus."
-                </p>
-                <div class="flex items-center">
-                    <img src="/images/testimonials/testimonial1.svg" alt="Testimonial" class="w-12 h-12 rounded-full mr-3">
-                    <div>
-                        <div class="font-semibold  text-black">Andi Pratama</div>
-                        <div class="text-sm text-gray-500">Data Analyst at Tokopedia</div>
-                    </div>
+        <!-- Testimonials Carousel -->
+        <div class="relative">
+            <div class="overflow-x-auto pb-4" id="testimonialsContainer">
+                <div class="flex space-x-6" id="testimonialsSlider" style="width: max-content;">
+                    <!-- Testimonials will be loaded dynamically from Firestore -->
                 </div>
             </div>
             
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="flex text-yellow-400 mb-4">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="text-gray-600 mb-4">
-                    "Metode pembelajaran yang sangat efektif dengan project-based learning. Saya jadi lebih percaya diri dalam menghadapi tantangan data analitik di kerja."
-                </p>
-                <div class="flex items-center">
-                    <img src="/images/testimonials/testimonial2.svg" alt="Testimonial" class="w-12 h-12 rounded-full mr-3">
-                    <div>
-                        <div class="font-semibold text-black">Siti Nurhaliza</div>
-                        <div class="text-sm text-gray-500">Business Intelligence at Gojek</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-white p-6 rounded-lg shadow-lg">
-                <div class="flex text-yellow-400 mb-4">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                </div>
-                <p class="text-gray-600 mb-4">
-                    "Harga yang sangat worth it dengan kualitas pembelajaran yang didapatkan. Support team juga sangat responsif dan helpful."
-                </p>
-                <div class="flex items-center">
-                    <img src="/images/testimonials/testimonial3.svg" alt="Testimonial" class="w-12 h-12 rounded-full mr-3">
-                    <div>
-                        <div class="font-semibold text-black">Budi Santoso</div>
-                        <div class="text-sm text-gray-500">Data Scientist at Traveloka</div>
-                    </div>
-                </div>
-            </div>
+            <!-- Navigation Arrows -->
+            <button id="scrollLeft" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition z-10">
+                <i class="fas fa-chevron-left text-gray-600"></i>
+            </button>
+            <button id="scrollRight" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition z-10">
+                <i class="fas fa-chevron-right text-gray-600"></i>
+            </button>
         </div>
     </div>
 </section>
+
+<!-- Testimonial Modal -->
+<div id="testimonialModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg max-w-md w-full p-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Tambah Testimoni</h3>
+        <form id="testimonialForm">
+            <div class="mb-4">
+                <label for="testimonialName" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                <input type="text" id="testimonialName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black" placeholder="Masukkan nama Anda">
+            </div>
+            
+            <div class="mb-4">
+                <label for="testimonialPosition" class="block text-sm font-medium text-gray-700 mb-2">Posisi/Perusahaan</label>
+                <input type="text" id="testimonialPosition" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black" placeholder="Contoh: Data Analyst at Tokopedia">
+            </div>
+            
+            <div class="mb-4">
+                <label for="testimonialRating" class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+                <div class="flex flex-wrap gap-1" id="ratingStars">
+                    <button type="button" class="star-btn text-xl text-gray-300 hover:text-yellow-400 p-1 transition-colors duration-200" data-rating="1">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button type="button" class="star-btn text-xl text-gray-300 hover:text-yellow-400 p-1 transition-colors duration-200" data-rating="2">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button type="button" class="star-btn text-xl text-gray-300 hover:text-yellow-400 p-1 transition-colors duration-200" data-rating="3">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button type="button" class="star-btn text-xl text-gray-300 hover:text-yellow-400 p-1 transition-colors duration-200" data-rating="4">
+                        <i class="fas fa-star"></i>
+                    </button>
+                    <button type="button" class="star-btn text-xl text-gray-300 hover:text-yellow-400 p-1 transition-colors duration-200" data-rating="5">
+                        <i class="fas fa-star"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="testimonialRating" value="5" required>
+            </div>
+            
+            <div class="mb-6">
+                <label for="testimonialMessage" class="block text-sm font-medium text-gray-700 mb-2">Testimoni</label>
+                <textarea id="testimonialMessage" required rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-black" placeholder="Bagikan pengalaman Anda..."></textarea>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button type="submit" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition">
+                    Kirim Testimoni
+                </button>
+                <button type="button" id="cancelTestimonial" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition">
+                    Batal
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Statistics Section -->
 <section class="py-16 bg-blue-600 text-white">
@@ -749,6 +779,38 @@
     <script src="/js/main.js"></script>
     {{> firebase-config}}
     <script>
+        // Testimonial collection reference
+        const testimonialsCollection = db.collection('testimonials');
+        
+        // Enable offline persistence for testimonials
+        if (typeof db !== 'undefined' && db.enablePersistence) {
+            db.enablePersistence()
+                .catch((err) => {
+                    if (err.code == 'failed-precondition') {
+                        console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+                    } else if (err.code == 'unimplemented') {
+                        console.log('The current browser does not support persistence.');
+                    }
+                });
+        }
+        
+        // Check Firebase connection for testimonials
+        if (typeof db !== 'undefined') {
+            db.collection('testimonials').limit(1).get()
+                .then(() => {
+                    console.log('✅ Firebase Firestore for testimonials connected successfully!');
+                })
+                .catch((error) => {
+                    console.error('❌ Firebase connection for testimonials failed:', error);
+                    if (error.code === 'permission-denied') {
+                        console.warn('⚠️ Please check your Firebase configuration:');
+                        console.warn('1. Replace placeholder config with your actual Firebase config');
+                        console.warn('2. Enable Firestore API in Google Cloud Console');
+                        console.warn('3. Check Firestore security rules');
+                    }
+                });
+        }
+        
         // Load dynamic content from Firestore
         async function loadDynamicContent() {
             try {
@@ -1297,10 +1359,368 @@
                 }
             });
         });
-    </script>
 
-    <!-- WhatsApp Floating Button -->
-    {{> whatsapp-button}}
-</body>
+        // Testimonials Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load testimonials from Firestore
+            function loadTestimonialsFromFirestore() {
+                testimonialsCollection.orderBy('createdAt', 'desc').get()
+                    .then((querySnapshot) => {
+                        querySnapshot.forEach((doc) => {
+                            const testimonial = doc.data();
+                            const card = createTestimonialCard(
+                                testimonial.name, 
+                                testimonial.position, 
+                                testimonial.rating, 
+                                testimonial.message, 
+                                testimonial.createdAt,
+                                doc.id
+                            );
+                            slider.appendChild(card);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error loading testimonials: ", error);
+                        showErrorMessage('Gagal memuat testimonial. Menggunakan mode offline.');
+                        // Fallback to localStorage if Firestore fails
+                        loadSavedTestimonials();
+                    });
+            }
+            
+            // Save testimonial to Firestore
+            function saveTestimonialToFirestore(name, position, rating, message) {
+                const testimonialData = {
+                    name: name,
+                    position: position,
+                    rating: rating,
+                    message: message,
+                    createdAt: new Date(),
+                    status: 'approved' // Auto-approve testimonials
+                };
+                
+                testimonialsCollection.add(testimonialData)
+                    .then((docRef) => {
+                        console.log("Testimonial saved with ID: ", docRef.id);
+                    })
+                    .catch((error) => {
+                        console.error("Error saving testimonial: ", error);
+                        showErrorMessage('Gagal menyimpan testimonial. Silakan coba lagi.');
+                        // Fallback to localStorage
+                        saveTestimonial(name, position, rating, message);
+                    });
+            }
+            
+            // Fallback localStorage functions (backup)
+            function loadSavedTestimonials() {
+                const savedTestimonials = localStorage.getItem('testimonials');
+                if (savedTestimonials) {
+                    const testimonials = JSON.parse(savedTestimonials);
+                    testimonials.forEach(testimonial => {
+                        const card = createTestimonialCard(testimonial.name, testimonial.position, testimonial.rating, testimonial.message, testimonial.timestamp);
+                        slider.appendChild(card);
+                    });
+                }
+            }
+            
+            function saveTestimonial(name, position, rating, message) {
+                const savedTestimonials = localStorage.getItem('testimonials');
+                const testimonials = savedTestimonials ? JSON.parse(savedTestimonials) : [];
+                
+                testimonials.push({
+                    name,
+                    position,
+                    rating,
+                    message,
+                    timestamp: new Date().toISOString()
+                });
+                
+                localStorage.setItem('testimonials', JSON.stringify(testimonials));
+            }
+
+    // Testimonial carousel scrolling
+    const container = document.getElementById('testimonialsContainer');
+    const slider = document.getElementById('testimonialsSlider');
+    const scrollLeftBtn = document.getElementById('scrollLeft');
+    const scrollRightBtn = document.getElementById('scrollRight');
+
+    // Load saved testimonials on page load
+    if (slider) {
+        loadTestimonialsFromFirestore();
+    }
+
+    if (container && slider && scrollLeftBtn && scrollRightBtn) {
+        // Scroll left
+        scrollLeftBtn.addEventListener('click', function() {
+            container.scrollBy({
+                left: -340,
+                behavior: 'smooth'
+            });
+        });
+
+        // Scroll right
+        scrollRightBtn.addEventListener('click', function() {
+            container.scrollBy({
+                left: 340,
+                behavior: 'smooth'
+            });
+        });
+
+        // Hide/show scroll buttons based on scroll position
+        function updateScrollButtons() {
+            const maxScroll = container.scrollWidth - container.clientWidth;
+
+            if (container.scrollLeft <= 0) {
+                scrollLeftBtn.style.display = 'none';
+            } else {
+                scrollLeftBtn.style.display = 'block';
+            }
+
+            if (container.scrollLeft >= maxScroll) {
+                scrollRightBtn.style.display = 'none';
+            } else {
+                scrollRightBtn.style.display = 'block';
+            }
+        }
+
+        container.addEventListener('scroll', updateScrollButtons);
+        updateScrollButtons(); // Initial check
+    }
+
+    // Testimonial modal functionality
+    const addTestimonialBtn = document.getElementById('addTestimonialBtn');
+    const testimonialModal = document.getElementById('testimonialModal');
+    const testimonialForm = document.getElementById('testimonialForm');
+    const cancelTestimonialBtn = document.getElementById('cancelTestimonial');
+    const ratingStars = document.querySelectorAll('.star-btn');
+    const ratingInput = document.getElementById('testimonialRating');
+
+    if (addTestimonialBtn && testimonialModal) {
+        // Rating state variables - declared outside to maintain scope
+        let currentRating = 5; // Default rating
+        
+        // Function to update star display with inline styles for persistence
+        function updateStarDisplay(rating) {
+            console.log('Updating star display to rating:', rating);
+            ratingStars.forEach((star, index) => {
+                if (index < rating) {
+                    // Use inline styles for maximum persistence
+                    star.style.color = '#fbbf24';
+                    star.style.setProperty('color', '#fbbf24', 'important');
+                    star.classList.remove('text-gray-300');
+                    star.classList.add('text-yellow-400');
+                } else {
+                    star.style.color = '#d1d5db';
+                    star.style.setProperty('color', '#d1d5db', 'important');
+                    star.classList.remove('text-yellow-400');
+                    star.classList.add('text-gray-300');
+                }
+            });
+        }
+
+        // Open modal
+        addTestimonialBtn.addEventListener('click', function() {
+            testimonialModal.classList.remove('hidden');
+            testimonialModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            // Reset and show initial rating
+            currentRating = 5;
+            updateStarDisplay(currentRating);
+            ratingInput.value = currentRating;
+        });
+
+        // Close modal
+        function closeTestimonialModal() {
+            testimonialModal.classList.add('hidden');
+            testimonialModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            testimonialForm.reset();
+            // Reset rating state
+            currentRating = 5;
+            updateStarDisplay(currentRating);
+            ratingInput.value = currentRating;
+        }
+
+        if (cancelTestimonialBtn) {
+            cancelTestimonialBtn.addEventListener('click', closeTestimonialModal);
+        }
+
+        // Close modal when clicking outside
+        testimonialModal.addEventListener('click', function(e) {
+            if (e.target === testimonialModal) {
+                closeTestimonialModal();
+            }
+        });
+
+        // Rating stars functionality with persistent state
+        // Add hover effects
+        ratingStars.forEach((star, index) => {
+            // Mouse enter - show preview
+            star.addEventListener('mouseenter', function() {
+                const hoverRating = index + 1;
+                ratingStars.forEach((s, i) => {
+                    if (i < hoverRating) {
+                        s.classList.remove('text-gray-300');
+                        s.classList.add('text-yellow-400');
+                    } else {
+                        s.classList.remove('text-yellow-400');
+                        s.classList.add('text-gray-300');
+                    }
+                });
+            });
+
+            // Mouse leave - restore current rating
+            star.addEventListener('mouseleave', function() {
+                updateStarDisplay(currentRating);
+            });
+
+            // Click - set rating
+            star.addEventListener('click', function() {
+                currentRating = index + 1;
+                ratingInput.value = currentRating;
+                updateStarDisplay(currentRating);
+                console.log('Star clicked! New rating:', currentRating);
+            });
+        });
+
+        // Set initial rating to 5 stars
+        updateStarDisplay(currentRating);
+        ratingInput.value = currentRating;
+
+        // Add multiple event listeners to maintain star display persistently
+        const formInputs = testimonialForm.querySelectorAll('input, textarea');
+        formInputs.forEach(input => {
+            // Ensure stars remain highlighted when input gets focus
+            input.addEventListener('focus', function() {
+                console.log('Input focused, maintaining rating:', currentRating);
+                updateStarDisplay(currentRating);
+            });
+            
+            // Ensure stars remain highlighted when typing
+            input.addEventListener('input', function() {
+                updateStarDisplay(currentRating);
+            });
+            
+            // Ensure stars remain highlighted when clicking input
+            input.addEventListener('click', function() {
+                updateStarDisplay(currentRating);
+            });
+        });
+
+        // Also ensure stars stay highlighted when clicking anywhere in the modal
+        testimonialModal.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('star-btn')) {
+                setTimeout(() => {
+                    updateStarDisplay(currentRating);
+                }, 10);
+            }
+        });
+
+        // Ensure stars stay highlighted periodically (backup)
+        setInterval(() => {
+            if (!testimonialModal.classList.contains('hidden')) {
+                updateStarDisplay(currentRating);
+            }
+        }, 1000);
+
+        // Form submission
+        if (testimonialForm) {
+            testimonialForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const name = document.getElementById('testimonialName').value;
+                const position = document.getElementById('testimonialPosition').value;
+                const rating = parseInt(document.getElementById('testimonialRating').value);
+                const message = document.getElementById('testimonialMessage').value;
+
+                // Save testimonial to Firestore
+                saveTestimonialToFirestore(name, position, rating, message);
+
+                // Create new testimonial card (will be added after Firestore save)
+                const timestamp = new Date();
+                const newTestimonial = createTestimonialCard(name, position, rating, message, timestamp, null);
+
+                // Add to slider immediately for better UX
+                if (slider) {
+                    slider.appendChild(newTestimonial);
+
+                    // Scroll to the new testimonial
+                    setTimeout(() => {
+                        container.scrollBy({
+                            left: 340,
+                            behavior: 'smooth'
+                        });
+                    }, 100);
+                }
+
+                closeTestimonialModal();
+                showSuccessMessage('Testimoni berhasil ditambahkan!');
+            });
+        }
+    }
+
+    // Function to create testimonial card
+    function createTestimonialCard(name, position, rating, message, timestamp = null, docId = null) {
+        const card = document.createElement('div');
+        card.className = 'testimonial-card flex-shrink-0 w-80 rounded-lg shadow-lg p-6';
+        card.style.backgroundColor = '#225273';
+
+        // Generate timestamp if not provided
+        const testimonialTimestamp = timestamp || new Date().toISOString();
+
+        // Generate star HTML
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            } else {
+                starsHtml += '<i class="far fa-star"></i>';
+            }
+        }
+
+        card.innerHTML = `
+            <div class="flex text-yellow-400 mb-4">
+                ${starsHtml}
+            </div>
+            <p class="text-white mb-4 italic">
+                "${message}"
+            </p>
+            <div>
+                <div class="font-semibold text-white">${name}</div>
+                <div class="text-sm text-gray-300">${position}</div>
+            </div>
+        `;
+
+        return card;
+    }
+
+    // Function to show success message
+    function showSuccessMessage(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        successDiv.textContent = message;
+        document.body.appendChild(successDiv);
+
+        setTimeout(() => {
+            successDiv.remove();
+        }, 3000);
+    }
+
+    // Function to show error message
+    function showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+
+        setTimeout(() => {
+            errorDiv.remove();
+        }, 3000);
+    }
+});
+
+</script>
+
+<!-- WhatsApp Floating Button -->
+{{> whatsapp-button}}
 </body>
 </html>

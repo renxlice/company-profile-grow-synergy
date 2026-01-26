@@ -628,4 +628,227 @@ router.get('/profile', adminLimiter, verifyAdminToken, async (req, res) => {
     }
 });
 
+// Testimonials Management Routes
+const testimonialLimiter = createRateLimiter(15, 15, 'testimonial');
+
+// Get all testimonials
+router.get('/testimonials', testimonialLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const snapshot = await admin.firestore()
+            .collection('testimonials')
+            .orderBy('createdAt', 'desc')
+            .get();
+        
+        const testimonials = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate(),
+            updatedAt: doc.data().updatedAt?.toDate()
+        }));
+        
+        res.json(testimonials);
+    } catch (error) {
+        console.error('Get testimonials error:', error);
+        res.status(500).json({ error: 'Failed to get testimonials' });
+    }
+});
+
+// Get single testimonial
+router.get('/testimonials/:id', testimonialLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const doc = await admin.firestore()
+            .collection('testimonials')
+            .doc(req.params.id)
+            .get();
+        
+        if (!doc.exists) {
+            return res.status(404).json({ error: 'Testimonial not found' });
+        }
+        
+        res.json({
+            id: doc.id,
+            ...doc.data(),
+            createdAt: doc.data().createdAt?.toDate(),
+            updatedAt: doc.data().updatedAt?.toDate()
+        });
+    } catch (error) {
+        console.error('Get testimonial error:', error);
+        res.status(500).json({ error: 'Failed to get testimonial' });
+    }
+});
+
+// Create testimonial
+router.post('/testimonials', testimonialLimiter, verifyAdminToken, validateInput({
+    name: { required: true, type: 'string', maxLength: 100 },
+    position: { required: true, type: 'string', maxLength: 100 },
+    rating: { required: true, type: 'number', min: 1, max: 5 },
+    message: { required: true, type: 'string', maxLength: 1000 },
+    status: { type: 'string', enum: ['approved', 'pending', 'rejected'], default: 'approved' }
+}), async (req, res) => {
+    try {
+        const testimonialData = {
+            ...req.body,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdBy: req.admin.id
+        };
+        
+        const docRef = await admin.firestore()
+            .collection('testimonials')
+            .add(testimonialData);
+        
+        logSecurityEvent('testimonial_created', req.admin.id, {
+            testimonialId: docRef.id,
+            name: req.body.name
+        });
+        
+        res.status(201).json({
+            id: docRef.id,
+            ...testimonialData,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+    } catch (error) {
+        console.error('Create testimonial error:', error);
+        res.status(500).json({ error: 'Failed to create testimonial' });
+    }
+});
+
+// Update testimonial
+router.put('/testimonials/:id', testimonialLimiter, verifyAdminToken, validateInput({
+    name: { type: 'string', maxLength: 100 },
+    position: { type: 'string', maxLength: 100 },
+    rating: { type: 'number', min: 1, max: 5 },
+    message: { type: 'string', maxLength: 1000 },
+    status: { type: 'string', enum: ['approved', 'pending', 'rejected'] }
+}), async (req, res) => {
+    try {
+        const docRef = admin.firestore()
+            .collection('testimonials')
+            .doc(req.params.id);
+        
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            return res.status(404).json({ error: 'Testimonial not found' });
+        }
+        
+        const updateData = {
+            ...req.body,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            updatedBy: req.admin.id
+        };
+        
+        await docRef.update(updateData);
+        
+        logSecurityEvent('testimonial_updated', req.admin.id, {
+            testimonialId: req.params.id,
+            updatedFields: Object.keys(req.body)
+        });
+        
+        res.json({
+            id: req.params.id,
+            ...doc.data(),
+            ...updateData,
+            updatedAt: new Date()
+        });
+    } catch (error) {
+        console.error('Update testimonial error:', error);
+        res.status(500).json({ error: 'Failed to update testimonial' });
+    }
+});
+
+// Delete testimonial
+router.delete('/testimonials/:id', testimonialLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const docRef = admin.firestore()
+            .collection('testimonials')
+            .doc(req.params.id);
+        
+        const doc = await docRef.get();
+        if (!doc.exists) {
+            return res.status(404).json({ error: 'Testimonial not found' });
+        }
+        
+        const testimonialData = doc.data();
+        
+        await docRef.delete();
+        
+        logSecurityEvent('testimonial_deleted', req.admin.id, {
+            testimonialId: req.params.id,
+            name: testimonialData.name
+        });
+        
+        res.json({ message: 'Testimonial deleted successfully' });
+    } catch (error) {
+        console.error('Delete testimonial error:', error);
+        res.status(500).json({ error: 'Failed to delete testimonial' });
+    }
+});
+
+// Bulk update testimonial status
+router.patch('/testimonials/bulk-status', testimonialLimiter, verifyAdminToken, validateInput({
+    testimonialIds: { required: true, type: 'array' },
+    status: { required: true, type: 'string', enum: ['approved', 'pending', 'rejected'] }
+}), async (req, res) => {
+    try {
+        const { testimonialIds, status } = req.body;
+        const batch = admin.firestore().batch();
+        
+        testimonialIds.forEach(id => {
+            const docRef = admin.firestore().collection('testimonials').doc(id);
+            batch.update(docRef, {
+                status,
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                updatedBy: req.admin.id
+            });
+        });
+        
+        await batch.commit();
+        
+        logSecurityEvent('testimonials_bulk_updated', req.admin.id, {
+            testimonialIds,
+            status
+        });
+        
+        res.json({ 
+            message: `Updated ${testimonialIds.length} testimonials to ${status}`,
+            updatedCount: testimonialIds.length
+        });
+    } catch (error) {
+        console.error('Bulk update testimonials error:', error);
+        res.status(500).json({ error: 'Failed to bulk update testimonials' });
+    }
+});
+
+// Get testimonials statistics
+router.get('/testimonials/stats', testimonialLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const snapshot = await admin.firestore()
+            .collection('testimonials')
+            .get();
+        
+        const testimonials = snapshot.docs.map(doc => doc.data());
+        
+        const stats = {
+            total: testimonials.length,
+            approved: testimonials.filter(t => t.status === 'approved').length,
+            pending: testimonials.filter(t => t.status === 'pending').length,
+            rejected: testimonials.filter(t => t.status === 'rejected').length,
+            averageRating: testimonials.length > 0 
+                ? testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length 
+                : 0,
+            recentCount: testimonials.filter(t => {
+                const createdAt = t.createdAt?.toDate();
+                const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+                return createdAt > thirtyDaysAgo;
+            }).length
+        };
+        
+        res.json(stats);
+    } catch (error) {
+        console.error('Get testimonials stats error:', error);
+        res.status(500).json({ error: 'Failed to get testimonials statistics' });
+    }
+});
+
 module.exports = router;

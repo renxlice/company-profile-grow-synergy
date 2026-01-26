@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Render, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AppService } from './app.service';
 import { SeoService } from './seo/seo.service';
@@ -167,6 +167,21 @@ export class AppController {
       firebaseAppId: process.env.FIREBASE_APP_ID || '',
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID || '',
       heroSections,
+    });
+  }
+
+  @Post('test-academy')
+  testAcademy(@Body() body: any, @Res() res: Response) {
+    console.log('=== APP CONTROLLER TEST ACADEMY ===');
+    console.log('Received body:', body);
+    console.log('Body type:', typeof body);
+    console.log('Body keys:', Object.keys(body));
+    
+    return res.json({
+      message: 'App controller test endpoint working',
+      received: body,
+      keys: Object.keys(body),
+      type: typeof body
     });
   }
 }

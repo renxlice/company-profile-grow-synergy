@@ -33,6 +33,40 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'), {
     etag: true
 }));
 
+// Serve JS files specifically with proper MIME types
+app.use('/js', express.static(path.join(__dirname, 'public', 'js'), {
+    maxAge: '1d',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+        // Ensure JavaScript files have correct MIME type
+        res.setHeader('Content-Type', 'application/javascript');
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        res.setHeader('X-Frame-Options', 'DENY');
+        res.setHeader('X-XSS-Protection', '1; mode=block');
+    }
+}));
+
+// Serve other static files
+app.use(express.static(path.join(__dirname, 'public'), {
+    maxAge: '1d',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+        // Set proper MIME types
+        if (filePath.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        } else if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+        
+        // Security headers for static files
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        res.setHeader('X-Frame-Options', 'DENY');
+        res.setHeader('X-XSS-Protection', '1; mode=block');
+    }
+}));
+
 // Routes
 app.use('/home', require('./routes/index'));
 app.use('/about', require('./routes/about'));
@@ -166,7 +200,27 @@ app.get('/admin/dashboard', (req, res) => {
     if (!req.session?.isLoggedIn) {
         return res.redirect('/admin/login');
     }
-    res.render('admin/dashboard', { title: 'Admin Dashboard' });
+    
+    // Generate CSRF token
+    const crypto = require('crypto');
+    const csrfToken = crypto.randomBytes(32).toString('hex');
+    
+    res.render('admin/dashboard', { 
+        title: 'Admin Dashboard',
+        username: req.session.adminName || 'Admin',
+        csrfToken: csrfToken
+    });
+});
+
+// Admin testimonials page route
+app.get('/admin/testimonials', (req, res) => {
+    if (!req.session?.isLoggedIn) {
+        return res.redirect('/admin/login');
+    }
+    res.render('admin/testimonials', { 
+        title: 'Manajemen Testimoni',
+        layout: false // Using custom layout in the template
+    });
 });
 
 // Initialize Firebase Admin SDK with fallback

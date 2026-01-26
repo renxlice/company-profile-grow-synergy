@@ -8,6 +8,7 @@ const xss = require('xss');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const admin = require('firebase-admin');
+const loginAttempts = require('./login-attempts');
 
 // Security middleware
 router.use(helmet());
@@ -35,33 +36,109 @@ const adminLimiter = rateLimit({
     }
 });
 
-// Input validation and sanitization
+// Enhanced input validation and sanitization
 const validateAndSanitizeInput = (req, res, next) => {
     try {
-        // Sanitize semua input
+        // Check for common attack patterns
+        const suspiciousPatterns = [
+            /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/gi,
+            /(--|\#|\/\*|\*\/)/g,
+            /javascript:/gi,
+            /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+            /on\w+\s*=/gi
+        ];
+        
+        // Sanitize dan validate semua input
         if (req.body) {
             Object.keys(req.body).forEach(key => {
                 if (typeof req.body[key] === 'string') {
-                    req.body[key] = validator.escape(req.body[key].trim());
+                    const value = req.body[key];
+                    
+                    // Check for suspicious patterns
+                    for (const pattern of suspiciousPatterns) {
+                        if (pattern.test(value)) {
+                            console.warn('Suspicious input detected:', { key, value, ip: req.ip });
+                            return res.status(400).json({ 
+                                error: 'Invalid input detected' 
+                            });
+                        }
+                    }
+                    
+                    // Escape HTML entities
+                    req.body[key] = validator.escape(value.trim());
+                    
+                    // Remove potential null bytes
+                    req.body[key] = req.body[key].replace(/\0/g, '');
+                    
+                    // Limit length to prevent buffer overflow
+                    if (req.body[key].length > 1000) {
+                        return res.status(400).json({ 
+                            error: 'Input too long' 
+                        });
+                    }
                 }
             });
         }
         
-        // Validate email format
-        if (req.body.email && !validator.isEmail(req.body.email)) {
-            return res.status(400).json({ 
-                error: 'Invalid email format' 
-            });
+        // Enhanced email validation
+        if (req.body.email) {
+            const email = req.body.email;
+            
+            // Basic format check
+            if (!validator.isEmail(email)) {
+                return res.status(400).json({ 
+                    error: 'Invalid email format' 
+                });
+            }
+            
+            // Check for suspicious email patterns
+            const suspiciousEmailPatterns = [
+                /^[^@]*\.\./,  // Leading dot
+                /\.\.[^@]*@/,  // Double dot before @
+                /@.*\.\./,     // Double dot after @
+                /\.$/,         // Trailing dot
+                /@.*\.$/       // Trailing dot after @
+            ];
+            
+            for (const pattern of suspiciousEmailPatterns) {
+                if (pattern.test(email)) {
+                    return res.status(400).json({ 
+                        error: 'Invalid email format' 
+                    });
+                }
+            }
         }
         
-        // Validate password strength
+        // Enhanced password validation
         if (req.body.password) {
             const password = req.body.password;
+            
+            // Length check
             if (password.length < 8) {
                 return res.status(400).json({ 
                     error: 'Password must be at least 8 characters long' 
                 });
             }
+            
+            if (password.length > 128) {
+                return res.status(400).json({ 
+                    error: 'Password too long' 
+                });
+            }
+            
+            // Check for common weak passwords
+            const commonPasswords = [
+                'password', '12345678', 'admin', 'qwerty', 'abc123',
+                'password123', 'admin123', 'root', 'toor', 'pass'
+            ];
+            
+            if (commonPasswords.includes(password.toLowerCase())) {
+                return res.status(400).json({ 
+                    error: 'Password is too common. Please choose a stronger password.' 
+                });
+            }
+            
+            // Strength validation
             if (!validator.isStrongPassword(password, {
                 minLength: 8,
                 minLowercase: 1,
@@ -73,6 +150,26 @@ const validateAndSanitizeInput = (req, res, next) => {
                     error: 'Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character' 
                 });
             }
+            
+            // Check for sequential characters
+            const hasSequentialChars = /(.)\1{2,}|0123|1234|2345|3456|4567|5678|6789|7890|abcd|bcde|cdef|defg|efgh|fghi|ghij|hijk|ijkl|jklm|klmn|lmno|mnop|nopq|opqr|pqrs|qrst|rstu|stuv|tuvw|uvwx|vwxy|wxyz/i;
+            
+            if (hasSequentialChars.test(password)) {
+                return res.status(400).json({ 
+                    error: 'Password cannot contain sequential characters' 
+                });
+            }
+        }
+        
+        // Rate limiting check per IP
+        const clientIP = req.ip || req.connection.remoteAddress;
+        
+        // Check if IP is locked out
+        if (loginAttempts.isLockedOut(clientIP)) {
+            const remainingTime = Math.ceil(loginAttempts.getLockoutTimeRemaining(clientIP) / 60000);
+            return res.status(429).json({ 
+                error: `Too many failed attempts. Please try again in ${remainingTime} minutes.` 
+            });
         }
         
         next();
@@ -165,6 +262,9 @@ router.post('/login', loginLimiter, validateAndSanitizeInput, async (req, res) =
             .get();
         
         if (adminSnapshot.empty) {
+            // Record failed attempt
+            loginAttempts.recordFailedAttempt(clientIP);
+            
             // Log failed attempt
             await logSecurityEvent('LOGIN_FAILED', {
                 email: email,
@@ -183,6 +283,9 @@ router.post('/login', loginLimiter, validateAndSanitizeInput, async (req, res) =
         
         // Check if admin is active
         if (!adminData.isActive) {
+            // Record failed attempt
+            loginAttempts.recordFailedAttempt(clientIP);
+            
             await logSecurityEvent('LOGIN_FAILED', {
                 email: email,
                 ip: req.ip,
@@ -199,6 +302,9 @@ router.post('/login', loginLimiter, validateAndSanitizeInput, async (req, res) =
         const isPasswordValid = await bcrypt.compare(password, adminData.password);
         
         if (!isPasswordValid) {
+            // Record failed attempt
+            loginAttempts.recordFailedAttempt(clientIP);
+            
             // Log failed attempt
             await logSecurityEvent('LOGIN_FAILED', {
                 email: email,
@@ -211,6 +317,9 @@ router.post('/login', loginLimiter, validateAndSanitizeInput, async (req, res) =
                 error: 'Invalid credentials' 
             });
         }
+        
+        // Clear failed attempts on successful login
+        loginAttempts.clearAttempts(clientIP);
         
         // Generate JWT token
         const token = jwt.sign(
@@ -441,6 +550,84 @@ router.get('/security-logs', adminLimiter, verifyAdminToken, async (req, res) =>
     } catch (error) {
         console.error('Get security logs error:', error);
         res.status(500).json({ error: 'Failed to get security logs' });
+    }
+});
+
+// Refresh token endpoint
+router.post('/refresh-token', verifyAdminToken, async (req, res) => {
+    try {
+        // Generate new JWT token
+        const token = jwt.sign(
+            { 
+                adminId: req.admin.id,
+                email: req.admin.email,
+                role: req.admin.role
+            },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { 
+                expiresIn: '24h',
+                issuer: 'grow-synergy-admin'
+            }
+        );
+        
+        // Update last activity
+        await admin.firestore()
+            .collection('admins')
+            .doc(req.admin.id)
+            .update({
+                lastActivity: admin.firestore.FieldValue.serverTimestamp()
+            });
+        
+        res.json({ token: token });
+        
+    } catch (error) {
+        console.error('Token refresh error:', error);
+        res.status(500).json({ error: 'Failed to refresh token' });
+    }
+});
+
+// Verify session endpoint
+router.post('/verify-session', verifyAdminToken, async (req, res) => {
+    try {
+        // Update last activity
+        await admin.firestore()
+            .collection('admins')
+            .doc(req.admin.id)
+            .update({
+                lastActivity: admin.firestore.FieldValue.serverTimestamp()
+            });
+        
+        res.json({ 
+            valid: true,
+            admin: {
+                id: req.admin.id,
+                email: req.admin.email,
+                role: req.admin.role
+            }
+        });
+        
+    } catch (error) {
+        console.error('Session verification error:', error);
+        res.status(500).json({ error: 'Session verification failed' });
+    }
+});
+
+// Log security event endpoint
+router.post('/log-security-event', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const { eventType, details } = req.body;
+        
+        await logSecurityEvent(eventType, {
+            ...details,
+            adminId: req.admin.id,
+            adminEmail: req.admin.email
+        });
+        
+        res.json({ success: true });
+        
+    } catch (error) {
+        console.error('Security logging error:', error);
+        res.status(500).json({ error: 'Failed to log security event' });
     }
 });
 

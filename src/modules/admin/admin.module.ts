@@ -22,18 +22,22 @@ import { extname, join } from 'path';
         },
       }),
       fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|gif|webp/;
-        const extname = allowedTypes.test(file.originalname.toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
+        const allowedImageTypes = /jpeg|jpg|png|gif|webp/;
+        const allowedPdfTypes = /pdf/;
+        const imageExtname = allowedImageTypes.test(file.originalname.toLowerCase());
+        const pdfExtname = allowedPdfTypes.test(file.originalname.toLowerCase());
+        const imageMimetype = allowedImageTypes.test(file.mimetype);
+        const pdfMimetype = allowedPdfTypes.test(file.mimetype);
 
-        if (mimetype && extname) {
+        if ((imageMimetype && imageExtname) || (pdfMimetype && pdfExtname)) {
           return cb(null, true);
         } else {
-          cb(new Error('Only image files are allowed!'), false);
+          const error = new Error('Only image files (jpeg, jpg, png, gif, webp) and PDF files are allowed!');
+          return cb(error as any, false);
         }
       },
       limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB
+        fileSize: 10 * 1024 * 1024, // 10MB (increased for PDF)
       },
     }),
   ],

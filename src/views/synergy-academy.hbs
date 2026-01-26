@@ -1103,6 +1103,8 @@
                 const academyLevel = academy.level || 'Beginner';
                 const academySchedule = academy.schedule || 'Flexible';
                 const academyMode = academy.mode || 'Online';
+                const academyCertification = academy.certification || 'Certificate Available';
+                const academyPdf = academy.pdf || null;
                 
                 // Change price overlay to orange
                 div.innerHTML = 
@@ -1114,6 +1116,7 @@
                         '<div class="absolute top-4 right-4">' +
                             '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">' + academyLevel + '</span>' +
                         '</div>' +
+                        (academyPdf ? '<div class="absolute bottom-4 left-4"><span class="bg-red-100 text-xs px-2 py-1 rounded" style="color: black !important;"><i class="fas fa-file-pdf mr-1" style="color: black !important;"></i>PDF Available</span></div>' : '') +
                     '</div>' +
                     '<div class="p-6">' +
                         '<h3 class="text-xl font-bold text-gray-800 mb-2">' + academyTitle + '</h3>' +
@@ -1129,15 +1132,17 @@
                         '<div class="flex flex-wrap gap-2 mb-4">' +
                             '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">' + academySchedule + '</span>' +
                             '<span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">' + academyMode + '</span>' +
+                            '<span class="bg-yellow-100 text-xs px-2 py-1 rounded" style="color: black !important;">' + academyCertification + '</span>' +
+                            (academyPdf ? '<span class="bg-red-100 text-xs px-2 py-1 rounded" style="color: black !important;"><i class="fas fa-file-pdf mr-1" style="color: black !important;"></i>PDF</span>' : '') +
                         '</div>' +
                         '<div class="flex items-center justify-between text-sm text-gray-500">' +
                             '<span>' + academyDuration + '</span>' +
                             '<span>' + academyInstructor + '</span>' +
                         '</div>' +
                         '<div class="mt-4">' +
-                            '<button class="w-full text-white font-semibold py-2 px-4 rounded-lg transition duration-200" style="background-color: #4BD68D !important; color: white !important; font-weight: 600 !important; padding: 8px 16px !important; border-radius: 8px !important; border: none !important; cursor: pointer !important;">' +
+                            '<a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA,%20saya%20ingin%20mendaftar%20pelatihan:%20' + encodeURIComponent(academyTitle) + '%20-%20' + encodeURIComponent(academyDescription) + '" target="_blank" class="w-full text-white font-semibold py-2 px-4 rounded-lg transition duration-200 inline-block text-center" style="background-color: #4BD68D !important; color: white !important; font-weight: 600 !important; padding: 8px 16px !important; border-radius: 8px !important; border: none !important; cursor: pointer !important; text-decoration: none !important;">' +
                                 'Daftar Sekarang!' +
-                            '</button>' +
+                            '</a>' +
                         '</div>' +
                     '</div>';
                 
@@ -1195,6 +1200,27 @@
             const duration = academy.duration || 'Tidak tersedia';
             const level = academy.level || 'All Levels';
             const instructor = academy.instructor || academy.author || 'Tidak tersedia';
+            const certification = academy.certification || 'Certificate Available';
+            let academyPdf = academy.pdf || null;
+            
+            console.log('Modal Content - Academy PDF (raw):', academyPdf);
+            
+            // Validate and clean PDF field
+            if (academyPdf) {
+                // Check if PDF is actually a Google Drive link
+                if (academyPdf.includes('drive.google.com') || academyPdf.includes('http')) {
+                    console.log('Modal Content - Academy PDF (valid link):', academyPdf);
+                } else if (academyPdf.includes('/uploads/admin/') || academyPdf.includes('WhatsApp')) {
+                    console.warn('Modal Content - Academy PDF (invalid image path):', academyPdf);
+                    academyPdf = null; // Remove invalid PDF
+                } else {
+                    console.log('Modal Content - Academy PDF (unknown format):', academyPdf);
+                    // For unknown format, still try to use it but log warning
+                    console.warn('Modal Content - Academy PDF (unknown format, trying anyway):', academyPdf);
+                }
+            }
+            
+            console.log('Modal Content - Academy PDF (final):', academyPdf);
             
             modalContent.innerHTML = `
                 <div class="space-y-6">
@@ -1209,7 +1235,7 @@
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="bg-blue-50 p-4 rounded-lg text-center">
                             <i class="fas fa-clock text-blue-600 text-2xl mb-2"></i>
                             <div class="font-semibold text-gray-800">Durasi</div>
@@ -1225,7 +1251,29 @@
                             <div class="font-semibold text-gray-800">Instruktur</div>
                             <div class="text-gray-600">${instructor}</div>
                         </div>
+                        <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                            <i class="fas fa-certificate text-yellow-600 text-2xl mb-2"></i>
+                            <div class="font-semibold text-gray-800">Sertifikat</div>
+                            <div class="text-gray-600">${certification}</div>
+                        </div>
                     </div>
+                    
+                    ${academyPdf ? `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <i class="fas fa-file-pdf text-red-600 text-2xl mr-3"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Materi Kursus (PDF)</h4>
+                                    <p class="text-sm text-gray-600">Lihat materi kursus lengkap</p>
+                                </div>
+                            </div>
+                            <a href="${academyPdf}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+                                <i class="fas fa-external-link-alt mr-2"></i>Lihat Materi
+                            </a>
+                        </div>
+                    </div>
+                    ` : ''}
                     
                     <div>
                         <h3 class="text-xl font-bold text-gray-800 mb-3">Apa yang akan Anda Pelajari</h3>

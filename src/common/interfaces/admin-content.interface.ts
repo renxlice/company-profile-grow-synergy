@@ -51,6 +51,7 @@ export interface Academy {
   title: string;
   description: string;
   image: string;
+  pdf?: string;
   author: string;
   rating: number;
   students: number;

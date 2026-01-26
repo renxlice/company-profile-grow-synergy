@@ -28,7 +28,7 @@
 
     <!-- Sidebar Navigation -->
     <div class="flex">
-        <aside class="w-64 bg-white shadow-md h-screen fixed left-0 top-0 z-10">
+        <aside class="w-64 bg-white shadow-md h-screen sticky top-0">
             <div class="p-4">
                 <ul class="space-y-2">
                     <li>
@@ -67,12 +67,18 @@
                             <span class="ml-3">Synergy Academy</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="/admin/testimonials" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-comments w-5"></i>
+                            <span class="ml-3">Testimoni</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6 ml-64">
+        <main class="flex-1 p-6">
             <div class="max-w-4xl mx-auto">
                 <!-- Page Header -->
                 <div class="mb-6">
@@ -82,7 +88,7 @@
 
                 <!-- Form -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <form action="{{action}}" method="POST" enctype="multipart/form-data">
+                    <form action="{{action}}" method="POST">
                         <input type="hidden" name="_method" value="PUT">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Title -->
@@ -210,17 +216,18 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 >
-                                    <option value="">Pilih level</option>
+                                    <option value="Select Level">Select Level</option>
                                     <option value="Beginner" {{#if item.level}}{{#if (eq item.level "Beginner")}}selected{{/if}}{{/if}}>Beginner</option>
                                     <option value="Intermediate" {{#if item.level}}{{#if (eq item.level "Intermediate")}}selected{{/if}}{{/if}}>Intermediate</option>
                                     <option value="Advanced" {{#if item.level}}{{#if (eq item.level "Advanced")}}selected{{/if}}{{/if}}>Advanced</option>
+                                    <option value="All Levels" {{#if item.level}}{{#if (eq item.level "All Levels")}}selected{{/if}}{{/if}}>All Levels</option>
                                 </select>
                             </div>
 
                             <!-- Schedule -->
                             <div>
                                 <label for="schedule" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Jadwal <span class="text-red-500">*</span>
+                                    Schedule <span class="text-red-500">*</span>
                                 </label>
                                 <select 
                                     id="schedule" 
@@ -228,10 +235,11 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 >
-                                    <option value="">Pilih jadwal</option>
-                                    <option value="Online" {{#if item.schedule}}{{#if (eq item.schedule "Online")}}selected{{/if}}{{/if}}>Online</option>
+                                    <option value="Select Schedule">Select Schedule</option>
+                                    <option value="Full Time" {{#if item.schedule}}{{#if (eq item.schedule "Full Time")}}selected{{/if}}{{/if}}>Full Time</option>
+                                    <option value="Part Time" {{#if item.schedule}}{{#if (eq item.schedule "Part Time")}}selected{{/if}}{{/if}}>Part Time</option>
                                     <option value="Weekend" {{#if item.schedule}}{{#if (eq item.schedule "Weekend")}}selected{{/if}}{{/if}}>Weekend</option>
-                                    <option value="Evening" {{#if item.schedule}}{{#if (eq item.schedule "Evening")}}selected{{/if}}{{/if}}>Evening</option>
+                                    <option value="Flexible" {{#if item.schedule}}{{#if (eq item.schedule "Flexible")}}selected{{/if}}{{/if}}>Flexible</option>
                                 </select>
                             </div>
 
@@ -246,10 +254,10 @@
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 >
-                                    <option value="">Pilih mode</option>
-                                    <option value="Flexible Learning" {{#if item.mode}}{{#if (eq item.mode "Flexible Learning")}}selected{{/if}}{{/if}}>Flexible Learning</option>
-                                    <option value="Mentor-Guided" {{#if item.mode}}{{#if (eq item.mode "Mentor-Guided")}}selected{{/if}}{{/if}}>Mentor-Guided</option>
-                                    <option value="Live Classes" {{#if item.mode}}{{#if (eq item.mode "Live Classes")}}selected{{/if}}{{/if}}>Live Classes</option>
+                                    <option value="Select Mode">Select Mode</option>
+                                    <option value="Online" {{#if item.mode}}{{#if (eq item.mode "Online")}}selected{{/if}}{{/if}}>Online</option>
+                                    <option value="Offline" {{#if item.mode}}{{#if (eq item.mode "Offline")}}selected{{/if}}{{/if}}>Offline</option>
+                                    <option value="Hybrid" {{#if item.mode}}{{#if (eq item.mode "Hybrid")}}selected{{/if}}{{/if}}>Hybrid</option>
                                 </select>
                             </div>
 
@@ -295,21 +303,196 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Form Actions -->
-                        <div class="mt-6 flex justify-end space-x-3">
-                            <a href="/admin/academies" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
-                                Batal
-                            </a>
-                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
-                                <i class="fas fa-save mr-2"></i>Update
-                            </button>
-                        </div>
-                    </form>
+                            <!-- PDF Materials -->
+                            <div class="col-span-2">
+                                <label for="pdf" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Materi Kursus (PDF) <span class="text-gray-500">Opsional</span>
+                                </label>
+                                <div class="mt-1">
+                                    {{#if item.pdf}}
+                                    <div class="mb-4">
+                                        <div class="flex items-center justify-center p-3 bg-green-50 border border-green-200 rounded-md">
+                                            <i class="fas fa-link text-blue-500 mr-2"></i>
+                                            <div class="text-left">
+                                                <p class="text-sm font-medium text-gray-700">PDF Link saat ini:</p>
+                                                <p class="text-xs text-gray-600">{{item.pdf}}</p>
+                                                <a href="{{item.pdf}}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 underline">Buka PDF Link</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/if}}
+                                    <div class="flex items-center space-x-2">
+                                        <input 
+                                            type="url" 
+                                            id="pdf" 
+                                            name="pdf" 
+                                            placeholder="https://drive.google.com/file/d/..."
+                                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                            value="{{item.pdf}}"
+                                        >
+                                        <button type="button" onclick="clearPDF()" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-md text-sm font-medium transition">
+                                            <i class="fas fa-times mr-1"></i>Clear
+                                        </button>
+                                    </div>
+                                    <p class="mt-2 text-xs text-gray-500">Masukkan link Google Drive atau link PDF lainnya</p>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="mt-6 flex justify-end space-x-3">
+                                <a href="/admin/academies" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                                    Batal
+                                </a>
+                                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                                    <i class="fas fa-save mr-2"></i>Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Hapus Google Drive Link</h3>
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500">
+                        Apakah Anda yakin ingin menghapus Google Drive link ini? Tindakan ini tidak dapat dibatalkan.
+                    </p>
+                </div>
+                <div class="items-center px-4 py-3">
+                    <button id="confirmCancel" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-24 mr-2 hover:bg-gray-300 transition">
+                        Batal
+                    </button>
+                    <button id="confirmOk" class="px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-24 hover:bg-red-700 transition">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Clear PDF function with modern modal
+        function clearPDF() {
+            const pdfInput = document.getElementById('pdf');
+            const currentValue = pdfInput.value;
+            
+            if (currentValue && currentValue.trim() !== '') {
+                // Show modern confirmation modal
+                showConfirmModal(() => {
+                    pdfInput.value = '';
+                    showNotification('Google Drive link berhasil dihapus!', 'success');
+                    pdfInput.focus();
+                });
+            } else {
+                showNotification('Tidak ada link untuk dihapus', 'info');
+            }
+        }
+        
+        // Show modern confirmation modal
+        function showConfirmModal(onConfirm) {
+            const modal = document.getElementById('confirmModal');
+            const cancelBtn = document.getElementById('confirmCancel');
+            const okBtn = document.getElementById('confirmOk');
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            
+            // Handle cancel
+            cancelBtn.onclick = function() {
+                modal.classList.add('hidden');
+            };
+            
+            // Handle confirm
+            okBtn.onclick = function() {
+                modal.classList.add('hidden');
+                onConfirm();
+            };
+            
+            // Close on outside click
+            modal.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            };
+            
+            // Close on escape key
+            document.onkeydown = function(event) {
+                if (event.key === 'Escape') {
+                    modal.classList.add('hidden');
+                }
+            };
+        }
+        
+        // Show notification function
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-4 py-3 rounded-md text-white text-sm font-medium z-50 transition-all duration-300 transform translate-x-full`;
+            
+            // Set color based on type
+            switch(type) {
+                case 'success':
+                    notification.classList.add('bg-green-600');
+                    notification.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${message}`;
+                    break;
+                case 'error':
+                    notification.classList.add('bg-red-600');
+                    notification.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${message}`;
+                    break;
+                default:
+                    notification.classList.add('bg-blue-600');
+                    notification.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+            }
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+                notification.classList.add('translate-x-0');
+            }, 100);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+        
+        // Handle image file selection
+        document.getElementById('image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select a valid image file');
+                    e.target.value = '';
+                    return;
+                }
+                
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Image file must be less than 5MB');
+                    e.target.value = '';
+                    return;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

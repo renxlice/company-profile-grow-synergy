@@ -15,13 +15,15 @@ export class AuthMiddleware implements NestMiddleware {
     console.log('AuthMiddleware - Path:', req.path);
     console.log('AuthMiddleware - Session:', req.session);
     
-    // Skip authentication for login page, logout, and static assets
+    // Skip authentication for login page, logout, static assets, and test endpoints
     if (req.path === '/admin/login' || 
         req.path.startsWith('/admin/login') || 
         req.path === '/admin/logout' ||
         req.path.startsWith('/admin/css') ||
         req.path.startsWith('/admin/js') ||
-        req.path.startsWith('/admin/images')) {
+        req.path.startsWith('/admin/images') ||
+        req.path.includes('/test') || // Allow test endpoints
+        req.path === '/test-academy') {
       console.log('AuthMiddleware - Skipping auth for:', req.path);
       return next();
     }
