@@ -1,0 +1,72 @@
+# Robots.txt for GROW SYNERGY INDONESIA
+# Website: https://grow-synergy-indonesia.com
+
+User-agent: *
+Allow: /
+
+# Prioritize important pages
+Allow: /home
+Allow: /about
+Allow: /synergy-experts
+Allow: /synergy-portfolio
+Allow: /synergy-academy
+Allow: /training/
+
+# Allow CSS and JS files
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /dist/
+
+# Disallow temporary files
+Disallow: /tmp/
+Disallow: /temp/
+Disallow: /*.tmp$
+Disallow: /*.temp$
+
+# Disallow system files
+Disallow: /package.json
+Disallow: /package-lock.json
+Disallow: /.env*
+Disallow: /node_modules/
+
+# Sitemap location
+Sitemap: https://grow-synergy-indonesia.com/sitemap.xml
+
+# Crawl delay (optional, adjust based on server capacity)
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 1
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# SEO tools (allow them for analysis)
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: SEMrushBot
+Allow: /
+
+User-agent: MJ12bot
+Allow: /

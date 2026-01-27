@@ -84,7 +84,65 @@
     
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {{{structuredDataJson}}}
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "GROW SYNERGY INDONESIA",
+        "description": "Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat",
+        "url": "https://grow-synergy-indonesia.com",
+        "logo": "https://grow-synergy-indonesia.com/images/logo_pt.png",
+        "sameAs": [
+            "https://www.facebook.com/grow-synergy-indonesia",
+            "https://www.linkedin.com/company/grow-synergy-indonesia"
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "ID",
+            "addressLocality": "Jakarta"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+62-812-3456-7890",
+            "contactType": "customer service",
+            "availableLanguage": "Indonesian"
+        },
+        "offers": {
+            "@type": "Offer",
+            "category": "Educational Services",
+            "name": "Pelatihan Data Analitik"
+        }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "Pelatihan Data Analitik Komprehensif",
+        "description": "Program pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat",
+        "provider": {
+            "@type": "EducationalOrganization",
+            "name": "GROW SYNERGY INDONESIA"
+        },
+        "educationalLevel": "Beginner to Advanced",
+        "inLanguage": "Indonesian",
+        "about": "Data Analytics, Data Science, Business Intelligence",
+        "keywords": "pelatihan data analitik, kursus data analitik, data science training, business intelligence course",
+        "hasCourseInstance": {
+            "@type": "CourseInstance",
+            "courseMode": "online",
+            "instructor": {
+                "@type": "Person",
+                "name": "Tim Instruktur Profesional"
+            }
+        },
+        "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "priceCurrency": "IDR",
+            "description": "Harga terjangkau dengan pembayaran cicilan"
+        }
+    }
     </script>
     
     <!-- Google Analytics -->
@@ -110,9 +168,10 @@
                 
                 <div class="hidden md:flex space-x-4 lg:space-x-6">
                     <a href="/home" class="nav-link text-sm lg:text-base" data-page="home">Beranda</a>
-                    <a href="/synergy-experts" class="nav-link text-sm lg:text-base" data-page="synergy-experts">Synergy Experts</a>
-                    <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base" data-page="synergy-portfolio">Synergy Portofolio</a>
-                    <a href="/synergy-academy" class="nav-link text-sm lg:text-base" data-page="synergy-academy">Synergy Academy</a>
+                    <a href="/synergy-experts" class="nav-link text-sm lg:text-base" data-page="synergy-experts">Instruktur Data Analitik</a>
+                    <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base" data-page="synergy-portfolio">Portfolio Alumni</a>
+                    <a href="/synergy-academy" class="nav-link text-sm lg:text-base" data-page="synergy-academy">Kursus Data Analitik</a>
+                    <a href="/blog" class="nav-link text-sm lg:text-base" data-page="blog">Blog</a>
                 </div>
                 
                 <!-- Mobile Menu -->
@@ -162,8 +221,9 @@
     {{/if}}
     <div class="hero-content">
         <h2 class="text-2xl md:text-3xl lg:text-4xl font-light mb-4">Selamat datang di</h2>
-        <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold mb-6 lg:mb-8">GROW SYNERGY INDONESIA</h1>
-        <p class="text-base md:text-lg leading-relaxed mb-4 lg:mb-6 px-4 lg:px-0">Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
+        <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold mb-4 lg:mb-6">Pelatihan Data Analitik Terbaik di Indonesia</h1>
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold mb-4 lg:mb-6 text-orange-500">GROW SYNERGY INDONESIA</h2>
+        <p class="text-base md:text-lg leading-relaxed mb-4 lg:mb-6 px-4 lg:px-0">Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat. Pelatihan data analitik komprehensif untuk karir Anda.</p>
     </div>
 </div>
 
@@ -186,6 +246,54 @@
             
             <div class="hidden lg:block">
                 <img id="about-section-image" src="https://picsum.photos/seed/about1/600/400.jpg" alt="Team Working" class="rounded-lg shadow-xl">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Keunggulan Pelatihan Data Analitik Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                Mengapa Memilih <span class="text-orange-500">Pelatihan Data Analitik</span> Kami?
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Program pelatihan data analitik terbaik dengan kurikulum komprehensif dan instruktur berpengalaman
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-graduation-cap text-orange-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Sertifikat BNSP</h3>
+                <p class="text-gray-600">Pelatihan data analitik dengan sertifikasi resmi yang diakui nasional</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-users text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Instruktur Expert</h3>
+                <p class="text-gray-600">Tim profesional dengan pengalaman 10+ tahun di data analitik</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-laptop text-blue-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Praktik Langsung</h3>
+                <p class="text-gray-600">Pelatihan dengan project real-world dan case study terkini</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-briefcase text-purple-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Karir Terjamin</h3>
+                <p class="text-gray-600">Bantuan penempatan kerja dan alumni network yang luas</p>
             </div>
         </div>
     </div>
@@ -728,9 +836,9 @@
             <div>
                 <h3 class="font-semibold mb-4">Pelatihan</h3>
                 <ul class="space-y-2 text-gray-400">
-                    <li><a href="/synergy-academy" class="hover:text-white transition">Synergy Academy</a></li>
-                    <li><a href="/synergy-experts" class="hover:text-white transition">Synergy Experts</a></li>
-                    <li><a href="/synergy-portfolio" class="hover:text-white transition">Synergy Portofolio</a></li>
+                    <li><a href="/synergy-academy" class="hover:text-white transition">Kursus Data Analitik</a></li>
+                    <li><a href="/synergy-experts" class="hover:text-white transition">Instruktur Data Analitik</a></li>
+                    <li><a href="/synergy-portfolio" class="hover:text-white transition">Portfolio Alumni</a></li>
                 </ul>
             </div>
             
@@ -739,6 +847,7 @@
                 <ul class="space-y-2 text-gray-400">
                     <li><a href="/about" class="hover:text-white transition">Tentang Kami</a></li>
                     <li><a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">Kontak</a></li>
+                    <li><a href="/blog" class="hover:text-white transition">Blog</a></li>
                 </ul>
             </div>
             

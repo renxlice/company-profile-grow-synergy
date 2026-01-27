@@ -7,19 +7,19 @@ export class SeoService {
 
   getHomeData() {
     return {
-      title: 'Pelatihan Data Analitik Terbaik di Indonesia | Kursus Online Bersertifikat',
-      description: 'Pelatihan data analitik profesional dengan instruktur berpengalaman. Dapatkan sertifikat dan karir impian Anda. Daftar sekarang!',
-      keywords: 'pelatihan data analitik, kursus data analytics, training data science, belajar data analitik indonesia, data analyst course indonesia',
+      title: 'Pelatihan Data Analitik Terbaik di Indonesia #1 | Kursus Online Bersertifikat BNSP',
+      description: 'Pelatihan data analitik profesional dengan instruktur berpengalaman 10+ tahun. Dapatkan sertifikat BNSP dan karir impian Anda. Daftar sekarang!',
+      keywords: 'pelatihan data analitik, kursus data analytics, training data science, belajar data analitik indonesia, data analyst course indonesia, pelatihan data analitik terbaik, kursus data analitik online, sertifikat data analitik',
       author: 'GROW SYNERGY INDONESIA',
       canonical: 'https://localhost:3001',
-      ogTitle: 'Pelatihan Data Analitik Terbaik di Indonesia',
-      ogDescription: 'Platform pembelajaran data analitik dengan instruktur profesional dan sertifikat bersertifikat',
+      ogTitle: 'Pelatihan Data Analitik Terbaik di Indonesia #1 | GROW SYNERGY',
+      ogDescription: 'Platform pembelajaran data analitik #1 dengan instruktur profesional dan sertifikat BNSP bersertifikat',
       ogImage: 'https://localhost:3001/images/og-image.jpg',
       ogUrl: 'https://localhost:3001',
       ogType: 'website',
       twitterCard: 'summary_large_image',
-      twitterTitle: 'Pelatihan Data Analitik Terbaik di Indonesia',
-      twitterDescription: 'Platform pembelajaran data analitik dengan instruktur profesional',
+      twitterTitle: 'Pelatihan Data Analitik Terbaik di Indonesia #1',
+      twitterDescription: 'Platform pembelajaran data analitik #1 dengan instruktur profesional dan sertifikat BNSP',
       twitterImage: 'https://localhost:3001/images/twitter-image.jpg',
       structuredData: this.generateStructuredData(),
     };

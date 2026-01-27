@@ -11,6 +11,8 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { SeedModule } from './modules/seed/seed.module';
 import { AuthMiddleware } from './common/middleware/auth.middleware';
 import { ContentService } from './common/services/content.service';
+import { BlogModule } from './blog.module';
+import { BlogService } from './blog.service';
 
 @Module({
   imports: [
@@ -32,9 +34,10 @@ import { ContentService } from './common/services/content.service';
     AdminModule,
     AnalyticsModule,
     SeedModule,
+    BlogModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ContentService],
+  providers: [AppService, ContentService, BlogService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Data Analitik | Tips, Tutorial & Insights Indonesia</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Blog data analitik terbaik di Indonesia. Dapatkan tips, tutorial, dan insights tentang data science, machine learning, dan karir data analyst.">
+    <meta name="keywords" content="blog data analitik, tutorial data science, tips data analyst, machine learning indonesia, big data tutorial, karir data analyst">
+    <meta name="author" content="GROW SYNERGY INDONESIA">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Blog Data Analitik | Tips, Tutorial & Insights Indonesia">
+    <meta property="og:description" content="Blog data analitik terbaik di Indonesia dengan tips, tutorial, dan insights tentang data science">
+    <meta property="og:image" content="https://grow-synergy-indonesia.com/images/blog-og-image.jpg">
+    <meta property="og:url" content="https://grow-synergy-indonesia.com/blog">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="GROW SYNERGY INDONESIA">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog Data Analitik | Tips & Tutorial Indonesia">
+    <meta name="twitter:description" content="Blog data analitik dengan tips, tutorial, dan insights untuk karir data analyst">
+    <meta name="twitter:image" content="https://grow-synergy-indonesia.com/images/blog-twitter-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://grow-synergy-indonesia.com/blog">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Blog Data Analitik GROW SYNERGY INDONESIA",
+        "description": "Blog data analitik terbaik di Indonesia dengan tips, tutorial, dan insights tentang data science",
+        "url": "https://grow-synergy-indonesia.com/blog",
+        "publisher": {
+            "@type": "Organization",
+            "name": "GROW SYNERGY INDONESIA",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://grow-synergy-indonesia.com/images/logo_pt.png"
+            }
+        },
+        "inLanguage": "id",
+        "about": "Data Analytics, Data Science, Machine Learning, Big Data"
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    {{#if googleAnalyticsId}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{googleAnalyticsId}}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{googleAnalyticsId}}');
+    </script>
+    {{/if}}
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-12 h-12 md:w-20 md:h-20 rounded-lg object-cover">
+                    <a href="/home" class="text-sm md:text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                </div>
+                
+                <div class="hidden md:flex space-x-4 lg:space-x-6">
+                    <a href="/home" class="nav-link text-sm lg:text-base hover:text-orange-500 transition-colors" data-page="home">Beranda</a>
+                    <a href="/synergy-experts" class="nav-link text-sm lg:text-base hover:text-orange-500 transition-colors" data-page="synergy-experts">Instruktur Data Analitik</a>
+                    <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base hover:text-orange-500 transition-colors" data-page="synergy-portfolio">Portfolio Alumni</a>
+                    <a href="/synergy-academy" class="nav-link text-sm lg:text-base hover:text-orange-500 transition-colors" data-page="synergy-academy">Kursus Data Analitik</a>
+                    <a href="/blog" class="nav-link text-sm lg:text-base font-semibold border-b-2 border-orange-500 pb-1" data-page="blog" style="border-color: #f97316 !important;">Blog</a>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-1.5 py-0.5 md:px-4 md:py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important text-xs md:text-sm" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                        Tentang Kami
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+<div class="hero-section">
+    {{#if heroSections}}
+        {{#each heroSections}}
+        <div class="background-image" style="background-image: url('{{this.backgroundImage}}');"></div>
+        {{/each}}
+    {{else}}
+        <div class="background-image" style="background-image: url('/images/hero-background.jpg');"></div>
+    {{/if}}
+    <div class="hero-content">
+        <h2 class="text-2xl md:text-3xl lg:text-4xl font-light mb-4">Selamat datang di</h2>
+        <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold mb-4 lg:mb-6">Blog Data Analitik Indonesia</h1>
+        <h2 class="text-xl md:text-2xl lg:text-3xl font-semibold mb-4 lg:mb-6 text-orange-500">GROW SYNERGY INDONESIA</h2>
+        <p class="text-base md:text-lg leading-relaxed mb-4 lg:mb-6 px-4 lg:px-0">Platform pembelajaran data analitik terbaik di Indonesia dengan tips, tutorial, dan insights terbaru untuk karir Anda.</p>
+    </div>
+</div>
+
+        <!-- Search and Filter Section -->
+        <section class="py-8 bg-white border-b">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="relative flex-1 max-w-md">
+                        <input type="text" id="searchInput" placeholder="Cari artikel data analitik..." 
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 placeholder-gray-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="category-btn px-4 py-2 bg-orange-500 text-white rounded-full text-sm hover:bg-orange-600 transition" data-category="all">
+                            Semua
+                        </button>
+                        <button class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-category="tutorial">
+                            Tutorial
+                        </button>
+                        <button class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-category="tips">
+                            Tips
+                        </button>
+                        <button class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-category="career">
+                            Karir
+                        </button>
+                        <button class="category-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition" data-category="industry">
+                            Industri
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Posts Grid -->
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
+                    {{#each blogs}}
+                    <article class="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer" data-category="{{category}}" onclick="window.location.href='/blog/{{slug}}'">
+                        <div class="relative">
+                            {{#if @first}}
+                            <div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                Featured
+                            </div>
+                            {{/if}}
+                            <img src="{{image}}" alt="{{title}}" class="w-full h-48 object-cover">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center text-sm text-gray-500 mb-2">
+                                <i class="fas fa-calendar mr-2"></i>
+                                <span>{{date}}</span>
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-clock mr-1"></i>
+                                <span>{{readTime}} min read</span>
+                            </div>
+                            <h2 class="text-xl font-bold mb-3 text-gray-800">
+                                {{title}}
+                            </h2>
+                            <p class="text-gray-600 mb-4">
+                                {{description}}
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-700">{{author}}</span>
+                                </div>
+                                <span class="text-orange-500 font-semibold text-sm">
+                                    Klik untuk detail →
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                    {{/each}}
+                </div>
+                
+                {{#unless blogs.length}}
+                <div class="text-center py-12">
+                    <i class="fas fa-blog text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500">No blog articles found</p>
+                </div>
+                {{/unless}}
+
+                <!-- Load More Button -->
+                <div class="text-center mt-12">
+                    <button id="loadMoreBtn" class="bg-orange-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+                        Muat Lebih Banyak Artikel
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEO Benefits Section -->
+        <section class="py-16" style="background-color: #225273;">
+            <div class="container mx-auto px-4 text-center text-white">
+                <div class="mb-8">
+                    <i class="fas fa-chart-line text-5xl mb-4"></i>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        Mengapa Blog Data Analitik Ini Penting?
+                    </h2>
+                    <p class="text-xl mb-8 max-w-3xl mx-auto">
+                        Sumber daya terlengkap untuk <strong>pelatihan data analitik Indonesia</strong> dengan konten berkualitas, tutorial praktis, dan insight industri yang membantu karir Anda
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-graduation-cap text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Kurikulum Terstruktur</h3>
+                        <p class="text-sm opacity-90">Panduan <strong>data analitik pemula</strong> hingga advanced dengan step-by-step jelas</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-industry text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Case Study Real</h3>
+                        <p class="text-sm opacity-90">Proyek <strong>data science Indonesia</strong> dari berbagai industri untuk praktik langsung</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-certificate text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Sertifikasi BNSP</h3>
+                        <p class="text-sm opacity-90">Materi <strong>kursus data analitik</strong> yang sesuai standar kompetensi nasional</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-2">Community Support</h3>
+                        <p class="text-sm opacity-90">Network <strong>data analyst Indonesia</strong> untuk sharing knowledge dan karir opportunities</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold mb-2">100+</div>
+                            <div class="text-sm">Tutorial Gratis</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold mb-2">50+</div>
+                            <div class="text-sm">Expert Instructors</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold mb-2">24/7</div>
+                            <div class="text-sm">Resource Access</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 flex items-center">
+                            <i class="fas fa-check-circle text-green-300 mr-2"></i>
+                            <span>Free forever</span>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 flex items-center">
+                            <i class="fas fa-mobile-alt text-green-300 mr-2"></i>
+                            <span>Mobile friendly</span>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-lg px-6 py-3 flex items-center">
+                            <i class="fas fa-download text-green-300 mr-2"></i>
+                            <span>Downloadable resources</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="h-8 w-auto">
+                        <span class="text-lg font-bold text-black">GROW SYNERGY INDONESIA</span>
+                    </div>
+                    <p class="text-gray-400">Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Pelatihan</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/synergy-academy" class="hover:text-white transition">Data Analitik Pemula</a></li>
+                        <li><a href="/synergy-academy" class="hover:text-white transition">Python untuk Data Analitik</a></li>
+                        <li><a href="/synergy-academy" class="hover:text-white transition">Business Intelligence</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Blog</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/blog" class="hover:text-white transition">Tutorial</a></li>
+                        <li><a href="/blog" class="hover:text-white transition">Tips & Tricks</a></li>
+                        <li><a href="/blog" class="hover:text-white transition">Karir</a></li>
+                        <li><a href="/blog" class="hover:text-white transition">Industri Insights</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Ikuti Kami</h3>
+                    <div class="flex space-x-4 mb-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                    <p class="text-gray-400">
+                        <i class="fas fa-envelope mr-2"></i>info@grow-synergy-indonesia.com
+                    </p>
+                    <p class="text-gray-400">
+                        <i class="fas fa-phone mr-2"></i>+62 812-3456-7890
+                    </p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 GROW SYNERGY INDONESIA. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Category filter functionality
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const blogPosts = document.querySelectorAll('#blogGrid article');
+        const searchInput = document.getElementById('searchInput');
+
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update button styles
+                categoryBtns.forEach(b => {
+                    b.classList.remove('bg-orange-500', 'text-white');
+                    b.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                this.classList.remove('bg-gray-200', 'text-gray-700');
+                this.classList.add('bg-orange-500', 'text-white');
+                
+                // Get search term
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                // Filter posts
+                blogPosts.forEach(post => {
+                    const title = post.querySelector('h2').textContent.toLowerCase();
+                    const description = post.querySelector('p').textContent.toLowerCase();
+                    const postCategory = post.dataset.category;
+                    
+                    const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                    const matchesCategory = category === 'all' || postCategory === category;
+                    
+                    if (matchesSearch && matchesCategory) {
+                        post.style.display = 'block';
+                    } else {
+                        post.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const activeCategory = document.querySelector('.category-btn.bg-orange-500')?.dataset.category || 'all';
+            
+            blogPosts.forEach(post => {
+                const title = post.querySelector('h2').textContent.toLowerCase();
+                const description = post.querySelector('p').textContent.toLowerCase();
+                const category = post.dataset.category;
+                
+                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                const matchesCategory = activeCategory === 'all' || category === activeCategory;
+                
+                if (matchesSearch && matchesCategory) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
+
+        // Load more functionality
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            // Simulate loading more posts
+            this.textContent = 'Loading...';
+            setTimeout(() => {
+                this.textContent = 'Tidak Ada Artikel Lagi';
+                this.disabled = true;
+                this.classList.add('opacity-50', 'cursor-not-allowed');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

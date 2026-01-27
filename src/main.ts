@@ -98,7 +98,7 @@ async function bootstrap() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://cdn.quilljs.com"],
           scriptSrc: [
             "'self'", 
             "'unsafe-inline'", 
@@ -109,7 +109,9 @@ async function bootstrap() {
             "https://www.google-analytics.com",
             "https://www.google-analytics.com/*",
             "https://www.google.com",
-            "https://*.firebaseio.com"
+            "https://*.firebaseio.com",
+            "https://cdn.tailwindcss.com",
+            "https://cdn.quilljs.com"
           ],
           scriptSrcAttr: ["'unsafe-inline'"],
           imgSrc: ["'self'", "data:", "https:", "https://picsum.photos"],
