@@ -25,10 +25,83 @@ import {
   Academy,
 } from '../../common/interfaces/admin-content.interface';
 import { CreateAcademyDto, UpdateAcademyDto } from './dto/academy.dto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
+
+  // Helper function to check if file exists
+  private checkFileExists(imagePath: string): boolean {
+    if (!imagePath) return false;
+    
+    // Extract filename from path
+    const filename = path.basename(imagePath);
+    const fullPath = path.join(process.cwd(), 'public', 'uploads', 'admin', filename);
+    
+    try {
+      return fs.existsSync(fullPath);
+    } catch (error) {
+      console.error('Error checking file existence:', error);
+      return false;
+    }
+  }
+
+  // Helper function to check if image is Base64 or URL
+  private isBase64Image(imagePath: string): boolean {
+    if (!imagePath) return false;
+    return imagePath.startsWith('data:image/');
+  }
+
+  // Helper function to get valid image path or fallback
+  private getValidImagePath(imagePath: string | null): string {
+    if (!imagePath) {
+      return 'https://picsum.photos/seed/placeholder/200/150.jpg';
+    }
+    
+    // If it's Base64, return as-is
+    if (this.isBase64Image(imagePath)) {
+      return imagePath;
+    }
+    
+    // If it's a local file path, check if file exists
+    if (imagePath.startsWith('/uploads/')) {
+      if (this.checkFileExists(imagePath)) {
+        return imagePath;
+      }
+      
+      // File doesn't exist, return placeholder
+      console.warn(`Image file not found: ${imagePath}, using placeholder`);
+      return 'https://picsum.photos/seed/placeholder/200/150.jpg';
+    }
+    
+    // For external URLs, return as-is
+    return imagePath;
+  }
+
+  // Helper function to convert file to Base64
+  private async fileToBase64(file: Express.Multer.File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const fs = require('fs');
+      const path = require('path');
+      
+      try {
+        const filePath = path.join(process.cwd(), 'public', 'uploads', 'admin', file.filename);
+        const fileData = fs.readFileSync(filePath);
+        const base64 = fileData.toString('base64');
+        const mimeType = file.mimetype;
+        
+        // Clean up the local file after converting to Base64
+        fs.unlinkSync(filePath);
+        
+        resolve(`data:${mimeType};base64,${base64}`);
+      } catch (error) {
+        console.error('Error converting file to Base64:', error);
+        reject(error);
+      }
+    });
+  }
 
   // Login Page
   @Get('login')
@@ -793,6 +866,13 @@ export class AdminController {
       console.log('Academies List - Items loaded:', items.length);
       console.log('Academies List - Items sample:', items.slice(0, 2));
       
+      // Validate image paths and provide fallbacks if needed
+      items.forEach(item => {
+        if (item.image) {
+          item.image = this.getValidImagePath(item.image);
+        }
+      });
+      
       return {
         title: 'Academy Management',
         username: session.username,
@@ -845,24 +925,7 @@ export class AdminController {
   }
 
   @Post('academies')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB for image
-      },
-      fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|gif|webp/;
-        const extname = allowedTypes.test(file.originalname.toLowerCase());
-        const mimetype = allowedTypes.test(file.mimetype);
-        
-        if (mimetype && extname) {
-          return cb(null, true);
-        } else {
-          cb(new Error('Only image files are allowed!'), false);
-        }
-      }
-    })
-  )
+  @UseInterceptors(FileInterceptor('image'))
   async createAcademy(
     @Body() body: any,
     @UploadedFile() file: Express.Multer.File,
@@ -893,21 +956,41 @@ export class AdminController {
       // Handle image file
       if (file) {
         body.image = `/uploads/admin/${file.filename}`;
-        console.log('Image file processed:', body.image);
+        console.log('Create Academy - Image path:', body.image);
       }
       
       // Handle PDF URL (from form field)
       if (body.pdf && typeof body.pdf === 'string') {
         // Clean and validate Google Drive URL
         const pdfUrl = body.pdf.trim();
-        if (pdfUrl && pdfUrl !== 'undefined' && pdfUrl !== 'null') {
-          body.pdfUrl = pdfUrl;
-          console.log('PDF URL processed:', body.pdfUrl);
+        if (pdfUrl && pdfUrl !== 'undefined' && pdfUrl !== 'null' && pdfUrl !== '') {
+          if (pdfUrl.includes('drive.google.com') || pdfUrl.includes('http')) {
+            body.pdf = pdfUrl;
+            console.log('PDF URL processed:', body.pdf);
+          } else {
+            console.warn('Invalid PDF format, clearing PDF field');
+            delete body.pdf;
+          }
+        } else {
+          delete body.pdf;
         }
       }
       
-      // Check required fields (remove image from required since it's optional)
-      const requiredFields = ['title', 'description', 'author', 'rating', 'students', 'duration', 'price', 'level', 'schedule', 'mode'];
+      // Map form field names to database field names
+      if (body.studentCount !== undefined) {
+        body.students = parseInt(body.studentCount) || 0;
+        delete body.studentCount;
+        console.log('Create Academy - Mapped studentCount to students:', body.students);
+      }
+      
+      // Handle certification field (optional)
+      if (body.certification === undefined || body.certification === '') {
+        delete body.certification;
+        console.log('Create Academy - Empty certification field removed');
+      }
+      
+      // Check required fields (remove image and price from required since they're optional)
+      const requiredFields = ['title', 'description', 'author', 'rating', 'students', 'duration', 'level', 'schedule', 'mode'];
       const missingFields = requiredFields.filter(field => !body[field]);
       
       if (missingFields.length > 0) {
@@ -983,6 +1066,11 @@ export class AdminController {
       const item = await this.adminService.getAcademyById(id);
       console.log('Edit Academy Form - Item:', item);
       
+      // Validate image path and provide fallback if needed
+      if (item.image) {
+        item.image = this.getValidImagePath(item.image);
+      }
+      
       return {
         title: 'Edit Academy',
         username: session.username,
@@ -1039,9 +1127,11 @@ export class AdminController {
   }
 
   @Post('academies/:id')
+  @UseInterceptors(FileInterceptor('image'))
   async updateAcademyPost(
     @Param('id') id: string,
-    @Body() body: any,
+    @Body() body: any & { _method?: string },
+    @UploadedFile() file: Express.Multer.File,
     @Session() session: Record<string, any>,
     @Res() res: Response,
   ) {
@@ -1049,6 +1139,7 @@ export class AdminController {
       console.log('=== UPDATE ACADEMY DEBUG ===');
       console.log('Update Academy - Session:', session);
       console.log('Update Academy - Body:', body);
+      console.log('Update Academy - File:', file);
       
       // Check if user is logged in
       if (!session || !session.isLoggedIn) {
@@ -1065,22 +1156,25 @@ export class AdminController {
         });
       }
       
-      // Get existing academy data to preserve image and PDF if not updated
-      const existingAcademy = await this.adminService.getAcademyById(id);
-      console.log('Update Academy - Existing Academy:', existingAcademy);
+      // Check if this is a delete request (form with _method=DELETE)
+      if (body._method === 'DELETE') {
+        console.log('Delete Academy - Session:', session);
+        await this.adminService.deleteAcademy(id);
+        return res.json({ success: true });
+      }
       
       // Handle image upload (if new image uploaded)
-      if (body.image && body.image !== 'undefined' && body.image !== '') {
-        // New image uploaded, use it
-        console.log('Update Academy - New image provided:', body.image);
-      } else if (existingAcademy.image) {
-        // No new image, preserve existing one
-        body.image = existingAcademy.image;
-        console.log('Update Academy - Preserved existing image:', body.image);
+      if (file) {
+        body.image = `/uploads/admin/${file.filename}`;
+        console.log('Update Academy - New image path:', body.image);
+      } else {
+        // No new file uploaded - remove image from body to preserve existing image in database
+        delete body.image;
+        console.log('Update Academy - No new image, preserving existing image in database');
       }
       
       // Handle PDF link (if new PDF provided)
-      if (body.pdf && body.pdf !== 'undefined' && body.pdf !== '') {
+      if (body.pdf && body.pdf !== 'undefined' && body.pdf !== '' && body.pdf.trim() !== '') {
         // New PDF link provided, validate it's a Google Drive link
         if (body.pdf.includes('drive.google.com') || body.pdf.includes('http')) {
           console.log('Update Academy - New valid PDF provided:', body.pdf);
@@ -1089,9 +1183,22 @@ export class AdminController {
           body.pdf = null; // Clear invalid PDF
         }
       } else {
-        // PDF field is empty or undefined, clear it completely
-        console.log('Update Academy - PDF field is empty, clearing PDF from database');
-        body.pdf = null;
+        // PDF field is empty or undefined, remove from body to preserve existing PDF
+        delete body.pdf;
+        console.log('Update Academy - PDF field is empty, preserving existing PDF in database');
+      }
+      
+      // Map form field names to database field names
+      if (body.studentCount !== undefined) {
+        body.students = parseInt(body.studentCount) || 0;
+        delete body.studentCount;
+        console.log('Update Academy - Mapped studentCount to students:', body.students);
+      }
+      
+      // Handle certification field (optional)
+      if (body.certification === undefined || body.certification === '') {
+        delete body.certification;
+        console.log('Update Academy - Empty certification field removed');
       }
       
       console.log('Update Academy - Final body before save:', body);

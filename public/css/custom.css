@@ -391,20 +391,155 @@ div#mobile-menu[style*="left: 0"] {
     border: 2px solid transparent;
 }
 
-/* Ensure specific text in expert cards is white */
+/* Ensure specific text in expert cards is white, but allow position badges to have their own colors */
 .expert-card .text-gray-600,
 .expert-card .text-gray-800,
-.expert-card .text-blue-600,
-.expert-card .text-green-600,
-.expert-card .text-purple-600,
-.expert-card .text-indigo-600,
-.expert-card .text-pink-600,
-.expert-card .text-teal-600,
 .expert-card .text-sm,
-.expert-card p,
 .expert-card h3,
-.expert-card .text-center p {
+.expert-card .text-center p:not([class*="bg-orange-500"]):not([class*="bg-gradient-to-r"]) {
     color: white !important;
+}
+
+/* Allow position badges to maintain their text colors and background */
+.expert-card p[class*="bg-orange-500"],
+.expert-card p[class*="bg-gradient-to-r"],
+.expert-card span[class*="bg-orange-500"],
+.expert-card span[class*="bg-gradient-to-r"] {
+    color: white !important;
+    background-color: #f97316 !important;
+    background: #f97316 !important;
+}
+
+/* Ensure orange background is visible */
+.expert-card .bg-orange-500 {
+    background-color: #f97316 !important;
+    background: #f97316 !important;
+}
+
+/* Ensure orange badges are visible in all contexts */
+.bg-orange-500 {
+    background-color: #f97316 !important;
+    background: #f97316 !important;
+}
+
+/* Ensure orange badges maintain orange background */
+span.bg-orange-500 {
+    background-color: #f97316 !important;
+    background: #f97316 !important;
+}
+
+/* Remove global orange text override to prevent unwanted changes */
+/* .text-orange-600 {
+    color: #ea580c !important;
+}
+
+.text-orange-600.font-semibold {
+    color: #ea580c !important;
+    font-weight: 600 !important;
+}
+
+[class*="text-orange-"] {
+    color: #ea580c !important;
+} */
+
+/* Specific fix for orange text visibility issues only where needed */
+/* Add specific selectors for problematic orange text elements */
+.text-orange-600.mb-2 {
+    color: #ea580c !important;
+}
+
+/* Only apply to specific contexts where orange text is not visible */
+.expert-card .text-orange-600,
+.portfolio-card .text-orange-600,
+.academy-card .text-orange-600 {
+    color: #ea580c !important;
+}
+
+/* WhatsApp Floating Button Styles */
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.whatsapp-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: #25D366;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.whatsapp-link:hover {
+    transform: scale(1.15);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+    background: #128C7E;
+}
+
+.whatsapp-link svg {
+    width: 40px;
+    height: 40px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .whatsapp-float {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .whatsapp-link {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .whatsapp-link svg {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* Portfolio Modal Mobile Fix */
+@media (max-width: 768px) {
+    #portfolioModal {
+        padding: 0;
+    }
+    
+    #portfolioModal > div {
+        margin: 0;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+        max-width: 100%;
+    }
+    
+    #portfolioModal .flex-shrink-0 {
+        flex-shrink: 0;
+        position: relative;
+        z-index: 10;
+    }
+    
+    #portfolioModal .flex-1 {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+    
+    /* Prevent body scroll when modal is open on mobile */
+    body.modal-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .expert-card:hover {

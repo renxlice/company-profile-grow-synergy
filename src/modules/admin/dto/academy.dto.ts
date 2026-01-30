@@ -26,15 +26,16 @@ export class CreateAcademyDto {
   @IsString()
   duration: string;
 
-  @IsNumber()
-  price: number;
+  @IsOptional()
+  @IsString()
+  certification?: string;
 
   @IsString()
   @IsIn(['Beginner', 'Intermediate', 'Advanced', 'All Levels'])
   level: string;
 
   @IsString()
-  @IsIn(['Flexible', 'Weekend', 'Weekday', 'Evening'])
+  @IsIn(['Flexible', 'Weekend', 'Weekday', 'Evening', 'Full Time', 'Part Time'])
   schedule: string;
 
   @IsString()
@@ -76,8 +77,8 @@ export class UpdateAcademyDto {
   duration?: string;
 
   @IsOptional()
-  @IsNumber()
-  price?: number;
+  @IsString()
+  certification?: string;
 
   @IsOptional()
   @IsString()
@@ -86,7 +87,7 @@ export class UpdateAcademyDto {
 
   @IsOptional()
   @IsString()
-  @IsIn(['Flexible', 'Weekend', 'Weekday', 'Evening'])
+  @IsIn(['Flexible', 'Weekend', 'Weekday', 'Evening', 'Full Time', 'Part Time'])
   schedule?: string;
 
   @IsOptional()

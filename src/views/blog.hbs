@@ -87,10 +87,36 @@
                     <a href="/blog" class="nav-link text-sm lg:text-base font-semibold border-b-2 border-orange-500 pb-1" data-page="blog" style="border-color: #f97316 !important;">Blog</a>
                 </div>
                 
+                <!-- Mobile Menu -->
+                <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-50 md:hidden">
+                    <div class="flex flex-col h-full">
+                        <div class="flex justify-end items-center p-4 border-b">
+                            <button id="close-menu-btn" class="text-gray-600 p-2">
+                                <i class="fas fa-times text-xl"></i>
+                            </button>
+                        </div>
+                        <nav class="flex-1 p-4">
+                            <div class="flex flex-col space-y-4">
+                                <a href="/home" class="nav-link text-lg py-3 border-b" data-page="home">Beranda</a>
+                                <a href="/synergy-experts" class="nav-link text-lg py-3 border-b" data-page="synergy-experts">Instruktur Data Analitik</a>
+                                <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b" data-page="synergy-portfolio">Portfolio Alumni</a>
+                                <a href="/synergy-academy" class="nav-link text-lg py-3 border-b" data-page="synergy-academy">Kursus Data Analitik</a>
+                                <a href="/blog" class="nav-link text-lg py-3 border-b font-semibold border-orange-500" data-page="blog" style="border-color: #f97316 !important;">Blog</a>
+                                <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-3 rounded-lg text-center mt-4" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                                    Tentang Kami
+                                </a>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+                
                 <div class="flex items-center space-x-2">
                     <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-1.5 py-0.5 md:px-4 md:py-2 rounded-lg hover:from-orange-600 hover:to-green-600 transition-all duration-300 transform hover:scale-105 shadow-lg !important text-xs md:text-sm" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
                         Tentang Kami
                     </a>
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 p-1">
+                        <i class="fas fa-bars text-base"></i>
+                    </button>
                 </div>
             </div>
         </nav>
@@ -252,11 +278,11 @@
                 <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="text-center">
-                            <div class="text-3xl font-bold mb-2">100+</div>
+                            <div class="text-3xl font-bold mb-2">10+</div>
                             <div class="text-sm">Tutorial Gratis</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-3xl font-bold mb-2">50+</div>
+                            <div class="text-3xl font-bold mb-2">5+</div>
                             <div class="text-sm">Expert Instructors</div>
                         </div>
                         <div class="text-center">
@@ -347,76 +373,147 @@
     </footer>
 
     <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    
+    <!-- Blog-specific functionality -->
     <script>
-        // Category filter functionality
-        const categoryBtns = document.querySelectorAll('.category-btn');
-        const blogPosts = document.querySelectorAll('#blogGrid article');
-        const searchInput = document.getElementById('searchInput');
-
-        categoryBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const category = this.dataset.category;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category filter functionality
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const searchInput = document.getElementById('searchInput');
+            
+            // Load more functionality
+            let currentPage = 1;
+            const postsPerPage = 6;
+            let allBlogPosts = Array.from(document.querySelectorAll('#blogGrid article'));
+            
+            // Initially show only first page
+            function showPosts(page, postsToShow = allBlogPosts) {
+                const startIndex = (page - 1) * postsPerPage;
+                const endIndex = startIndex + postsPerPage;
                 
-                // Update button styles
-                categoryBtns.forEach(b => {
-                    b.classList.remove('bg-orange-500', 'text-white');
-                    b.classList.add('bg-gray-200', 'text-gray-700');
-                });
-                this.classList.remove('bg-gray-200', 'text-gray-700');
-                this.classList.add('bg-orange-500', 'text-white');
-                
-                // Get search term
-                const searchTerm = searchInput.value.toLowerCase();
-                
-                // Filter posts
-                blogPosts.forEach(post => {
-                    const title = post.querySelector('h2').textContent.toLowerCase();
-                    const description = post.querySelector('p').textContent.toLowerCase();
-                    const postCategory = post.dataset.category;
-                    
-                    const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-                    const matchesCategory = category === 'all' || postCategory === category;
-                    
-                    if (matchesSearch && matchesCategory) {
+                postsToShow.forEach((post, index) => {
+                    if (index >= startIndex && index < endIndex) {
                         post.style.display = 'block';
                     } else {
                         post.style.display = 'none';
                     }
                 });
-            });
-        });
-
-        // Search functionality
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const activeCategory = document.querySelector('.category-btn.bg-orange-500')?.dataset.category || 'all';
-            
-            blogPosts.forEach(post => {
-                const title = post.querySelector('h2').textContent.toLowerCase();
-                const description = post.querySelector('p').textContent.toLowerCase();
-                const category = post.dataset.category;
                 
-                const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-                const matchesCategory = activeCategory === 'all' || category === activeCategory;
+                // Update button state
+                const loadMoreBtn = document.getElementById('loadMoreBtn');
+                const remainingPosts = postsToShow.length - endIndex;
                 
-                if (matchesSearch && matchesCategory) {
-                    post.style.display = 'block';
+                if (remainingPosts <= 0) {
+                    loadMoreBtn.textContent = 'Tidak Ada Artikel Lagi';
+                    loadMoreBtn.disabled = true;
+                    loadMoreBtn.classList.add('opacity-50', 'cursor-not-allowed');
                 } else {
-                    post.style.display = 'none';
+                    loadMoreBtn.textContent = `Muat Lebih Banyak (${remainingPosts} artikel tersisa)`;
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+            
+            // Filter posts function
+            function filterPosts(category = 'all', searchTerm = '') {
+                currentPage = 1;
+                const filteredPosts = Array.from(allBlogPosts).filter(post => {
+                    const title = post.querySelector('h2').textContent.toLowerCase();
+                    const description = post.querySelector('p').textContent.toLowerCase();
+                    const postCategory = post.dataset.category;
+                    
+                    const matchesCategory = category === 'all' || postCategory === category;
+                    const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                    
+                    return matchesCategory && matchesSearch;
+                });
+                
+                showPosts(currentPage, filteredPosts);
+                return filteredPosts;
+            }
+            
+            // Category button clicks
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button styling
+                    categoryBtns.forEach(b => {
+                        b.classList.remove('bg-orange-500', 'text-white');
+                        b.classList.add('bg-gray-200', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-200', 'text-gray-700');
+                    this.classList.add('bg-orange-500', 'text-white');
+                    
+                    const category = this.dataset.category;
+                    const searchTerm = searchInput.value.toLowerCase();
+                    filterPosts(category, searchTerm);
+                });
+            });
+            
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const activeCategory = document.querySelector('.category-btn.bg-orange-500')?.dataset.category || 'all';
+                filterPosts(activeCategory, searchTerm);
+            });
+            
+            // Load more button
+            document.getElementById('loadMoreBtn').addEventListener('click', function() {
+                currentPage++;
+                const activeCategory = document.querySelector('.category-btn.bg-orange-500')?.dataset.category || 'all';
+                const searchTerm = searchInput.value.toLowerCase();
+                
+                const filteredPosts = Array.from(allBlogPosts).filter(post => {
+                    const title = post.querySelector('h2').textContent.toLowerCase();
+                    const description = post.querySelector('p').textContent.toLowerCase();
+                    const postCategory = post.dataset.category;
+                    
+                    const matchesCategory = activeCategory === 'all' || postCategory === activeCategory;
+                    const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                    
+                    return matchesCategory && matchesSearch;
+                });
+                
+                const startIndex = (currentPage - 1) * postsPerPage;
+                const endIndex = startIndex + postsPerPage;
+                
+                filteredPosts.forEach((post, index) => {
+                    if (index >= startIndex && index < endIndex) {
+                        post.style.display = 'block';
+                    }
+                });
+                
+                // Update button state
+                const remainingPosts = filteredPosts.length - endIndex;
+                if (remainingPosts <= 0) {
+                    this.textContent = 'Tidak Ada Artikel Lagi';
+                    this.disabled = true;
+                    this.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    this.textContent = `Muat Lebih Banyak (${remainingPosts} artikel tersisa)`;
+                }
+                
+                // Scroll to newly loaded posts
+                const newlyVisiblePosts = filteredPosts.filter((post, index) => {
+                    return index >= startIndex && index < endIndex;
+                });
+                
+                if (newlyVisiblePosts.length > 0) {
+                    newlyVisiblePosts[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
-        });
-
-        // Load more functionality
-        document.getElementById('loadMoreBtn').addEventListener('click', function() {
-            // Simulate loading more posts
-            this.textContent = 'Loading...';
-            setTimeout(() => {
-                this.textContent = 'Tidak Ada Artikel Lagi';
-                this.disabled = true;
-                this.classList.add('opacity-50', 'cursor-not-allowed');
-            }, 1000);
+            
+            // Initialize first page
+            showPosts(currentPage);
         });
     </script>
+    
+    <!-- WhatsApp Floating Button -->
+    <div class="whatsapp-float" id="whatsapp-float">
+        <a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" target="_blank" rel="noopener noreferrer" class="whatsapp-link" title="Hubungi kami via WhatsApp">
+            <!-- WhatsApp Logo SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="50px" height="50px" fill-rule="evenodd" clip-rule="evenodd"><path fill="#fff" d="M4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5c5.1,0,9.8,2,13.4,5.6 C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19c0,0,0,0,0,0h0c-3.2,0-6.3-0.8-9.1-2.3L4.9,43.3z"></path><path fill="#fff" d="M4.9,43.8c-0.1,0-0.3-0.1-0.4-0.1c-0.1-0.1-0.2-0.3-0.1-0.5L7,33.5c-1.6-2.9-2.5-6.2-2.5-9.6	C4.5,13.2,13.3,4.5,24,4.5c5.2,0,10.1,2,13.8,5.7c3.7,3.7,5.7,8.6,5.7,13.8c0,10.7-8.7,19.5-19.5,19.5c-3.2,0-6.3-0.8-9.1-2.3	L5,43.8C5,43.8,4.9,43.8,4.9,43.8z"></path><path fill="#cfd8dc" d="M24,5c5.1,0,9.8,2,13.4,5.6C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19h0c-3.2,0-6.3-0.8-9.1-2.3	L4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5 M24,43L24,43L24,43 M24,43L24,43L24,43 M24,4L24,4C13,4,4,13,4,24	c0,3.4,0.8,6.7,2.5,9.6L3.9,43c-0.1,0.3,0,0.7,0.3,1c0.2,0.2,0.4,0.3,0.7,0.3c0.1,0,0.2,0,0.3,0l9.7-2.5c2.8,1.5,6,2.2,9.2,2.2	c11,0,20-9,20-20c0-5.3-2.1-10.4-5.8-14.1C34.4,6.1,29.4,4,24,4L24,4z"></path><path fill="#40c351" d="M35.2,12.8c-3-3-6.9-4.6-11.2-4.6C15.3,8.2,8.2,15.3,8.2,24c0,3,0.8,5.9,2.4,8.4L11,33l-1.6,5.8	l6-1.6l0.6,0.3c2.4,1.4,5.2,2.2,8,2.2h0c8.7,0,15.8-7.1,15.8-15.8C39.8,19.8,38.2,15.8,35.2,12.8z"></path><path fill="#fff" fill-rule="evenodd" d="M19.3,16c-0.4-0.8-0.7-0.8-1.1-0.8c-0.3,0-0.6,0-0.9,0 s-0.8,0.1-1.3,0.6c-0.4,0.5-1.7,1.6-1.7,4s1.7,4.6,1.9,4.9s3.3,5.3,8.1,7.2c4,1.6,4.8,1.3,5.7,1.2c0.9-0.1,2.8-1.1,3.2-2.3	c0.4-1.1,0.4-2.1,0.3-2.3c-0.1-0.2-0.4-0.3-0.9-0.6s-2.8-1.4-3.2-1.5c-0.4-0.2-0.8-0.2-1.1,0.2c-0.3,0.5-1.2,1.5-1.5,1.9	c-0.3,0.3-0.6,0.4-1,0.1c-0.5-0.2-2-0.7-3.8-2.4c-1.4-1.3-2.4-2.8-2.6-3.3c-0.3-0.5,0-0.7,0.2-1c0.2-0.2,0.5-0.6,0.7-0.8	c0.2-0.3,0.3-0.5,0.5-0.8c0.2-0.3,0.1-0.6,0-0.8C20.6,19.3,19.7,17,19.3,16z" clip-rule="evenodd"></path></svg>
+        </a>
+    </div>
 </body>
 </html>

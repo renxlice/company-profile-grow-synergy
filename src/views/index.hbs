@@ -185,9 +185,10 @@
                         <nav class="flex-1 p-4">
                             <div class="flex flex-col space-y-4">
                                 <a href="/home" class="nav-link text-lg py-3 border-b" data-page="home">Beranda</a>
-                                <a href="/synergy-experts" class="nav-link text-lg py-3 border-b" data-page="synergy-experts">Synergy Experts</a>
-                                <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b" data-page="synergy-portfolio">Synergy Portofolio</a>
-                                <a href="/synergy-academy" class="nav-link text-lg py-3 border-b" data-page="synergy-academy">Synergy Academy</a>
+                                <a href="/synergy-experts" class="nav-link text-lg py-3 border-b" data-page="synergy-experts">Instruktur Data Analitik</a>
+                                <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b" data-page="synergy-portfolio">Portfolio Alumni</a>
+                                <a href="/synergy-academy" class="nav-link text-lg py-3 border-b" data-page="synergy-academy">Kursus Data Analitik</a>
+                                <a href="/blog" class="nav-link text-lg py-3 border-b" data-page="blog">Blog</a>
                                 <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-3 rounded-lg text-center mt-4" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
                                     Tentang Kami
                                 </a>
@@ -787,7 +788,7 @@
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-                <div class="text-4xl font-bold mb-2">2,500+</div>
+                <div class="text-4xl font-bold mb-2">500+</div>
                 <p class="text-blue-100">Siswa Aktif</p>
             </div>
             <div>
@@ -799,7 +800,7 @@
                 <p class="text-blue-100">Dapat Kerja</p>
             </div>
             <div>
-                <div class="text-4xl font-bold mb-2">150+</div>
+                <div class="text-4xl font-bold mb-2">10+</div>
                 <p class="text-blue-100">Perusahaan Partner</p>
             </div>
         </div>
@@ -1078,7 +1079,7 @@
                 // Update title if available
                 if (h2 && section.title) {
                     console.log('DEBUG: Updating title to:', section.title);
-                    h2.innerHTML = `${section.title} <div class="ml-4 h-1 w-24 bg-orange-500"></div>`;
+                    h2.innerHTML = `${section.title} <div class="ml-4 h-1 w-24 bg-white"></div>`;
                 }
                 
                 // Update buttons if available
@@ -1238,23 +1239,23 @@
             const portfolioDescription = portfolio.description || 'Deskripsi proyek';
             const portfolioCategory = portfolio.category || 'Pengembangan';
             
-            // Buat tag teknologi
+            // Buat tag teknologi dengan highlight orange
             let tagsHtml = '';
             if (portfolio.tags && Array.isArray(portfolio.tags)) {
                 portfolio.tags.forEach(tag => {
-                    tagsHtml += '<span class="bg-white/20 text-white text-xs px-2 py-1 rounded">' + tag + '</span>';
+                    tagsHtml += '<span class="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-full border-2 border-orange-400 font-semibold shadow-md">' + tag + '</span>';
                 });
             } else if (portfolio.technologies && Array.isArray(portfolio.technologies)) {
                 portfolio.technologies.forEach(tech => {
-                    tagsHtml += '<span class="bg-white/20 text-white text-xs px-2 py-1 rounded">' + tech + '</span>';
+                    tagsHtml += '<span class="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-full border-2 border-orange-400 font-semibold shadow-md">' + tech + '</span>';
                 });
             }
             
-            // Buat tag teknologi kedua
+            // Buat tag teknologi kedua dengan highlight orange
             let techTagsHtml = '';
             if (portfolio.techTags && Array.isArray(portfolio.techTags)) {
                 portfolio.techTags.forEach(tech => {
-                    techTagsHtml += '<span class="bg-white/20 text-white text-xs px-2 py-1 rounded">' + tech + '</span>';
+                    techTagsHtml += '<span class="bg-orange-500 text-white text-xs px-3 py-1.5 rounded-full border-2 border-orange-400 font-semibold shadow-md">' + tech + '</span>';
                 });
             }
             
@@ -1279,13 +1280,29 @@
             tagsContainer.className = 'flex flex-wrap gap-1 mb-3';
             tagsContainer.innerHTML = tagsHtml;
             
+            const overviewSection = document.createElement('div');
+            overviewSection.className = 'bg-orange-500/20 border-2 border-orange-400 rounded-lg p-4 mb-3';
+            
+            const overviewHeader = document.createElement('div');
+            overviewHeader.className = 'flex items-center mb-2';
+            
+            const overviewIcon = document.createElement('div');
+            overviewIcon.className = 'w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mr-2 flex-shrink-0';
+            overviewIcon.innerHTML = '<i class="fas fa-project-diagram text-white text-xs"></i>';
+            
             const overviewLabel = document.createElement('p');
-            overviewLabel.className = 'text-white text-xs mb-3';
+            overviewLabel.className = 'text-orange-400 font-bold text-sm uppercase tracking-wide';
             overviewLabel.textContent = 'Gambaran Proyek';
             
+            overviewHeader.appendChild(overviewIcon);
+            overviewHeader.appendChild(overviewLabel);
+            
             const overviewDesc = document.createElement('p');
-            overviewDesc.className = 'text-white text-xs mb-3';
+            overviewDesc.className = 'text-white text-sm leading-relaxed';
             overviewDesc.textContent = portfolio.overview || portfolioDescription;
+            
+            overviewSection.appendChild(overviewHeader);
+            overviewSection.appendChild(overviewDesc);
             
             const techTagsContainer = document.createElement('div');
             techTagsContainer.className = 'flex flex-wrap gap-1 mb-3';
@@ -1295,8 +1312,7 @@
             div.appendChild(titleEl);
             div.appendChild(descEl);
             div.appendChild(tagsContainer);
-            div.appendChild(overviewLabel);
-            div.appendChild(overviewDesc);
+            div.appendChild(overviewSection);
             div.appendChild(techTagsContainer);
             
             return div;

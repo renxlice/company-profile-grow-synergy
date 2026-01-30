@@ -174,6 +174,26 @@
                                 >
                             </div>
 
+                            <!-- Category -->
+                            <div>
+                                <label for="category" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Kategori <span class="text-red-500">*</span>
+                                </label>
+                                <select 
+                                    id="category" 
+                                    name="category" 
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                >
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="Data Science" {{#if item}}{{#if (eq item.category "Data Science")}}selected{{/if}}{{/if}}>Data Science</option>
+                                    <option value="Web Development" {{#if item}}{{#if (eq item.category "Web Development")}}selected{{/if}}{{/if}}>Web Development</option>
+                                    <option value="UI/UX Design" {{#if item}}{{#if (eq item.category "UI/UX Design")}}selected{{/if}}{{/if}}>UI/UX Design</option>
+                                    <option value="Mobile Development" {{#if item}}{{#if (eq item.category "Mobile Development")}}selected{{/if}}{{/if}}>Mobile Development</option>
+                                    <option value="Business Intelligence" {{#if item}}{{#if (eq item.category "Business Intelligence")}}selected{{/if}}{{/if}}>Business Intelligence</option>
+                                </select>
+                            </div>
+
                             <!-- Image -->
                             <div class="col-span-2">
                                 <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
@@ -236,13 +256,19 @@
 </html>
 
 <script>
-    // Set rating value if editing
+    // Set rating and category values if editing
     document.addEventListener('DOMContentLoaded', function() {
         const ratingSelect = document.getElementById('rating');
+        const categorySelect = document.getElementById('category');
         const itemRating = '{{#if item}}{{item.rating}}{{/if}}';
+        const itemCategory = '{{#if item}}{{item.category}}{{/if}}';
         
         if (ratingSelect && itemRating) {
             ratingSelect.value = itemRating;
+        }
+        
+        if (categorySelect && itemCategory) {
+            categorySelect.value = itemCategory;
         }
     });
 </script>

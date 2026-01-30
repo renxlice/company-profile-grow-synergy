@@ -29,6 +29,7 @@ export interface Expert {
   image: string;
   rating: number;
   reviewCount: number;
+  category: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -56,6 +57,7 @@ export interface Academy {
   rating: number;
   students: number;
   duration: string;
+  certification?: string;
   price: number;
   level: string;
   schedule: string;
