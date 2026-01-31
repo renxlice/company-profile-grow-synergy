@@ -14,38 +14,51 @@ const loginAttempts = require('./login-attempts');
 router.use(helmet());
 router.use(mongoSanitize());
 
-// Rate limiting untuk login attempts
+// Rate limiting untuk login attempts - more strict
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // limit each IP to 5 requests per windowMs
+    max: 3, // reduced from 5 to 3
     message: {
         error: 'Too many login attempts, please try again later.',
         retryAfter: '15 minutes'
     },
     standardHeaders: true,
     legacyHeaders: false,
+    skipSuccessfulRequests: true,
+    keyGenerator: (req) => {
+        // Use both IP and email for more precise rate limiting
+        return `${req.ip}-${req.body?.email || 'unknown'}`;
+    }
 });
 
-// Rate limiting untuk admin operations
+// Rate limiting untuk admin operations - stricter
 const adminLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 50, // reduced from 100 to 50
     message: {
         error: 'Too many admin operations, please try again later.',
         retryAfter: '1 hour'
-    }
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: true
 });
 
 // Enhanced input validation and sanitization
 const validateAndSanitizeInput = (req, res, next) => {
     try {
-        // Check for common attack patterns
+        // Check for common attack patterns - enhanced
         const suspiciousPatterns = [
             /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/gi,
             /(--|\#|\/\*|\*\/)/g,
             /javascript:/gi,
             /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-            /on\w+\s*=/gi
+            /on\w+\s*=/gi,
+            /<iframe/gi,
+            /<object/gi,
+            /<embed/gi,
+            /vbscript:/gi,
+            /data:text\/html/gi
         ];
         
         // Sanitize dan validate semua input
@@ -57,7 +70,14 @@ const validateAndSanitizeInput = (req, res, next) => {
                     // Check for suspicious patterns
                     for (const pattern of suspiciousPatterns) {
                         if (pattern.test(value)) {
-                            console.warn('Suspicious input detected:', { key, value, ip: req.ip });
+                            console.warn('Suspicious input detected:', { key, value: value.substring(0, 100), ip: req.ip });
+                            // Log security event asynchronously without await
+                            logSecurityEvent('XSS_ATTEMPT', {
+                                inputKey: key,
+                                inputValue: value.substring(0, 100),
+                                ip: req.ip,
+                                userAgent: req.get('User-Agent')
+                            }).catch(err => console.error('Security logging failed:', err));
                             return res.status(400).json({ 
                                 error: 'Invalid input detected' 
                             });
@@ -161,14 +181,21 @@ const validateAndSanitizeInput = (req, res, next) => {
             }
         }
         
-        // Rate limiting check per IP
-        const clientIP = req.ip || req.connection.remoteAddress;
+        // Rate limiting check per IP - enhanced
+        const clientIP = req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
         
         // Check if IP is locked out
         if (loginAttempts.isLockedOut(clientIP)) {
             const remainingTime = Math.ceil(loginAttempts.getLockoutTimeRemaining(clientIP) / 60000);
+            // Log security event asynchronously without await
+            logSecurityEvent('BRUTE_FORCE_ATTEMPT', {
+                email: req.body.email || 'unknown',
+                ip: clientIP,
+                userAgent: req.get('User-Agent'),
+                lockoutTimeRemaining: remainingTime
+            }).catch(err => console.error('Security logging failed:', err));
             return res.status(429).json({ 
-                error: `Too many failed attempts. Please try again in ${remainingTime} minutes.` 
+                error: `Too many failed attempts. Account locked for ${remainingTime} minutes.` 
             });
         }
         

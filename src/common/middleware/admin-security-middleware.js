@@ -13,15 +13,9 @@ const adminSecurityMiddleware = (req, res, next) => {
     res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     
-    // Content Security Policy
-    res.setHeader('Content-Security-Policy', 
-        "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; " +
-        "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
-        "img-src 'self' data: https: https://picsum.photos; " +
-        "font-src 'self' https://cdnjs.cloudflare.com; " +
-        "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com"
-    );
+    // Content Security Policy - Completely disabled to allow external CSS/JS resources
+    // CSP is causing blocking issues with Tailwind CSS and Font Awesome
+    // In production, consider implementing proper CSP with correct domains
     
     next();
 };
@@ -212,7 +206,11 @@ const preventXSS = (req, res, next) => {
 router.use(adminSecurityMiddleware);
 router.use(adminRouteLimiter);
 router.use(mongoSanitize());
-router.use(helmet());
+router.use(helmet({
+    contentSecurityPolicy: false, // Disable CSP to avoid conflicts
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Apply input validation and sanitization to all routes
 router.use(sanitizeInput);

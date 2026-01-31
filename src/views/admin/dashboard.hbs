@@ -19,6 +19,12 @@
                     <h1 class="text-xl font-semibold text-gray-800">Admin Dashboard</h1>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <div id="maintenance-alert" class="hidden">
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-3 py-1 rounded-md text-sm flex items-center">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            <span>Maintenance Mode Active</span>
+                        </div>
+                    </div>
                     <span class="text-gray-600">Welcome, {{username}}</span>
                     <a href="/admin/logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition">
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
@@ -86,6 +92,24 @@
                             <i class="fas fa-cog w-5"></i>
                             <span class="ml-3">Settings</span>
                         </a>
+                    </li>
+                    <li>
+                        <div class="border-t border-gray-200 my-2"></div>
+                    </li>
+                    <li>
+                        <div class="p-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Maintenance Mode</span>
+                                <div id="maintenance-status" class="flex items-center">
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full mr-2" id="status-indicator"></div>
+                                    <span class="text-xs text-gray-600" id="status-text">Checking...</span>
+                                </div>
+                            </div>
+                            <button id="toggle-maintenance" onclick="toggleMaintenanceMode()" 
+                                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded text-sm font-medium transition">
+                                <i class="fas fa-tools mr-2"></i>Toggle Maintenance
+                            </button>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -1576,6 +1600,244 @@
                 event.target.classList.add('hidden');
             }
         }
+
+        // Maintenance Mode Functions
+        let currentMaintenanceStatus = null;
+
+        // Check maintenance status - SIMPLIFIED VERSION
+        async function checkMaintenanceStatus() {
+            try {
+                console.log('Checking maintenance status...');
+                
+                const response = await fetch('/api/admin/maintenance/status', {
+                    method: 'GET'
+                });
+
+                console.log('Status response:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Status data:', data);
+                    
+                    currentMaintenanceStatus = data.maintenanceMode;
+                    updateMaintenanceUI(data.maintenanceMode);
+                } else {
+                    console.error('Failed to check maintenance status');
+                }
+            } catch (error) {
+                console.error('Error checking maintenance status:', error);
+            }
+        }
+
+        // Update maintenance UI based on status
+        function updateMaintenanceUI(isActive) {
+            const indicator = document.getElementById('status-indicator');
+            const statusText = document.getElementById('status-text');
+            const toggleButton = document.getElementById('toggle-maintenance');
+            const maintenanceAlert = document.getElementById('maintenance-alert');
+
+            if (isActive) {
+                indicator.className = 'w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse';
+                statusText.textContent = 'Active';
+                statusText.className = 'text-xs text-red-600 font-medium';
+                toggleButton.className = 'w-full bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded text-sm font-medium transition';
+                toggleButton.innerHTML = '<i class="fas fa-power-off mr-2"></i>Disable Maintenance';
+                maintenanceAlert.classList.remove('hidden');
+            } else {
+                indicator.className = 'w-2 h-2 bg-green-500 rounded-full mr-2';
+                statusText.textContent = 'Inactive';
+                statusText.className = 'text-xs text-green-600 font-medium';
+                toggleButton.className = 'w-full bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded text-sm font-medium transition';
+                toggleButton.innerHTML = '<i class="fas fa-tools mr-2"></i>Enable Maintenance';
+                maintenanceAlert.classList.add('hidden');
+            }
+        }
+
+        // Toggle maintenance mode - MODERN VERSION
+        async function toggleMaintenanceMode() {
+            const newStatus = !currentMaintenanceStatus;
+            
+            // Show modern confirmation modal
+            const confirmed = await showMaintenanceConfirmModal(newStatus);
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+                console.log('Sending maintenance toggle request:', { enable: newStatus });
+                
+                const response = await fetch('/api/admin/maintenance/toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        enable: newStatus
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Response data:', data);
+                    
+                    currentMaintenanceStatus = data.maintenanceMode;
+                    updateMaintenanceUI(data.maintenanceMode);
+                    
+                    showNotification(
+                        data.message || 'Maintenance mode updated successfully', 
+                        'success'
+                    );
+
+                    // Show warning if maintenance mode was enabled
+                    if (data.maintenanceMode) {
+                        setTimeout(() => {
+                            showNotification(
+                                'Maintenance mode is now active. Regular users will see the maintenance page.', 
+                                'warning'
+                            );
+                        }, 1000);
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    showNotification('Failed to toggle maintenance mode', 'error');
+                }
+            } catch (error) {
+                console.error('Error toggling maintenance mode:', error);
+                showNotification('Failed to toggle maintenance mode', 'error');
+            }
+        }
+
+        // Modern Maintenance Modal Functions
+        let maintenanceResolve = null;
+        let maintenanceStatus = null;
+
+        function showMaintenanceConfirmModal(enable) {
+            return new Promise((resolve) => {
+                maintenanceResolve = resolve;
+                maintenanceStatus = enable;
+                
+                const modal = document.getElementById('maintenanceConfirmModal');
+                const modalContent = document.getElementById('modalContent');
+                const modalIcon = document.getElementById('modalIcon');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalMessage = document.getElementById('modalMessage');
+                const confirmButton = document.getElementById('confirmButton');
+                
+                // Update modal content based on action
+                if (enable) {
+                    modalIcon.className = 'fas fa-tools text-orange-600 text-2xl';
+                    modalTitle.textContent = 'Aktifkan Maintenance Mode';
+                    modalMessage.textContent = 'Website akan tidak dapat diakses oleh pengguna umum. Apakah Anda yakin ingin mengaktifkan maintenance mode?';
+                    confirmButton.style.cssText = 'display: inline-flex; align-items: center; justify-content: center; flex: 1; padding: 12px 24px; background-color: #f97316; color: white; border-radius: 8px; font-weight: 500; min-height: 48px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);';
+                    confirmButton.setAttribute('onmouseover', "this.style.backgroundColor='#ea580c'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'");
+                    confirmButton.setAttribute('onmouseout', "this.style.backgroundColor='#f97316'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'");
+                    confirmButton.innerHTML = '<i class="fas fa-power-off" style="margin-right: 8px;"></i>Aktifkan';
+                } else {
+                    modalIcon.className = 'fas fa-check-circle text-green-600 text-2xl';
+                    modalTitle.textContent = 'Nonaktifkan Maintenance Mode';
+                    modalMessage.textContent = 'Website akan kembali dapat diakses oleh semua pengguna. Apakah Anda yakin ingin menonaktifkan maintenance mode?';
+                    confirmButton.style.cssText = 'display: inline-flex; align-items: center; justify-content: center; flex: 1; padding: 12px 24px; background-color: #10b981; color: white; border-radius: 8px; font-weight: 500; min-height: 48px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);';
+                    confirmButton.setAttribute('onmouseover', "this.style.backgroundColor='#059669'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'");
+                    confirmButton.setAttribute('onmouseout', "this.style.backgroundColor='#10b981'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'");
+                    confirmButton.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Nonaktifkan';
+                }
+                
+                // Show modal with animation
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            });
+        }
+
+        function closeMaintenanceModal() {
+            const modal = document.getElementById('maintenanceConfirmModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Hide modal with animation
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                if (maintenanceResolve) {
+                    maintenanceResolve(false);
+                    maintenanceResolve = null;
+                }
+            }, 200);
+        }
+
+        function confirmMaintenanceAction() {
+            const modal = document.getElementById('maintenanceConfirmModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Hide modal with animation
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                if (maintenanceResolve) {
+                    maintenanceResolve(true);
+                    maintenanceResolve = null;
+                }
+            }, 200);
+        }
+
+        // Initialize maintenance status check
+        document.addEventListener('DOMContentLoaded', function() {
+            checkMaintenanceStatus();
+            
+            // Close modal when clicking outside
+            const maintenanceModal = document.getElementById('maintenanceConfirmModal');
+            if (maintenanceModal) {
+                maintenanceModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeMaintenanceModal();
+                    }
+                });
+            }
+            
+            // Refresh maintenance status every 30 seconds - TEMPORARILY DISABLED FOR TESTING
+            // setInterval(checkMaintenanceStatus, 30000);
+        });
     </script>
+
+    <!-- Modern Maintenance Confirmation Modal -->
+    <div id="maintenanceConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md mx-4 transform transition-all scale-95 opacity-0" id="modalContent">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-orange-100 mb-4">
+                    <i class="fas fa-tools text-orange-600 text-2xl" id="modalIcon"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2" id="modalTitle">Konfirmasi Maintenance</h3>
+                <p class="text-gray-600 mb-6" id="modalMessage">Apakah Anda yakin ingin mengubah status maintenance?</p>
+                
+                <div class="flex gap-3 mt-6" style="display: flex; gap: 12px;">
+                    <button type="button" onclick="closeMaintenanceModal()" 
+                            style="display: inline-flex; align-items: center; justify-content: center; flex: 1; padding: 12px 24px; background-color: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 8px; font-weight: 500; min-height: 48px; cursor: pointer; transition: all 0.2s;"
+                            onmouseover="this.style.backgroundColor='#e5e7eb'" 
+                            onmouseout="this.style.backgroundColor='#f3f4f6'">
+                        <i class="fas fa-times" style="margin-right: 8px;"></i>Batal
+                    </button>
+                    <button type="button" onclick="confirmMaintenanceAction()" 
+                            id="confirmButton"
+                            style="display: inline-flex; align-items: center; justify-content: center; flex: 1; padding: 12px 24px; background-color: #f97316; color: white; border-radius: 8px; font-weight: 500; min-height: 48px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
+                            onmouseover="this.style.backgroundColor='#ea580c'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'" 
+                            onmouseout="this.style.backgroundColor='#f97316'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'">
+                        <i class="fas fa-check" style="margin-right: 8px;"></i>Konfirmasi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

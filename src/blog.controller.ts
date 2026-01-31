@@ -94,7 +94,7 @@ export class BlogController {
     }
   }
 
-  @Put('update/:id')
+  @Post('update/:id')
   @UseInterceptors(FileInterceptor('image'))
   async updateBlog(@Param('id') id: string, @UploadedFile() file: Express.Multer.File, @Body() updateBlogDto: any, @Res() res: Response) {
     try {

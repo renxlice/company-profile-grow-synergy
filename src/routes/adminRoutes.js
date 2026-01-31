@@ -6,6 +6,7 @@ const fs = require('fs');
 const admin = require('firebase-admin');
 const jwt = require('jsonwebtoken');
 const { validateInput, secureFileUpload, createRateLimiter, logSecurityEvent } = require('../middleware/security');
+const { toggleMaintenance, isMaintenanceMode } = require('../middleware/maintenance');
 
 // JWT token verification middleware
 const verifyAdminToken = async (req, res, next) => {
@@ -848,6 +849,433 @@ router.get('/testimonials/stats', testimonialLimiter, verifyAdminToken, async (r
     } catch (error) {
         console.error('Get testimonials stats error:', error);
         res.status(500).json({ error: 'Failed to get testimonials statistics' });
+    }
+});
+
+// Blog Management Routes
+
+// Get all blogs
+router.get('/blogs', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+        
+        const blogsSnapshot = await admin.firestore()
+            .collection('blogs')
+            .orderBy('createdAt', 'desc')
+            .limit(limit)
+            .offset(offset)
+            .get();
+        
+        const blogs = [];
+        blogsSnapshot.forEach(doc => {
+            const blogData = doc.data();
+            blogs.push({
+                id: doc.id,
+                title: blogData.title,
+                slug: blogData.slug,
+                excerpt: blogData.excerpt,
+                content: blogData.content,
+                author: blogData.author,
+                tags: blogData.tags || [],
+                image: blogData.image,
+                published: blogData.published,
+                createdAt: blogData.createdAt?.toDate(),
+                updatedAt: blogData.updatedAt?.toDate()
+            });
+        });
+        
+        // Get total count for pagination
+        const totalSnapshot = await admin.firestore()
+            .collection('blogs')
+            .get();
+        const total = totalSnapshot.size;
+        
+        res.json({
+            blogs: blogs,
+            pagination: {
+                page: page,
+                limit: limit,
+                total: total,
+                totalPages: Math.ceil(total / limit)
+            }
+        });
+        
+    } catch (error) {
+        console.error('Get blogs error:', error);
+        res.status(500).json({ error: 'Failed to get blogs' });
+    }
+});
+
+// Get single blog
+router.get('/blogs/:blogId', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const blogDoc = await admin.firestore()
+            .collection('blogs')
+            .doc(req.params.blogId)
+            .get();
+        
+        if (!blogDoc.exists) {
+            return res.status(404).json({ error: 'Blog not found' });
+        }
+        
+        const blogData = blogDoc.data();
+        res.json({
+            id: blogDoc.id,
+            title: blogData.title,
+            slug: blogData.slug,
+            excerpt: blogData.excerpt,
+            content: blogData.content,
+            author: blogData.author,
+            tags: blogData.tags || [],
+            image: blogData.image,
+            published: blogData.published,
+            createdAt: blogData.createdAt?.toDate(),
+            updatedAt: blogData.updatedAt?.toDate()
+        });
+        
+    } catch (error) {
+        console.error('Get blog error:', error);
+        res.status(500).json({ error: 'Failed to get blog' });
+    }
+});
+
+// Create blog
+router.post('/blogs', 
+    adminLimiter, 
+    verifyAdminToken, 
+    validateInput({
+        title: { required: true, type: 'string', minLength: 1, maxLength: 200 },
+        slug: { required: false, type: 'string', maxLength: 200 },
+        excerpt: { required: false, type: 'string', maxLength: 500 },
+        content: { required: true, type: 'string', minLength: 1 },
+        author: { required: true, type: 'string', minLength: 1, maxLength: 100 },
+        tags: { required: false, type: 'string' },
+        published: { required: false, type: 'boolean' }
+    }),
+    async (req, res) => {
+        try {
+            const { title, slug, excerpt, content, author, tags, published } = req.body;
+            
+            // Generate slug if not provided
+            const blogSlug = slug || title.toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            
+            // Parse tags
+            const parsedTags = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
+            // Create blog data
+            const blogData = {
+                title: title,
+                slug: blogSlug,
+                excerpt: excerpt || '',
+                content: content,
+                author: author,
+                tags: parsedTags,
+                image: null,
+                published: published || false,
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                createdBy: req.admin.id
+            };
+            
+            const blogRef = await admin.firestore()
+                .collection('blogs')
+                .add(blogData);
+            
+            // Log blog creation
+            await logSecurityEvent('BLOG_CREATED', {
+                blogId: blogRef.id,
+                blogTitle: title,
+                createdBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.status(201).json({
+                message: 'Blog created successfully',
+                blogId: blogRef.id
+            });
+            
+        } catch (error) {
+            console.error('Create blog error:', error);
+            res.status(500).json({ error: 'Failed to create blog' });
+        }
+    }
+);
+
+// Update blog
+router.put('/blogs/update/:blogId', 
+    adminLimiter, 
+    verifyAdminToken, 
+    validateInput({
+        title: { required: false, type: 'string', minLength: 1, maxLength: 200 },
+        slug: { required: false, type: 'string', maxLength: 200 },
+        excerpt: { required: false, type: 'string', maxLength: 500 },
+        content: { required: false, type: 'string', minLength: 1 },
+        author: { required: false, type: 'string', minLength: 1, maxLength: 100 },
+        tags: { required: false, type: 'string' },
+        published: { required: false, type: 'boolean' }
+    }),
+    async (req, res) => {
+        try {
+            const blogId = req.params.blogId;
+            const updateData = req.body;
+            
+            // Check if blog exists
+            const blogDoc = await admin.firestore()
+                .collection('blogs')
+                .doc(blogId)
+                .get();
+            
+            if (!blogDoc.exists) {
+                return res.status(404).json({ error: 'Blog not found' });
+            }
+            
+            // Generate slug if title is updated but slug is not provided
+            if (updateData.title && !updateData.slug) {
+                updateData.slug = updateData.title.toLowerCase()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+            }
+            
+            // Parse tags if provided
+            if (updateData.tags) {
+                updateData.tags = updateData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+            }
+            
+            // Add update metadata
+            updateData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+            updateData.updatedBy = req.admin.id;
+            
+            await admin.firestore()
+                .collection('blogs')
+                .doc(blogId)
+                .update(updateData);
+            
+            // Log blog update
+            await logSecurityEvent('BLOG_UPDATED', {
+                blogId: blogId,
+                updatedBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.json({ message: 'Blog updated successfully' });
+            
+        } catch (error) {
+            console.error('Update blog error:', error);
+            res.status(500).json({ error: 'Failed to update blog' });
+        }
+    }
+);
+
+// Delete blog
+router.delete('/blogs/:blogId', adminLimiter, verifyAdminToken, async (req, res) => {
+    try {
+        const blogId = req.params.blogId;
+        
+        // Check if blog exists
+        const blogDoc = await admin.firestore()
+            .collection('blogs')
+            .doc(blogId)
+            .get();
+        
+        if (!blogDoc.exists) {
+            return res.status(404).json({ error: 'Blog not found' });
+        }
+        
+        const blogData = blogDoc.data();
+        
+        // Delete associated image file if exists
+        if (blogData.image && blogData.image.startsWith('/uploads/')) {
+            try {
+                const imagePath = path.join(__dirname, '../public', blogData.image);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                }
+            } catch (fileError) {
+                console.error('Failed to delete image file:', fileError);
+                // Continue with blog deletion even if file deletion fails
+            }
+        }
+        
+        // Delete blog from Firestore
+        await admin.firestore()
+            .collection('blogs')
+            .doc(blogId)
+            .delete();
+        
+        // Log blog deletion
+        await logSecurityEvent('BLOG_DELETED', {
+            blogId: blogId,
+            blogTitle: blogData.title,
+            deletedBy: req.admin.email,
+            ip: req.ip,
+            userAgent: req.get('User-Agent')
+        });
+        
+        res.json({ message: 'Blog deleted successfully' });
+        
+    } catch (error) {
+        console.error('Delete blog error:', error);
+        res.status(500).json({ error: 'Failed to delete blog' });
+    }
+});
+
+// Upload blog image
+router.post('/blogs/:blogId/upload-image', 
+    uploadLimiter, 
+    verifyAdminToken, 
+    upload.single('image'),
+    secureFileUpload,
+    async (req, res) => {
+        try {
+            const blogId = req.params.blogId;
+            
+            if (!req.file) {
+                return res.status(400).json({ error: 'No image file provided' });
+            }
+            
+            // Check if blog exists
+            const blogDoc = await admin.firestore()
+                .collection('blogs')
+                .doc(blogId)
+                .get();
+            
+            if (!blogDoc.exists) {
+                // Clean up uploaded file if blog doesn't exist
+                fs.unlinkSync(req.file.path);
+                return res.status(404).json({ error: 'Blog not found' });
+            }
+            
+            const blogData = blogDoc.data();
+            
+            // Delete old image if exists
+            if (blogData.image && blogData.image.startsWith('/uploads/')) {
+                try {
+                    const oldImagePath = path.join(__dirname, '../public', blogData.image);
+                    if (fs.existsSync(oldImagePath)) {
+                        fs.unlinkSync(oldImagePath);
+                    }
+                } catch (fileError) {
+                    console.error('Failed to delete old image file:', fileError);
+                }
+            }
+            
+            // Update blog with new image path
+            const imagePath = '/uploads/admin/' + req.file.filename;
+            
+            await admin.firestore()
+                .collection('blogs')
+                .doc(blogId)
+                .update({
+                    image: imagePath,
+                    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    updatedBy: req.admin.id
+                });
+            
+            // Log image upload
+            await logSecurityEvent('BLOG_IMAGE_UPLOADED', {
+                blogId: blogId,
+                fileName: req.file.filename,
+                fileSize: req.file.size,
+                uploadedBy: req.admin.email,
+                ip: req.ip,
+                userAgent: req.get('User-Agent')
+            });
+            
+            res.json({
+                message: 'Image uploaded successfully',
+                imagePath: imagePath
+            });
+            
+        } catch (error) {
+            console.error('Upload image error:', error);
+            
+            // Clean up uploaded file on error
+            if (req.file) {
+                try {
+                    fs.unlinkSync(req.file.path);
+                } catch (cleanupError) {
+                    console.error('Failed to clean up uploaded file:', cleanupError);
+                }
+            }
+            
+            res.status(500).json({ error: 'Failed to upload image' });
+        }
+    }
+);
+
+// Maintenance Mode Management Routes
+
+// Test route to verify admin routes are working
+router.get('/test', (req, res) => {
+    res.json({ message: 'Admin routes are working', session: req.session?.isLoggedIn || false });
+});
+
+// Get maintenance mode status
+router.get('/maintenance/status', async (req, res) => {
+    console.log('Maintenance status route hit - Session:', req.session?.isLoggedIn);
+    try {
+        // Check if user is logged in via session
+        if (!req.session?.isLoggedIn) {
+            console.log('Access denied - not logged in');
+            return res.status(401).json({ error: 'Access denied. Please login.' });
+        }
+        
+        const status = isMaintenanceMode();
+        console.log('Maintenance status:', status);
+        
+        res.json({
+            maintenanceMode: status,
+            message: status ? 'Maintenance mode is active' : 'Maintenance mode is inactive'
+        });
+    } catch (error) {
+        console.error('Get maintenance status error:', error);
+        res.status(500).json({ error: 'Failed to get maintenance status' });
+    }
+});
+
+// Toggle maintenance mode
+router.post('/maintenance/toggle', async (req, res) => {
+    console.log('Maintenance toggle route hit - Session:', req.session?.isLoggedIn);
+    try {
+        // Check if user is logged in via session
+        if (!req.session?.isLoggedIn) {
+            console.log('Access denied - not logged in');
+            return res.status(401).json({ error: 'Access denied. Please login.' });
+        }
+        
+        const { enable } = req.body;
+        console.log('Toggle request - enable:', enable);
+        
+        // Refresh session to prevent timeout
+        if (req.session) {
+            req.session.touch();
+            req.session.lastActivity = new Date().getTime();
+        }
+        
+        const result = toggleMaintenance(enable);
+        console.log('Toggle result:', result);
+        
+        // Log maintenance mode toggle
+        await logSecurityEvent('MAINTENANCE_MODE_TOGGLED', {
+            enabled: enable,
+            toggledBy: req.session.adminEmail,
+            ip: req.ip,
+            userAgent: req.get('User-Agent')
+        });
+        
+        res.json({
+            success: true,
+            maintenanceMode: result.maintenanceMode,
+            message: enable ? 'Maintenance mode enabled' : 'Maintenance mode disabled'
+        });
+    } catch (error) {
+        console.error('Toggle maintenance mode error:', error);
+        res.status(500).json({ error: 'Failed to toggle maintenance mode' });
     }
 });
 

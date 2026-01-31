@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { AdminController } from './admin.controller';
+import { AdminApiController } from './admin-api.controller';
 import { AdminService } from './admin.service';
+import { MaintenanceService } from '../../common/services/maintenance.service';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 
@@ -41,7 +43,7 @@ import { extname, join } from 'path';
       },
     }),
   ],
-  controllers: [AdminController],
-  providers: [AdminService],
+  controllers: [AdminController, AdminApiController],
+  providers: [AdminService, MaintenanceService],
 })
 export class AdminModule {}

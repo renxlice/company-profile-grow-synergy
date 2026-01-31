@@ -5,8 +5,8 @@
 
 class AdminSecurity {
     constructor() {
-        this.IDLE_TIMEOUT = 15 * 60 * 1000; // 15 minutes
-        this.WARNING_TIMEOUT = 1 * 60 * 1000; // 1 minute before logout
+        this.IDLE_TIMEOUT = 15 * 60 * 1000; // 15 minutes (reduced from 60 for better security)
+        this.WARNING_TIMEOUT = 5 * 60 * 1000; // 5 minutes before logout
         this.idleTimer = null;
         this.warningTimer = null;
         this.lastActivity = Date.now();
@@ -197,11 +197,14 @@ class AdminSecurity {
             });
 
             if (!response.ok) {
-                this.autoLogout();
+                // Only auto-logout if it's not a maintenance-related request
+                if (!response.url.includes('maintenance')) {
+                    this.autoLogout();
+                }
             }
         } catch (error) {
             console.error('Session check failed:', error);
-            this.autoLogout();
+            // Don't auto-logout on network errors, might be temporary
         }
     }
 

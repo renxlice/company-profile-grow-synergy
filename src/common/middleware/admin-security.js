@@ -238,13 +238,15 @@ class AdminSecurity {
 
     // Setup security headers
     setupSecurityHeaders() {
-        // Add meta tags for security
+        // CSP completely disabled for development to allow external resources
+        // Only add basic security headers
+        
+        // Add meta tags for security (excluding CSP)
         const metaTags = [
             { name: 'X-Content-Type-Options', content: 'nosniff' },
             { name: 'X-Frame-Options', content: 'DENY' },
             { name: 'X-XSS-Protection', content: '1; mode=block' },
-            { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' },
-            { 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:;" }
+            { name: 'Referrer-Policy', content: 'strict-origin-when-cross-origin' }
         ];
 
         metaTags.forEach(tag => {

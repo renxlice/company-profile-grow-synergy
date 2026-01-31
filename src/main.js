@@ -1,13 +1,61 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
+const multer = require('multer');
+const fs = require('fs');
 require('dotenv').config();
+
+// CONSOLE LOG UNTUK VERIFIKASI FILE DIGUNAKAN
+console.log('=== MAIN.JS LOADED ===');
+console.log('Current time:', new Date().toISOString());
+console.log('Working directory:', __dirname);
+
 const { setupSecurity } = require('./middleware/security');
+const { maintenanceMiddleware } = require('./middleware/maintenance');
 const adminAuthRoutes = require('./routes/adminAuth');
 const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, 'public/uploads/admin');
+        
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        // Generate unique filename with timestamp
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const ext = path.extname(file.originalname);
+        const name = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9]/g, '_');
+        cb(null, name + '-' + uniqueSuffix + ext);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024, // 5MB limit
+        files: 1 // Limit to 1 file per request
+    },
+    fileFilter: function (req, file, cb) {
+        // Allowed file types
+        const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        
+        if (allowedMimeTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed'), false);
+        }
+    }
+});
 
 // Setup security middleware
 const generalLimiter = setupSecurity(app);
@@ -23,9 +71,35 @@ app.use(session({
     }
 }));
 
+// Maintenance mode middleware
+app.use(maintenanceMiddleware);
+
+// Remove any existing CSP headers to allow external resources
+app.use((req, res, next) => {
+    res.removeHeader('Content-Security-Policy');
+    res.removeHeader('X-Content-Security-Policy');
+    next();
+});
+
+// Debug route - paling awal untuk testing
+app.get('/debug', (req, res) => {
+    console.log('DEBUG ROUTE HIT!');
+    res.json({ 
+        message: 'Debug route working!', 
+        timestamp: new Date().toISOString(),
+        port: PORT,
+        method: req.method,
+        url: req.url
+    });
+});
+
 // View engine setup
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Body parsing middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Static files with security headers
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads'), {
@@ -77,6 +151,19 @@ app.use('/synergy-portfolio', require('./routes/synergy-portfolio'));
 // Admin routes
 app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin', adminRoutes);
+
+// Simple test route to verify server is responding
+app.get('/api/test', (req, res) => {
+    console.log('Test route hit');
+    res.json({ message: 'Server is working', timestamp: new Date().toISOString() });
+});
+
+// Log all registered routes for debugging
+app._router.stack.forEach(function(r){
+    if (r.route && r.route.path){
+        console.log('Route:', r.route.path, 'Methods:', Object.keys(r.route.methods));
+    }
+});
 
 // Admin login page route (handle form submission)
 app.post('/admin/login', express.urlencoded({ extended: true }), async (req, res) => {
@@ -221,6 +308,162 @@ app.get('/admin/testimonials', (req, res) => {
         title: 'Manajemen Testimoni',
         layout: false // Using custom layout in the template
     });
+});
+
+// Admin blogs page route
+app.get('/admin/blogs', (req, res) => {
+    if (!req.session?.isLoggedIn) {
+        return res.redirect('/admin/login');
+    }
+    res.render('admin/blogs', { 
+        title: 'Blog Management - Admin',
+        username: req.session.adminName || 'Admin'
+    });
+});
+
+// Admin blogs form page route (create/edit)
+app.get('/admin/blogs/create', (req, res) => {
+    if (!req.session?.isLoggedIn) {
+        return res.redirect('/admin/login');
+    }
+    res.render('admin/blogs-form', { 
+        title: 'Create Article - Admin',
+        username: req.session.adminName || 'Admin',
+        item: null
+    });
+});
+
+app.get('/admin/blogs/edit/:id', (req, res) => {
+    if (!req.session?.isLoggedIn) {
+        return res.redirect('/admin/login');
+    }
+    // For now, render the form without data (the API will fetch the data)
+    res.render('admin/blogs-form', { 
+        title: 'Edit Article - Admin',
+        username: req.session.adminName || 'Admin',
+        item: { id: req.params.id } // Pass the ID for the form action
+    });
+});
+
+// Handle blog update form submission
+app.post('/admin/blogs/update/:id', upload.single('image'), express.urlencoded({ extended: true }), express.json(), async (req, res) => {
+    try {
+        if (!req.session?.isLoggedIn) {
+            return res.redirect('/admin/login');
+        }
+
+        const admin = require('firebase-admin');
+        const blogId = req.params.id;
+        const updateData = req.body;
+
+        // Handle image upload
+        if (req.file) {
+            updateData.image = '/uploads/admin/' + req.file.filename;
+        }
+
+        // Parse tags if provided
+        if (updateData.tags) {
+            updateData.tags = updateData.tags.split(',').map(tag => tag.trim()).filter(tag => tag);
+        }
+
+        // Add update metadata
+        updateData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+        updateData.updatedBy = req.session.adminId;
+
+        // Update blog in Firestore
+        await admin.firestore()
+            .collection('blogs')
+            .doc(blogId)
+            .update(updateData);
+
+        console.log('Blog updated successfully:', blogId);
+        res.redirect('/admin/blogs');
+        
+    } catch (error) {
+        console.error('Error updating blog:', error);
+        
+        // Clean up uploaded file on error
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch (cleanupError) {
+                console.error('Failed to clean up uploaded file:', cleanupError);
+            }
+        }
+        
+        res.render('admin/blogs-form', {
+            title: 'Edit Article - Admin',
+            username: req.session.adminName || 'Admin',
+            item: { ...req.body, id: req.params.id },
+            error: 'Failed to update blog: ' + error.message
+        });
+    }
+});
+
+// Handle blog create form submission
+app.post('/admin/blogs/create', upload.single('image'), express.urlencoded({ extended: true }), express.json(), async (req, res) => {
+    try {
+        if (!req.session?.isLoggedIn) {
+            return res.redirect('/admin/login');
+        }
+
+        const admin = require('firebase-admin');
+        const { title, slug, excerpt, content, author, tags, published } = req.body;
+        
+        // Generate slug if not provided
+        const blogSlug = slug || title.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        
+        // Parse tags
+        const parsedTags = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+        
+        // Handle image upload
+        let imagePath = null;
+        if (req.file) {
+            imagePath = '/uploads/admin/' + req.file.filename;
+        }
+        
+        // Create blog data
+        const blogData = {
+            title: title,
+            slug: blogSlug,
+            excerpt: excerpt || '',
+            content: content,
+            author: author,
+            tags: parsedTags,
+            image: imagePath,
+            published: published || false,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            createdBy: req.session.adminId
+        };
+        
+        const blogRef = await admin.firestore()
+            .collection('blogs')
+            .add(blogData);
+        
+        console.log('Blog created successfully:', blogRef.id);
+        res.redirect('/admin/blogs');
+        
+    } catch (error) {
+        console.error('Error creating blog:', error);
+        
+        // Clean up uploaded file on error
+        if (req.file) {
+            try {
+                fs.unlinkSync(req.file.path);
+            } catch (cleanupError) {
+                console.error('Failed to clean up uploaded file:', cleanupError);
+            }
+        }
+        
+        res.render('admin/blogs-form', {
+            title: 'Create Article - Admin',
+            username: req.session.adminName || 'Admin',
+            item: req.body,
+            error: 'Failed to create blog: ' + error.message
+        });
+    }
 });
 
 // Initialize Firebase Admin SDK with fallback
@@ -420,19 +663,25 @@ app.use((req, res) => {
 
 // Start server
 app.listen(PORT, () => {
+    console.log(`\n=== SERVER STARTED ===`);
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     console.log(`Firebase Status: ${db ? 'Connected' : 'Using Mock Data'}`);
-    console.log(`Available routes:`);
-    console.log(`  GET  / - Home page`);
-    console.log(`  GET  /about - About page`);
-    console.log(`  GET  /synergy-academy - Academy page`);
-    console.log(`  GET  /synergy-experts - Experts page`);
-    console.log(`  GET  /synergy-portfolio - Portfolio page`);
-    console.log(`  GET  /api/hero-section - Hero section API`);
-    console.log(`  GET  /api/experts - Experts API`);
-    console.log(`  POST /api/admin/auth/login - Admin login`);
-    console.log(`  POST /api/admin/auth/create-admin - Create admin`);
+    console.log(`Current time: ${new Date().toISOString()}`);
+    
+    console.log(`\n=== IMPORTANT ROUTES ===`);
+    console.log(`  GET  /debug - Debug route`);
+    console.log(`  GET  /api/admin/maintenance/status - Maintenance status`);
+    console.log(`  POST /api/admin/maintenance/toggle - Toggle maintenance`);
+    console.log(`  GET  /api/test - Test route`);
+    
+    console.log(`\n=== ALL REGISTERED ROUTES ===`);
+    app._router.stack.forEach(function(r){
+        if (r.route && r.route.path){
+            console.log(`  ${Object.keys(r.route.methods).join(',').toUpperCase()} ${r.route.path}`);
+        }
+    });
+    console.log(`=== ROUTE REGISTRATION COMPLETE ===\n`);
 });
 
 // Graceful shutdown

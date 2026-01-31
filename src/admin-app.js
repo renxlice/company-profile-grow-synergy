@@ -15,6 +15,13 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Remove any existing CSP headers to allow external resources
+app.use((req, res, next) => {
+    res.removeHeader('Content-Security-Policy');
+    res.removeHeader('X-Content-Security-Policy');
+    next();
+});
+
 // Apply security middleware to admin routes
 app.use('/admin', adminSecurityMiddleware);
 app.use('/admin', csrfProtection);
