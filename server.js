@@ -287,8 +287,386 @@ async function bootstrap() {
     // Home route (serve the main website)
     server.get('/', serveIndexHtml);
     
-    // Home alias route
-    server.get('/home', serveIndexHtml);
+    // Synergy Academy route
+    server.get('/synergy-academy', (req, res) => {
+      res.send(`
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Synergy Academy - Program Pelatihan | GROW SYNERGY INDONESIA</title>
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+            <link href="/css/custom.css" rel="stylesheet">
+            <style>
+                .hero-gradient {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }
+                .card-hover {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .card-hover:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Navigation -->
+            <nav class="bg-white shadow-lg fixed w-full z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <div class="flex items-center">
+                            <img src="/images/logo_pt.png" alt="GROW SYNERGY" class="h-8 w-auto mr-3">
+                            <span class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                            <a href="/about" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Tentang Kami</a>
+                            <a href="/synergy-experts" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Expert</a>
+                            <a href="/synergy-academy" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Academy</a>
+                            <a href="/synergy-portfolio" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Portfolio</a>
+                            <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Admin</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <section class="hero-gradient text-white py-20 mt-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                            Synergy Academy
+                        </h1>
+                        <p class="text-xl md:text-2xl mb-8">
+                            Program Pelatihan Data Analitik Komprehensif
+                        </p>
+                        <p class="text-lg mb-8">
+                            Tingkatkan karir Anda dengan kurikulum terbaru dan instruktur berpengalaman
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Programs Section -->
+            <section class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            Program Pelatihan Kami
+                        </h2>
+                        <p class="text-xl text-gray-600">
+                            Pilih program yang sesuai dengan kebutuhan karir Anda
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="card-hover bg-white p-8 rounded-lg shadow-lg">
+                            <div class="text-blue-600 text-4xl mb-4">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-4">Data Analytics</h3>
+                            <p class="text-gray-600 mb-4">Pelajari fundamental data analitik dengan tools seperti Excel, SQL, dan Tableau</p>
+                            <ul class="text-gray-600 text-sm space-y-2">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>40 jam pelatihan</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Sertifikat BNSP</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Portfolio project</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card-hover bg-white p-8 rounded-lg shadow-lg">
+                            <div class="text-blue-600 text-4xl mb-4">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-4">Data Science</h3>
+                            <p class="text-gray-600 mb-4">Dalam ke machine learning, Python, dan advanced statistical analysis</p>
+                            <ul class="text-gray-600 text-sm space-y-2">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>60 jam pelatihan</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Sertifikat BNSP</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Real-world projects</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card-hover bg-white p-8 rounded-lg shadow-lg">
+                            <div class="text-blue-600 text-4xl mb-4">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-4">Machine Learning</h3>
+                            <p class="text-gray-600 mb-4">Master advanced ML algorithms, deep learning, dan AI implementation</p>
+                            <ul class="text-gray-600 text-sm space-y-2">
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>80 jam pelatihan</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Sertifikat BNSP</li>
+                                <li><i class="fas fa-check text-green-500 mr-2"></i>Capstone project</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="py-20 bg-blue-600 text-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                        Siap Memulai Perjalanan Anda?
+                    </h2>
+                    <p class="text-xl mb-8">
+                        Daftar sekarang dan dapatkan diskon early bird
+                    </p>
+                    <a href="/admin/login" class="bg-white text-blue-600 px-8 py-3 rounded-full text-lg font-semibold inline-block hover:bg-gray-100">
+                        Daftar Sekarang
+                    </a>
+                </div>
+            </section>
+        </body>
+        </html>
+      `);
+    });
+    
+    // Synergy Experts route
+    server.get('/synergy-experts', (req, res) => {
+      res.send(`
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Synergy Experts - Tim Instruktur | GROW SYNERGY INDONESIA</title>
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+            <link href="/css/custom.css" rel="stylesheet">
+            <style>
+                .hero-gradient {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }
+                .card-hover {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .card-hover:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Navigation -->
+            <nav class="bg-white shadow-lg fixed w-full z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <div class="flex items-center">
+                            <img src="/images/logo_pt.png" alt="GROW SYNERGY" class="h-8 w-auto mr-3">
+                            <span class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                            <a href="/about" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Tentang Kami</a>
+                            <a href="/synergy-experts" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Expert</a>
+                            <a href="/synergy-academy" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Academy</a>
+                            <a href="/synergy-portfolio" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Portfolio</a>
+                            <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Admin</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <section class="hero-gradient text-white py-20 mt-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                            Synergy Experts
+                        </h1>
+                        <p class="text-xl md:text-2xl mb-8">
+                            Tim Instruktur Profesional Kami
+                        </p>
+                        <p class="text-lg mb-8">
+                            Belajar dari expert dengan pengalaman 10+ tahun di industri data
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experts Section -->
+            <section class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            Tim Instruktur Kami
+                        </h2>
+                        <p class="text-xl text-gray-600">
+                            Profesional berpengalaman dari berbagai industri
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="card-hover bg-white p-8 rounded-lg shadow-lg text-center">
+                            <img src="/images/expert1.jpg" alt="Expert 1" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                            <h3 class="text-xl font-semibold mb-2">Dr. Ahmad Wijaya</h3>
+                            <p class="text-blue-600 mb-4">Lead Data Scientist</p>
+                            <p class="text-gray-600 mb-4">15+ tahun pengalaman di Google dan Microsoft</p>
+                            <div class="flex justify-center space-x-3 text-gray-400">
+                                <i class="fab fa-linkedin"></i>
+                                <i class="fab fa-github"></i>
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="card-hover bg-white p-8 rounded-lg shadow-lg text-center">
+                            <img src="/images/expert2.jpg" alt="Expert 2" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                            <h3 class="text-xl font-semibold mb-2">Sarah Putri, M.Sc.</h3>
+                            <p class="text-blue-600 mb-4">Senior Data Analyst</p>
+                            <p class="text-gray-600 mb-4">12+ tahun pengalaman di banking dan fintech</p>
+                            <div class="flex justify-center space-x-3 text-gray-400">
+                                <i class="fab fa-linkedin"></i>
+                                <i class="fab fa-github"></i>
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="card-hover bg-white p-8 rounded-lg shadow-lg text-center">
+                            <img src="/images/expert3.jpg" alt="Expert 3" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                            <h3 class="text-xl font-semibold mb-2">Budi Santoso, Ph.D.</h3>
+                            <p class="text-blue-600 mb-4">ML Engineering Manager</p>
+                            <p class="text-gray-600 mb-4">10+ tahun pengalaman di startup unicorn</p>
+                            <div class="flex justify-center space-x-3 text-gray-400">
+                                <i class="fab fa-linkedin"></i>
+                                <i class="fab fa-github"></i>
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </body>
+        </html>
+      `);
+    });
+    
+    // Synergy Portfolio route
+    server.get('/synergy-portfolio', (req, res) => {
+      res.send(`
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Synergy Portfolio - Koleksi Project | GROW SYNERGY INDONESIA</title>
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+            <link href="/css/custom.css" rel="stylesheet">
+            <style>
+                .hero-gradient {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }
+                .card-hover {
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                }
+                .card-hover:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Navigation -->
+            <nav class="bg-white shadow-lg fixed w-full z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between h-16">
+                        <div class="flex items-center">
+                            <img src="/images/logo_pt.png" alt="GROW SYNERGY" class="h-8 w-auto mr-3">
+                            <span class="text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <a href="/" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                            <a href="/about" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Tentang Kami</a>
+                            <a href="/synergy-experts" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Expert</a>
+                            <a href="/synergy-academy" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Academy</a>
+                            <a href="/synergy-portfolio" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Portfolio</a>
+                            <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Admin</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <section class="hero-gradient text-white py-20 mt-16">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                            Synergy Portfolio
+                        </h1>
+                        <p class="text-xl md:text-2xl mb-8">
+                            Koleksi Project Terbaik
+                        </p>
+                        <p class="text-lg mb-8">
+                            Lihat hasil karya alumni dan project terbaru dari tim kami
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio Section -->
+            <section class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                            Project Unggulan
+                        </h2>
+                        <p class="text-xl text-gray-600">
+                            Berbagai project data analitik dan machine learning
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="/images/project1.jpg" alt="Project 1" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">Sales Prediction System</h3>
+                                <p class="text-gray-600 mb-4">Machine learning model untuk prediksi penjualan retail dengan accuracy 95%</p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Python</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">TensorFlow</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">SQL</span>
+                                </div>
+                                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Lihat Detail →</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="/images/project2.jpg" alt="Project 2" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">Customer Analytics Dashboard</h3>
+                                <p class="text-gray-600 mb-4">Interactive dashboard untuk analisis perilaku customer real-time</p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Tableau</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Power BI</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">D3.js</span>
+                                </div>
+                                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Lihat Detail →</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="/images/project3.jpg" alt="Project 3" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold mb-2">Fraud Detection System</h3>
+                                <p class="text-gray-600 mb-4">AI-powered system untuk deteksi fraud transaksi keuangan</p>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Python</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Scikit-learn</span>
+                                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">AWS</span>
+                                </div>
+                                <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">Lihat Detail →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </body>
+        </html>
+      `);
+    });
     
     // Favicon route
     server.get('/favicon.ico', (req, res) => {
