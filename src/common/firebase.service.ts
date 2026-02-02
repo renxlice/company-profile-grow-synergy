@@ -46,95 +46,64 @@ const mockData = {
   }
 };
 
-// Helper function to reconstruct private key from parts
-function reconstructPrivateKey(): string | null {
-  try {
-    // Try different combinations of environment variables
-    const combinations = [
-      // Full private key
-      process.env.FIREBASE_PRIVATE_KEY,
-      // Split into 2 parts
-      process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2 
-        ? process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2 
-        : null,
-      // Split into 3 parts
-      process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2 && process.env.FIREBASE_PRIVATE_KEY_PART3
-        ? process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2 + process.env.FIREBASE_PRIVATE_KEY_PART3
-        : null,
-      // Split into 4 parts
-      process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2 && 
-      process.env.FIREBASE_PRIVATE_KEY_PART3 && process.env.FIREBASE_PRIVATE_KEY_PART4
-        ? process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2 + 
-          process.env.FIREBASE_PRIVATE_KEY_PART3 + process.env.FIREBASE_PRIVATE_KEY_PART4
-        : null,
-    ];
+// Firebase configuration (hardcoded for production)
+const firebaseConfig = {
+  projectId: "company-profile-grow-synergy",
+  clientEmail: "firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com",
+  privateKey: `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQChvzANtK317wFA
+QAT8w1linwKx+T2b2Syug/G/8Zaw/osfAHJhanGuaqA/9NZMdCsQ19bOsyq0/Moq
+hHe7Ma4um/JptIBFtWOfkTvEtYDzYRxKPhiOMWVRDTNbkmSD7wWlB4o+kOnNYifD
+CTFN1Zn/dOZA7rgG+VZlLTVbJ4pjfVv0FMYNt575akY6Be4LqTvGOsMW8gGrNedb
+P5YVqpYW1YPO6sLuxweaTseR3kwJ1wPdqq3h70rcU+wHvHYrtZrdQMtfDlhGpMnS
+haCBH9sQG5H3/egN2DdvFqzJ50/2NFBBIOFmsBUxxD3Z8VNGCZrFYvMrOi0/gLt9
+DCIZtABpAgMBAAECggEAIeUEJ2Mc70QKAZJI2UUAhrOmp3AA8pdEjz+UGfKA7w8w
+TStVTMe3EeNDOJPQko3ndmyclY0jHnE41kcTJhWnmBnS50bNeI4l1crj+PlGD/pi
+KMaxc56zShRXllFroeAlUStu02SfsgvnJC5ZeCOSVV+EXsgHpWJ7sdES9Mqo6+cD
+4W87/eUqR4vM+aBOBvtzsxyZCbJ8/wC4aTIQA4/uyElwqeUZy0yYH6BylUchRjXX
+V/PB37kiK2BDxJXxazr+YdBXfXCan2GsqCZF+SD7qYrkQgEmzjQ7oPou37fW6BS3
+BnyhVk+B8DjJOiCyk+GWyjsqxPJmEYrdrf2JKGRQuQKBgQDjDmvlmnKgvs0e5CXc
+Zn0n3o1TeG+WAl1Ydv45ZtouuZwdXw+NesMgv9ddc3Z+gqmo0MVXwsKptqxcMSfs
+J+tB9idC1CPKhs9r3wbpD3rO8iDHsk9pCqykFJyCN5be69m2J9ECc/GFmqoWKUQC
+KIaxB8sJ74aU+EOh+G4vWUo+pQKBgQC2XYHHknFh3jrVa8EJ81xAOMIiMK3IwClF
++w2fDNtNVBrXAqLpKyklo9RmJOXSQaLuEBwFjsQO2LeGWlsNNCoOGg8PoB47xLr7
+B26u9HlnhUQURI45O/LYoIqN2lshLS537U7eGebZCf+TFttKOeN1ZiH7SzUUxTGw
+AYExQ5izdQKBgGhT+w3P7rWflh6IlED2MrG8F9Hvt84EniGE44E6miv4CxyPzlSi
+wL/uhiWhZSPyI8S20MZnbgyPLBlcWMyw9u8jDJ0vXpazZOFa5BD4lOQ76wX3D3fj
+eLoX4mYO5trdIfcJyobHAYXzMA3oviADwQfc3dVd4sfWXzUwMmi9LVklAoGAb1X5
+JKmQVUrCqoeFrBiKap78Trlfb995k0Lplv/XZ4eAd2Ihqa7zCQrTYqUGNm5iFWt6
+YB5ALjw7F2hUjGQbhM5+AXEk5CKAcT+hYGjbMctXu/P6zJB/+6dPz7jOyBt4cjlM
+XCZ+HGWRRfC/Yrqi1orLFktdFdgqNKVGhZgaQv0CgYEA3m05DNSVLlBqzlcrW1Il
+neU46DosygQnN2XSirEBkFC+l3I7g1j3emA3RUYidmaODsCSYP5DOtSI0yYlQPe09
+94OsnInN6KKxHIrH95haq4SUXCDcplAhKQAQ98ujUU0ewdELM2Cd40DZWorJMZy+
+alIgNfNHfcvffHxnUQr6oz8=
+-----END PRIVATE KEY-----`
+};
 
-    for (const privateKey of combinations) {
-      if (privateKey && privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
-        // Clean up the private key format
-        return privateKey.replace(/\\n/g, '\n').replace(/\n/g, '\n').trim();
-      }
-    }
-    return null;
-  } catch (error) {
-    console.error('Error reconstructing private key:', error);
-    return null;
-  }
-}
-
-// Helper function to get project ID
-function getProjectId(): string | null {
-  try {
-    // Try different combinations
-    const combinations = [
-      // Full project ID
-      process.env.FIREBASE_PROJECT_ID,
-      // Split into 2 parts
-      process.env.FIREBASE_PROJECT_ID_PART1 && process.env.FIREBASE_PROJECT_ID_PART2 
-        ? process.env.FIREBASE_PROJECT_ID_PART1 + process.env.FIREBASE_PROJECT_ID_PART2 
-        : null,
-      // Just first part
-      process.env.FIREBASE_PROJECT_ID_PART1,
-    ];
-
-    for (const projectId of combinations) {
-      if (projectId && projectId.trim()) {
-        return projectId.trim();
-      }
-    }
-    return null;
-  } catch (error) {
-    console.error('Error getting project ID:', error);
-    return null;
-  }
-}
-
-// Initialize Firebase with robust error handling
+// Initialize Firebase with hardcoded config
 function initializeFirebase() {
-  console.log('🔧 Initializing Firebase...');
+  console.log('🔧 Initializing Firebase with hardcoded config...');
   
   try {
-    // Get project ID and private key
-    const projectId = getProjectId();
-    const privateKey = reconstructPrivateKey();
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com';
+    // Check if we should use Firebase (production) or mock mode
+    const useFirebase = process.env.NODE_ENV === 'production' || process.env.USE_FIREBASE === 'true';
     
-    console.log('📋 Firebase config check:');
-    console.log('   Project ID:', projectId ? 'SET' : 'NOT SET');
-    console.log('   Private Key:', privateKey ? 'SET' : 'NOT SET');
-    console.log('   Client Email:', clientEmail ? 'SET' : 'NOT SET');
-    
-    if (projectId && privateKey) {
+    if (useFirebase) {
+      console.log('📋 Firebase config check:');
+      console.log('   Project ID:', firebaseConfig.projectId);
+      console.log('   Client Email:', firebaseConfig.clientEmail);
+      console.log('   Private Key: SET');
+      
       const serviceAccount = {
-        projectId: projectId,
-        clientEmail: clientEmail,
-        privateKey: privateKey,
+        projectId: firebaseConfig.projectId,
+        clientEmail: firebaseConfig.clientEmail,
+        privateKey: firebaseConfig.privateKey,
       };
 
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-        projectId: projectId,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || projectId + '.appspot.com',
+        projectId: firebaseConfig.projectId,
+        storageBucket: firebaseConfig.projectId + '.appspot.com',
       });
       
       if (admin.apps.length > 0) {
@@ -143,6 +112,8 @@ function initializeFirebase() {
         console.log('✅ Firebase initialized successfully');
         return true;
       }
+    } else {
+      console.log('🔄 Firebase disabled, using mock mode');
     }
   } catch (error) {
     console.error('❌ Firebase initialization failed:', error.message);
