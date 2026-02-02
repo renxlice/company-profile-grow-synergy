@@ -362,10 +362,15 @@
         // Firebase will be initialized by firebase-config partial
         console.log('Firebase initialization will be handled by partial');
         
-        // Initialize Firestore explicitly if not available
-        if (!window.db) {
-            window.db = firebase.firestore();
-            console.log('Firestore initialized');
+        // Wait for Firebase to be initialized before using it
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                if (window.firebase && window.firebase.apps && window.firebase.apps.length > 0) {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForFirebase().then(resolve), 100);
+                }
+            });
         }
 
         // Pagination variables
@@ -376,6 +381,9 @@
         // Load experts from Firestore
         async function loadExperts() {
             try {
+                // Wait for Firebase to be initialized
+                await waitForFirebase();
+                
                 console.log('Loading experts from Firestore...');
                 console.log('Firebase db available:', !!window.db);
                 

@@ -786,7 +786,17 @@
         
         // Firebase will be initialized by firebase-config partial
         console.log('Firebase initialization will be handled by partial');
-                                    const sectionRect = portfoliosSection.getBoundingClientRect();
+        
+        // Wait for Firebase to be initialized before using it
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                if (window.firebase && window.firebase.apps && window.firebase.apps.length > 0) {
+                    resolve();
+                } else {
+                    setTimeout(() => waitForFirebase().then(resolve), 100);
+                }
+            });
+        }
                                     const offset = sectionRect.top + window.pageYOffset - (window.innerHeight / 2) + (sectionRect.height / 2);
                                     window.scrollTo({
                                         top: offset,
