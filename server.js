@@ -473,6 +473,38 @@ app.get('/admin/logout', (req, res) => {
   });
 });
 
+// Admin API Routes
+app.get('/api/admin/maintenance/status', (req, res) => {
+  res.json({
+    enabled: false,
+    message: 'System is operating normally'
+  });
+});
+
+app.get('/admin/hero-section', (req, res) => {
+  res.json([]);
+});
+
+app.get('/admin/experts', (req, res) => {
+  res.json([]);
+});
+
+app.get('/admin/portfolios', (req, res) => {
+  res.json([]);
+});
+
+app.get('/admin/academies', (req, res) => {
+  res.json([]);
+});
+
+app.get('/admin/testimonials', (req, res) => {
+  res.json([]);
+});
+
+app.get('/admin/blogs', (req, res) => {
+  res.json([]);
+});
+
 // API Routes
 app.get('/api/hero-section', (req, res) => {
   console.log('🔥 Hero section API request received');
