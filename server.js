@@ -58,38 +58,50 @@ async function bootstrap() {
       console.log('Serving index.html from:', indexPath);
       console.log('__dirname:', __dirname);
       
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          console.error('Error serving index.html:', err);
-          console.error('File exists check:', require('fs').existsSync(indexPath));
-          
-          // Fallback: serve a simple HTML page
-          res.status(200).send(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-              <title>GROW SYNERGY INDONESIA</title>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-            </head>
-            <body>
-              <div class="min-h-screen bg-blue-50 flex items-center justify-center">
-                <div class="text-center">
-                  <h1 class="text-4xl font-bold text-blue-600 mb-4">GROW SYNERGY INDONESIA</h1>
-                  <p class="text-gray-600 mb-8">Platform Pelatihan Data Analitik Terbaik di Indonesia</p>
-                  <div class="space-y-4">
-                    <a href="/about" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Tentang Kami</a>
-                    <a href="/admin/login" class="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">Admin Login</a>
-                    <a href="/debug-files" class="block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">Debug Files</a>
-                  </div>
+      try {
+        const fs = require('fs');
+        const htmlContent = fs.readFileSync(indexPath, 'utf8');
+        console.log('File read successfully, length:', htmlContent.length);
+        
+        // Set proper headers
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+        
+        res.status(200).send(htmlContent);
+        console.log('HTML sent successfully');
+        
+      } catch (err) {
+        console.error('Error reading index.html:', err);
+        console.error('File exists check:', require('fs').existsSync(indexPath));
+        
+        // Fallback: serve a simple HTML page
+        res.status(200).send(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>GROW SYNERGY INDONESIA</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+          </head>
+          <body>
+            <div class="min-h-screen bg-blue-50 flex items-center justify-center">
+              <div class="text-center">
+                <h1 class="text-4xl font-bold text-blue-600 mb-4">GROW SYNERGY INDONESIA</h1>
+                <p class="text-gray-600 mb-8">Platform Pelatihan Data Analitik Terbaik di Indonesia</p>
+                <div class="space-y-4">
+                  <a href="/about" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Tentang Kami</a>
+                  <a href="/admin/login" class="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">Admin Login</a>
+                  <a href="/debug-files" class="block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">Debug Files</a>
                 </div>
               </div>
-            </body>
-            </html>
-          `);
-        }
-      });
+            </div>
+          </body>
+          </html>
+        `);
+      }
     }
     
     // Home route (serve the main website)
