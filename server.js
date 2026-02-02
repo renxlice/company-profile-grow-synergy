@@ -87,20 +87,22 @@ function getIndexHbsContent() {
       content = content.replace(/this\.backgroundImage/g, 'backgroundImage');
       content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
       
-      // Add floating WhatsApp button with logo
+      // Add floating WhatsApp button with proper logo
       content = content.replace('</body>', `
-        <!-- Floating WhatsApp Button -->
-        <div class="fixed bottom-8 right-8 z-50">
-          <a href="https://wa.me/6281234567890?text=Halo%20saya%20tertarik%20dengan%20program%20data%20analitik%20di%20GROW%20SYNERGY%20INDONESIA" 
+        <!-- WhatsApp Floating Button -->
+        <div class="whatsapp-float" id="whatsapp-float">
+          <a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" 
              target="_blank" 
-             class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center justify-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M17.472 14.382c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382zm-1.472 1.653c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382z"/>
-              <path d="M8.278 3.664c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382zm-1.472 1.653c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382z"/>
-              <path d="M20.517 3.483a15.09 15.09 0 0 0-11.592-2.65A15.085 15.085 0 0 0 4.5 5.058a11.36 11.36 0 0 0 6.378 5.078.75.75 0 0 1 .498.565l.19 1.132a.75.75 0 0 0 1.492-.149l.19-1.131a.75.75 0 0 1 .498-.564 11.36 11.36 0 0 0 6.378-5.078 15.045 15.045 0 0 0-2.65-11.592z"/>
-              <path d="M6.662 3.413c-.81.77-1.439 1.724-1.856 2.84A12.042 12.042 0 0 0 4.094 9.5c0 1.228.242 2.409.68 3.513.418 1.116 1.047 2.07 1.856 2.84a11.362 11.362 0 0 0 3.513 1.856c1.104.438 2.285.68 3.513.68 1.228 0 2.409-.242 3.513-.68a11.362 11.362 0 0 0 3.513-1.856c.81-.77 1.439-1.724 1.856-2.84A12.042 12.042 0 0 0 21.906 9.5c0-1.228-.242-2.409-.68-3.513a11.362 11.362 0 0 0-1.856-2.84 11.362 11.362 0 0 0-3.513-1.856A12.042 12.042 0 0 0 12.342 1.5c-1.228 0-2.409.242-3.513.68a11.362 11.362 0 0 0-3.513 1.856c-.81.77-1.439 1.724-1.856 2.84z"/>
-              <path d="M12.342 8.413a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25z"/>
-              <path d="M12.342 12.413a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25z"/>
+             rel="noopener noreferrer"
+             class="whatsapp-link"
+             title="Hubungi kami via WhatsApp">
+            <!-- WhatsApp Logo SVG -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="50px" height="50px" fill-rule="evenodd" clip-rule="evenodd">
+              <path fill="#fff" d="M4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5c5.1,0,9.8,2,13.4,5.6C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19c0,0,0,0,0,0h0c-3.2,0-6.3-0.8-9.1-2.3L4.9,43.3z"/>
+              <path fill="#fff" d="M4.9,43.8c-0.1,0-0.3-0.1-0.4-0.1c-0.1-0.1-0.2-0.3-0.1-0.5L7,33.5c-1.6-2.9-2.5-6.2-2.5-9.6C4.5,13.2,13.3,4.5,24,4.5c5.2,0,10.1,2,13.8,5.7c3.7,3.7,5.7,8.6,5.7,13.8c0,10.7-8.7,19.5-19.5,19.5c-3.2,0-6.3-0.8-9.1-2.3L5,43.8C5,43.8,4.9,43.8,4.9,43.8z"/>
+              <path fill="#cfd8dc" d="M24,5c5.1,0,9.8,2,13.4,5.6C41,14.2,43,18.9,43,24c0,10.5-8.5,19-19,19h0c-3.2,0-6.3-0.8-9.1-2.3L4.9,43.3l2.7-9.8C5.9,30.6,5,27.3,5,24C5,13.5,13.5,5,24,5 M24,43L24,43L24,43 M24,43L24,43L24,43 M24,4L24,4C13,4,4,13,4,24c0,3.4,0.8,6.7,2.5,9.6L3.9,43c-0.1,0.3,0,0.7,0.3,1c0.2,0.2,0.4,0.3,0.7,0.3c0.1,0,0.2,0,0.3,0l9.7-2.5c2.8,1.5,6,2.2,9.2,2.2c11,0,20-9,20-20c0-5.3-2.1-10.4-5.8-14.1C34.4,6.1,29.4,4,24,4L24,4z"/>
+              <path fill="#40c351" d="M35.2,12.8c-3-3-6.9-4.6-11.2-4.6C15.3,8.2,8.2,15.3,8.2,24c0,3,0.8,5.9,2.4,8.4L11,33l-1.6,5.8l6-1.6l0.6,0.3c2.4,1.4,5.2,2.2,8,2.2h0c8.7,0,15.8-7.1,15.8-15.8C39.8,19.8,38.2,15.8,35.2,12.8z"/>
+              <path fill="#fff" fill-rule="evenodd" d="M19.3,16c-0.4-0.8-0.7-0.8-1.1-0.8c-0.3,0-0.6,0-0.9,0s-0.8,0.1-1.3,0.6c-0.4,0.5-1.7,1.6-1.7,4s1.7,4.6,1.9,4.9s3.3,5.3,8.1,7.2c4,1.6,4.8,1.3,5.7,1.2c0.9-0.1,2.8-1.1,3.2-2.3c0.4-1.1,0.4-2.1,0.3-2.3c-0.1-0.2-0.4-0.3-0.9-0.6s-2.8-1.4-3.2-1.5c-0.4-0.2-0.8-0.2-1.1,0.2c-0.3,0.5-1.2,1.5-1.5,1.9c-0.3,0.3-0.6,0.4-1,0.1c-0.5-0.2-2-0.7-3.8-2.4c-1.4-1.3-2.4-2.8-2.6-3.3c-0.3-0.5,0-0.7,0.2-1c0.2-0.2,0.5-0.6,0.7-0.8c0.2-0.3,0.3-0.5,0.5-0.8c0.2-0.3,0.1-0.6,0-0.8C20.6,19.3,19.7,17,19.3,16z" clip-rule="evenodd"/>
             </svg>
           </a>
         </div>
@@ -114,13 +116,20 @@ function getIndexHbsContent() {
             text-align: center !important;
             min-height: 100vh !important;
             position: relative !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
           }
           
           .hero-content {
             max-width: 800px !important;
+            width: 100% !important;
             padding: 2rem !important;
             z-index: 10 !important;
             position: relative !important;
+            margin: 0 auto !important;
+            text-align: center !important;
           }
           
           .hero-title {
@@ -128,18 +137,21 @@ function getIndexHbsContent() {
             font-weight: 700 !important;
             margin-bottom: 1.5rem !important;
             line-height: 1.2 !important;
+            text-align: center !important;
           }
           
           .hero-subtitle {
             font-size: 1.5rem !important;
             margin-bottom: 2rem !important;
             line-height: 1.6 !important;
+            text-align: center !important;
           }
           
           .hero-description {
             font-size: 1.1rem !important;
             margin-bottom: 2rem !important;
             line-height: 1.7 !important;
+            text-align: center !important;
           }
           
           .background-image {
@@ -160,6 +172,55 @@ function getIndexHbsContent() {
             height: 100% !important;
             background: rgba(0, 0, 0, 0.5) !important;
             z-index: 2 !important;
+          }
+          
+          /* WhatsApp Button Styles */
+          .whatsapp-float {
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            z-index: 9999 !important;
+          }
+          
+          .whatsapp-link {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 70px !important;
+            height: 70px !important;
+            background: #25D366 !important;
+            border-radius: 50% !important;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4) !important;
+            transition: all 0.3s ease !important;
+            text-decoration: none !important;
+          }
+          
+          .whatsapp-link:hover {
+            transform: scale(1.1) !important;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6) !important;
+          }
+          
+          .whatsapp-link svg {
+            width: 50px !important;
+            height: 50px !important;
+          }
+          
+          /* Ensure hero section doesn't overflow */
+          .hero-section * {
+            box-sizing: border-box !important;
+          }
+          
+          /* Fix any existing hero section styles */
+          .hero-section .container,
+          .hero-section .container-fluid,
+          .hero-section .row,
+          .hero-section .col {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+            max-width: 100% !important;
           }
         </style>
         
