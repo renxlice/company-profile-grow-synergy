@@ -151,6 +151,24 @@
                                 >
                             </div>
 
+                            <!-- Price -->
+                            <div>
+                                <label for="price" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Harga <span class="text-gray-500">(Opsional)</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="price" 
+                                    name="price" 
+                                    min="0"
+                                    step="10000"
+                                    value="{{#if item}}{{item.price}}{{/if}}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                                    placeholder="e.g., 2500000"
+                                >
+                                <p class="mt-1 text-xs text-gray-500">Kosongkan jika tidak ingin menampilkan harga</p>
+                            </div>
+
                             <!-- Student Count -->
                             <div>
                                 <label for="studentCount" class="block text-sm font-medium text-gray-700 mb-2">
