@@ -5,7 +5,7 @@ let db: admin.firestore.Firestore;
 let storage: admin.storage.Storage;
 
 // Check if we want to use Firebase or Mock mode
-const USE_FIREBASE = true; // Firebase is now working!
+const USE_FIREBASE = process.env.NODE_ENV === 'production' && process.env.FIREBASE_PRIVATE_KEY; // Only use Firebase if all env vars are set
 
 // Initialize Firebase with environment variables
 if (USE_FIREBASE) {
@@ -13,10 +13,21 @@ if (USE_FIREBASE) {
     // Check if we're in production environment
     if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY) {
       // Production: Use environment variables
+      let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+      
+      // Handle private key that might be split or formatted differently
+      if (process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2) {
+        // If private key is split into multiple parts
+        privateKey = process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2;
+      }
+      
+      // Clean up the private key format
+      privateKey = privateKey.replace(/\\n/g, '\n').trim();
+      
       const serviceAccount = {
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        privateKey: privateKey,
       };
 
       admin.initializeApp({
