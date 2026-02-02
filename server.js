@@ -23,15 +23,50 @@ app.use(session({
 }));
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('./company-profile-grow-synergy-firebase-adminsdk.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  projectId: 'company-profile-grow-synergy'
-});
-
-const db = admin.firestore();
-console.log('🔥 Firebase Admin SDK initialized');
+let db;
+try {
+  const serviceAccountPath = './company-profile-grow-synergy-firebase-adminsdk.json';
+  
+  if (fs.existsSync(serviceAccountPath)) {
+    const serviceAccount = require(serviceAccountPath);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      projectId: 'company-profile-grow-synergy'
+    });
+    db = admin.firestore();
+    console.log('🔥 Firebase Admin SDK initialized successfully');
+  } else {
+    console.warn('⚠️ Firebase Admin SDK service account file not found. Using mock mode.');
+    console.warn('Expected file:', serviceAccountPath);
+    // Create mock db for development
+    db = {
+      collection: () => ({
+        get: async () => ({ docs: [] }),
+        add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
+        doc: () => ({
+          get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
+          update: async () => {},
+          delete: async () => {}
+        }),
+      }),
+    };
+  }
+} catch (error) {
+  console.error('❌ Firebase Admin SDK initialization failed:', error.message);
+  console.warn('⚠️ Using mock mode for development');
+  // Create mock db for development
+  db = {
+    collection: () => ({
+      get: async () => ({ docs: [] }),
+      add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
+      doc: () => ({
+        get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
+        update: async () => {},
+        delete: async () => {}
+      }),
+    }),
+  };
+}
 
 // Handlebars setup
 app.engine('hbs', exphbs.engine({
