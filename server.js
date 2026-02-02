@@ -20,12 +20,36 @@ async function bootstrap() {
     
     // Home route (serve the main website)
     server.get('/', (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'index.html'));
+      const indexPath = path.join(__dirname, 'public', 'index.html');
+      console.log('Serving index.html from:', indexPath);
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error('Error serving index.html:', err);
+          res.status(500).send('Error loading homepage');
+        }
+      });
     });
     
     // Home alias route
     server.get('/home', (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'index.html'));
+      const indexPath = path.join(__dirname, 'public', 'index.html');
+      console.log('Serving index.html from:', indexPath);
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error('Error serving index.html:', err);
+          res.status(500).send('Error loading homepage');
+        }
+      });
+    });
+    
+    // Favicon route
+    server.get('/favicon.ico', (req, res) => {
+      const faviconPath = path.join(__dirname, 'public', 'images', 'logo_pt.png');
+      res.sendFile(faviconPath, (err) => {
+        if (err) {
+          res.status(404).send('Favicon not found');
+        }
+      });
     });
     
     // About route
@@ -105,11 +129,11 @@ async function bootstrap() {
             <form>
               <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="admin@grow-synergy.com">
+                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="admin@grow-synergy.com" required>
               </div>
               <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
-                <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="Mieayam1">
+                <input type="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter password" required>
               </div>
               <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">Login</button>
             </form>
