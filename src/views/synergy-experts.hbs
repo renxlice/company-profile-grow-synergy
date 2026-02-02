@@ -37,6 +37,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {{{structuredDataJson}}}
@@ -1205,7 +1210,7 @@
                 const heroSectionsSnapshot = await db.collection('heroSection').get();
                 const heroSections = [];
                 
-                heroSectionsSnapshot.forEach(doc => {
+                heroSectionsSnapshot.docs.forEach(doc => {
                     const data = doc.data();
                     if (data.backgroundImage) {
                         heroSections.push({
@@ -1253,9 +1258,6 @@
             }
         }
     </script>
-    
-    <!-- Firebase Config -->
-    {{> firebase-config}}
     
     <!-- WhatsApp Floating Button -->
     {{> whatsapp-button}}
