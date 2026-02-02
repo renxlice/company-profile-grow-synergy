@@ -660,6 +660,56 @@ app.get('/admin/blogs-form', (req, res) => {
   });
 });
 
+// Admin Create Routes (Redirect to forms)
+app.get('/admin/experts/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/experts-form');
+});
+
+app.get('/admin/portfolios/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/portfolios-form');
+});
+
+app.get('/admin/academies/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/academies-form-fixed');
+});
+
+app.get('/admin/blogs/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/blogs-form');
+});
+
+app.get('/admin/hero-section/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/hero-section-form');
+});
+
+app.get('/admin/about-section/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/about-section-form');
+});
+
+app.get('/admin/testimonials/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.redirect('/admin/testimonials-form');
+});
+
 // API Routes
 app.get('/api/hero-section', (req, res) => {
   console.log('🔥 Hero section API request received');
