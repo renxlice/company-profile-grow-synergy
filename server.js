@@ -25,7 +25,12 @@ app.use(session({
 app.engine('hbs', exphbs.engine({
   extname: '.hbs',
   defaultLayout: false,
-  layoutsDir: path.join(__dirname, 'src/views')
+  layoutsDir: path.join(__dirname, 'src/views'),
+  helpers: {
+    eq: function(a, b) {
+      return a === b;
+    }
+  }
 }));
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'src', 'views'));
@@ -659,7 +664,8 @@ app.get('/admin/blogs-form', (req, res) => {
     res.render('admin/blogs-form', {
       title: 'Add Blog - Admin Dashboard',
       user: req.session.user,
-      username: req.session.user
+      username: req.session.user,
+      item: null  // For create form (no existing item)
     });
   } catch (error) {
     console.error('Error rendering blogs-form:', error);
