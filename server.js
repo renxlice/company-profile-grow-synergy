@@ -59,6 +59,39 @@ function getIndexHbsContent() {
       content = content.replace(/\{\{siteName\}\}/g, 'GROW SYNERGY INDONESIA');
       content = content.replace(/\{\{googleAnalyticsId\}\}/g, 'G-XXXXXXXXXX');
       
+      // Remove all Handlebars template variables that interfere with layout
+      content = content.replace(/\{\{#if heroSections\}\}/g, '');
+      content = content.replace(/\{\{#each heroSections\}\}/g, '');
+      content = content.replace(/\{\{\/each\}\}/g, '');
+      content = content.replace(/\{\{\/if\}\}/g, '');
+      content = content.replace(/\{\{#if\}\}/g, '');
+      content = content.replace(/\{\{#unless\}\}/g, '');
+      content = content.replace(/\{\{\/unless\}\}/g, '');
+      content = content.replace(/\{\{#each\}\}/g, '');
+      content = content.replace(/\{\{#with\}\}/g, '');
+      content = content.replace(/\{\{\/with\}\}/g, '');
+      content = content.replace(/\{\{#unless heroSections\}\}/g, '');
+      content = content.replace(/\{\{#if aboutSections\}\}/g, '');
+      content = content.replace(/\{\{#each aboutSections\}\}/g, '');
+      content = content.replace(/\{\{#unless aboutSections\}\}/g, '');
+      content = content.replace(/\{\{#if experts\}\}/g, '');
+      content = content.replace(/\{\{#each experts\}\}/g, '');
+      content = content.replace(/\{\{#unless experts\}\}/g, '');
+      content = content.replace(/\{\{#if portfolios\}\}/g, '');
+      content = content.replace(/\{\{#each portfolios\}\}/g, '');
+      content = content.replace(/\{\{#unless portfolios\}\}/g, '');
+      content = content.replace(/\{\{#if academies\}\}/g, '');
+      content = content.replace(/\{\{#each academies\}\}/g, '');
+      content = content.replace(/\{\{#unless academies\}\}/g, '');
+      content = content.replace(/\{\{#if blogs\}\}/g, '');
+      content = content.replace(/\{\{#each blogs\}\}/g, '');
+      content = content.replace(/\{\{#unless blogs\}\}/g, '');
+      
+      // Remove any remaining Handlebars blocks
+      content = content.replace(/\{\{#[^}]*\}\}/g, '');
+      content = content.replace(/\{\{\/[^}]*\}\}/g, '');
+      content = content.replace(/\{\{[^}]*\}\}/g, '');
+      
       // Remove conditional blocks
       content = content.replace(/\{\{#if googleAnalyticsId\}\}[\s\S]*?\{\{\/if\}\}/g, '');
       
