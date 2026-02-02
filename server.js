@@ -609,58 +609,577 @@ app.get('/about', (req, res) => {
   `);
 });
 
-// Synergy Academy route
+// Synergy Experts route - serve synergy-experts.hbs with Firestore data
+app.get('/synergy-experts', (req, res) => {
+  console.log('👥 Serving synergy-experts page with Firestore data...');
+  try {
+    const expertsPath = path.join(__dirname, 'src', 'views', 'synergy-experts.hbs');
+    if (fs.existsSync(expertsPath)) {
+      let content = fs.readFileSync(expertsPath, 'utf8');
+      
+      // Add Firebase SDK and data loading
+      content = content.replace('</head>', `
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        <script src="/firebase-config.js"></script>
+        </head>
+      `);
+      
+      // Add data loading script
+      content = content.replace('</body>', `
+        <script>
+          // Load experts data from API
+          async function loadExpertsData() {
+            try {
+              console.log('🔥 Loading experts data from API...');
+              const response = await fetch('/api/firebase/data');
+              const data = await response.json();
+              console.log('✅ Experts data loaded:', data.experts);
+              
+              // Update experts section
+              if (data.experts) {
+                const expertsContainer = document.querySelector('.experts-container');
+                if (expertsContainer) {
+                  expertsContainer.innerHTML = '';
+                  data.experts.forEach(expert => {
+                    const expertCard = createExpertCard(expert);
+                    expertsContainer.appendChild(expertCard);
+                  });
+                }
+              }
+              
+              console.log('🎉 Experts page updated with Firestore data!');
+            } catch (error) {
+              console.error('❌ Error loading experts data:', error);
+            }
+          }
+          
+          function createExpertCard(expert) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300';
+            card.innerHTML = \`
+              <div class="text-center">
+                <img src="\${expert.image}" alt="\${expert.name}" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                <h3 class="text-xl font-semibold mb-2">\${expert.name}</h3>
+                <p class="text-gray-600 mb-2">\${expert.position}</p>
+                <p class="text-sm text-gray-500 mb-2">\${expert.experience}</p>
+                <div class="flex items-center justify-center mb-2">
+                  <span class="text-yellow-400">★</span>
+                  <span class="ml-1 text-gray-700">\${expert.rating}</span>
+                  <span class="ml-2 text-gray-500">(\${expert.reviewCount} reviews)</span>
+                </div>
+                <p class="text-gray-600 text-sm">\${expert.description}</p>
+              </div>
+            \`;
+            return card;
+          }
+          
+          // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', loadExpertsData);
+        </script>
+        </body>
+      `);
+      
+      res.send(content);
+    } else {
+      res.status(404).send('Synergy Experts page not found');
+    }
+  } catch (error) {
+    console.error('Error serving synergy-experts:', error);
+    res.status(500).send('Error loading page');
+  }
+});
+
+// Synergy Portfolio route - serve synergy-portfolio.hbs with Firestore data
+app.get('/synergy-portfolio', (req, res) => {
+  console.log('💼 Serving synergy-portfolio page with Firestore data...');
+  try {
+    const portfolioPath = path.join(__dirname, 'src', 'views', 'synergy-portfolio.hbs');
+    if (fs.existsSync(portfolioPath)) {
+      let content = fs.readFileSync(portfolioPath, 'utf8');
+      
+      // Add Firebase SDK and data loading
+      content = content.replace('</head>', `
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        <script src="/firebase-config.js"></script>
+        </head>
+      `);
+      
+      // Add data loading script
+      content = content.replace('</body>', `
+        <script>
+          // Load portfolio data from API
+          async function loadPortfolioData() {
+            try {
+              console.log('🔥 Loading portfolio data from API...');
+              const response = await fetch('/api/firebase/data');
+              const data = await response.json();
+              console.log('✅ Portfolio data loaded:', data.portfolio);
+              
+              // Update portfolio section
+              if (data.portfolio) {
+                const portfolioContainer = document.querySelector('.portfolio-container');
+                if (portfolioContainer) {
+                  portfolioContainer.innerHTML = '';
+                  data.portfolio.forEach(project => {
+                    const projectCard = createProjectCard(project);
+                    portfolioContainer.appendChild(projectCard);
+                  });
+                }
+              }
+              
+              console.log('🎉 Portfolio page updated with Firestore data!');
+            } catch (error) {
+              console.error('❌ Error loading portfolio data:', error);
+            }
+          }
+          
+          function createProjectCard(project) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300';
+            card.innerHTML = \`
+              <div class="text-center">
+                <img src="\${project.image}" alt="\${project.title}" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="text-xl font-semibold mb-2">\${project.title}</h3>
+                <p class="text-gray-600 mb-2">\${project.description}</p>
+                <div class="flex flex-wrap justify-center gap-2 mb-2">
+                  \${project.tags.map(tag => \`<span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded">\${tag}</span>\`).join('')}
+                </div>
+                <p class="text-sm text-gray-500">Client: \${project.client}</p>
+                <p class="text-sm text-gray-500">Category: \${project.category}</p>
+              </div>
+            \`;
+            return card;
+          }
+          
+          // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', loadPortfolioData);
+        </script>
+        </body>
+      `);
+      
+      res.send(content);
+    } else {
+      res.status(404).send('Synergy Portfolio page not found');
+    }
+  } catch (error) {
+    console.error('Error serving synergy-portfolio:', error);
+    res.status(500).send('Error loading page');
+  }
+});
+
+// Synergy Academy route - serve synergy-academy.hbs with Firestore data
 app.get('/synergy-academy', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Synergy Academy - GROW SYNERGY INDONESIA</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    </head>
-    <body>
-      <div class="min-h-screen bg-gray-50">
-        <nav class="bg-white shadow">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <h1 class="text-xl font-bold text-blue-600">GROW SYNERGY</h1>
+  console.log('🎓 Serving synergy-academy page with Firestore data...');
+  try {
+    const academyPath = path.join(__dirname, 'src', 'views', 'synergy-academy.hbs');
+    if (fs.existsSync(academyPath)) {
+      let content = fs.readFileSync(academyPath, 'utf8');
+      
+      // Add Firebase SDK and data loading
+      content = content.replace('</head>', `
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        <script src="/firebase-config.js"></script>
+        </head>
+      `);
+      
+      // Add data loading script
+      content = content.replace('</body>', `
+        <script>
+          // Load academy data from API
+          async function loadAcademyData() {
+            try {
+              console.log('🔥 Loading academy data from API...');
+              const response = await fetch('/api/firebase/data');
+              const data = await response.json();
+              console.log('✅ Academy data loaded:', data.academy);
+              
+              // Update academy section
+              if (data.academy) {
+                const academyContainer = document.querySelector('.academy-container');
+                if (academyContainer) {
+                  academyContainer.innerHTML = '';
+                  data.academy.forEach(course => {
+                    const courseCard = createCourseCard(course);
+                    academyContainer.appendChild(courseCard);
+                  });
+                }
+              }
+              
+              console.log('🎉 Academy page updated with Firestore data!');
+            } catch (error) {
+              console.error('❌ Error loading academy data:', error);
+            }
+          }
+          
+          function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300';
+            card.innerHTML = \`
+              <div class="text-center">
+                <img src="\${course.image}" alt="\${course.title}" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="text-xl font-semibold mb-2">\${course.title}</h3>
+                <p class="text-gray-600 mb-2">\${course.description}</p>
+                <div class="flex items-center justify-center mb-2">
+                  <span class="text-yellow-400">★</span>
+                  <span class="ml-1 text-gray-700">\${course.rating}</span>
+                  <span class="ml-2 text-gray-500">(\${course.students} students)</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-sm text-gray-500">
+                  <span>Duration: \${course.duration}</span>
+                  <span>Level: \${course.level}</span>
+                  <span>Schedule: \${course.schedule}</span>
+                  <span>Format: \${course.format}</span>
+                </div>
               </div>
-              <div class="flex items-center space-x-4">
-                <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
-                <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded">Admin</a>
+            \`;
+            return card;
+          }
+          
+          // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', loadAcademyData);
+        </script>
+        </body>
+      `);
+      
+      res.send(content);
+    } else {
+      res.status(404).send('Synergy Academy page not found');
+    }
+  } catch (error) {
+    console.error('Error serving synergy-academy:', error);
+    res.status(500).send('Error loading page');
+  }
+});
+
+// Blog route - serve blog.hbs with Firestore data
+app.get('/blog', (req, res) => {
+  console.log('📝 Serving blog page with Firestore data...');
+  try {
+    const blogPath = path.join(__dirname, 'src', 'views', 'blog.hbs');
+    if (fs.existsSync(blogPath)) {
+      let content = fs.readFileSync(blogPath, 'utf8');
+      
+      // Add Firebase SDK and data loading
+      content = content.replace('</head>', `
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        <script src="/firebase-config.js"></script>
+        </head>
+      `);
+      
+      // Add data loading script
+      content = content.replace('</body>', `
+        <script>
+          // Load blog data from API
+          async function loadBlogData() {
+            try {
+              console.log('🔥 Loading blog data from API...');
+              const response = await fetch('/api/firebase/data');
+              const data = await response.json();
+              console.log('✅ Blog data loaded:', data.blogs);
+              
+              // Update blog section
+              if (data.blogs) {
+                const blogContainer = document.querySelector('.blog-container');
+                if (blogContainer) {
+                  blogContainer.innerHTML = '';
+                  data.blogs.forEach(post => {
+                    const postCard = createPostCard(post);
+                    blogContainer.appendChild(postCard);
+                  });
+                }
+              }
+              
+              console.log('🎉 Blog page updated with Firestore data!');
+            } catch (error) {
+              console.error('❌ Error loading blog data:', error);
+            }
+          }
+          
+          function createPostCard(post) {
+            const card = document.createElement('div');
+            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer';
+            card.onclick = () => window.location.href = \`/blog/\${post.slug}\`;
+            card.innerHTML = \`
+              <div class="text-center">
+                <img src="\${post.image}" alt="\${post.title}" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="text-xl font-semibold mb-2">\${post.title}</h3>
+                <p class="text-gray-600 mb-2">\${post.excerpt}</p>
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                  <span>\${post.author}</span>
+                  <span>\${new Date(post.date).toLocaleDateString()}</span>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mt-2">
+                  \${post.tags.map(tag => \`<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">\${tag}</span>\`).join('')}
+                </div>
               </div>
-            </div>
-          </div>
-        </nav>
-        <div class="max-w-7xl mx-auto px-4 py-12">
-          <h1 class="text-3xl font-bold mb-6">Synergy Academy</h1>
-          <p class="text-gray-600">Platform pembelajaran data analitik dengan kurikulum terbaik dan mentor profesional.</p>
-          <div class="mt-8 grid md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow">
-              <h3 class="text-xl font-semibold mb-2">Data Analyst Fundamentals</h3>
-              <p class="text-gray-600">Dasar-dasar analisis data dengan tools modern</p>
-              <span class="text-blue-600 font-semibold">3 bulan</span>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow">
-              <h3 class="text-xl font-semibold mb-2">Advanced SQL & Visualization</h3>
-              <p class="text-gray-600">Query kompleks dan visualisasi data yang efektif</p>
-              <span class="text-blue-600 font-semibold">2 bulan</span>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow">
-              <h3 class="text-xl font-semibold mb-2">Machine Learning Basics</h3>
-              <p class="text-gray-600">Pengenalan machine learning dan implementasi</p>
-              <span class="text-blue-600 font-semibold">4 bulan</span>
-            </div>
-          </div>
-          <a href="/" class="text-blue-600 hover:underline mt-8 inline-block">← Kembali ke Home</a>
-        </div>
-      </div>
-    </body>
-    </html>
-  `);
+            \`;
+            return card;
+          }
+          
+          // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', loadBlogData);
+        </script>
+        </body>
+      `);
+      
+      res.send(content);
+    } else {
+      res.status(404).send('Blog page not found');
+    }
+  } catch (error) {
+    console.error('Error serving blog:', error);
+    res.status(500).send('Error loading page');
+  }
+});
+
+// Blog detail route - serve blog-detail.hbs with Firestore data
+app.get('/blog/:slug', (req, res) => {
+  const { slug } = req.params;
+  console.log(`📄 Serving blog detail page for: ${slug}`);
+  try {
+    const blogDetailPath = path.join(__dirname, 'src', 'views', 'blog-detail.hbs');
+    if (fs.existsSync(blogDetailPath)) {
+      let content = fs.readFileSync(blogDetailPath, 'utf8');
+      
+      // Add Firebase SDK and data loading
+      content = content.replace('</head>', `
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        <script src="/firebase-config.js"></script>
+        </head>
+      `);
+      
+      // Add data loading script
+      content = content.replace('</body>', `
+        <script>
+          // Load blog detail data from API
+          async function loadBlogDetailData() {
+            try {
+              console.log('🔥 Loading blog detail data from API...');
+              const response = await fetch('/api/firebase/data');
+              const data = await response.json();
+              console.log('✅ Blog detail data loaded:', data.blogs);
+              
+              // Find the specific blog post
+              const blogPost = data.blogs ? data.blogs.find(post => post.slug === '${slug}') : null;
+              
+              if (blogPost) {
+                // Update blog detail content
+                const titleElement = document.querySelector('.blog-title');
+                const contentElement = document.querySelector('.blog-content');
+                const imageElement = document.querySelector('.blog-image');
+                const metaElement = document.querySelector('.blog-meta');
+                
+                if (titleElement) titleElement.textContent = blogPost.title;
+                if (contentElement) contentElement.innerHTML = blogPost.content;
+                if (imageElement) imageElement.src = blogPost.image;
+                if (metaElement) {
+                  metaElement.innerHTML = \`
+                    <span>\${blogPost.author}</span> • 
+                    <span>\${new Date(blogPost.date).toLocaleDateString()}</span> • 
+                    <span>\${blogPost.readTime} min read</span>
+                  \`;
+                }
+                
+                console.log('🎉 Blog detail page updated with Firestore data!');
+              } else {
+                console.log('❌ Blog post not found');
+              }
+            } catch (error) {
+              console.error('❌ Error loading blog detail data:', error);
+            }
+          }
+          
+          // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', loadBlogDetailData);
+        </script>
+        </body>
+      `);
+      
+      res.send(content);
+    } else {
+      res.status(404).send('Blog detail page not found');
+    }
+  } catch (error) {
+    console.error('Error serving blog detail:', error);
+    res.status(500).send('Error loading page');
+  }
+});
+
+// Update API data to include blogs
+app.get('/api/firebase/data', (req, res) => {
+  console.log('🔥 Firebase data request received');
+  
+  // Mock data for now (will be replaced with actual Firebase data)
+  const mockData = {
+    hero: {
+      backgroundImage: '/images/hero-background.jpg',
+      title: 'Transformasi Karir dengan Data Analitik',
+      description: 'Pelatihan intensif dengan mentor profesional dan proyek real-world',
+      buttonText1: 'Mulai Belajar Sekarang',
+      buttonText2: 'Download Kurikulum'
+    },
+    about: {
+      title: 'Tentang Kami',
+      description: 'GROW SYNERGY INDONESIA adalah platform pembelajaran data analitik terbaik di Indonesia dengan kurikulum terstandar dan mentor berpengalaman.',
+      content: 'Menjadi platform pembelajaran data analitik terdepan di Indonesia yang menghasilkan talenta siap kerja.',
+      buttonText1: 'Hubungi Kami',
+      buttonText2: 'Lihat Portfolio'
+    },
+    experts: [
+      {
+        id: 'expert1',
+        name: 'Dr. Ahmad Wijaya',
+        position: 'Data Science Expert',
+        experience: '10+ Tahun Pengalaman',
+        rating: 4.8,
+        reviewCount: 156,
+        description: 'Expert dalam machine learning dan data science dengan pengalaman 10+ tahun di berbagai industri.',
+        image: 'https://picsum.photos/seed/ahmad/200/200.jpg'
+      },
+      {
+        id: 'expert2',
+        name: 'Sarah Putri',
+        position: 'Business Intelligence Specialist',
+        experience: '8+ Tahun Pengalaman',
+        rating: 4.9,
+        reviewCount: 203,
+        description: 'Spesialis dalam business intelligence dan data visualization dengan track record yang sangat baik.',
+        image: 'https://picsum.photos/seed/sarah/200/200.jpg'
+      },
+      {
+        id: 'expert3',
+        name: 'Budi Santoso',
+        position: 'Machine Learning Engineer',
+        experience: '7+ Tahun Pengalaman',
+        rating: 4.7,
+        reviewCount: 142,
+        description: 'Expert dalam machine learning dan artificial intelligence dengan fokus pada implementasi bisnis.',
+        image: 'https://picsum.photos/seed/budi/200/200.jpg'
+      }
+    ],
+    portfolio: [
+      {
+        id: 'portfolio1',
+        title: 'Retail Analytics Dashboard',
+        description: 'Dashboard real-time untuk monitoring sales dan inventory',
+        category: 'Dashboard',
+        tags: ['React', 'Node.js', 'MongoDB'],
+        image: 'https://picsum.photos/seed/retail/400/300.jpg',
+        client: 'PT. Retail Maju'
+      },
+      {
+        id: 'portfolio2',
+        title: 'Sales Prediction Model',
+        description: 'Machine learning model untuk forecasting sales',
+        category: 'Machine Learning',
+        tags: ['Python', 'TensorFlow', 'Scikit-learn'],
+        image: 'https://picsum.photos/seed/sales/400/300.jpg',
+        client: 'PT. Sales Global'
+      },
+      {
+        id: 'portfolio3',
+        title: 'Customer Segmentation',
+        description: 'Analisis clustering untuk customer behavior',
+        category: 'Data Analysis',
+        tags: ['Python', 'Pandas', 'Tableau'],
+        image: 'https://picsum.photos/seed/customer/400/300.jpg',
+        client: 'PT. Customer First'
+      }
+    ],
+    academy: [
+      {
+        id: 'academy1',
+        title: 'Data Analyst Fundamentals',
+        description: 'Dasar-dasar analisis data dengan tools modern',
+        duration: '3 bulan',
+        level: 'Pemula',
+        schedule: 'Full Time',
+        format: 'Online',
+        rating: 4.8,
+        students: 2500,
+        image: 'https://picsum.photos/seed/academy1/400/300.jpg'
+      },
+      {
+        id: 'academy2',
+        title: 'Advanced SQL & Visualization',
+        description: 'Query kompleks dan visualisasi data yang efektif',
+        duration: '2 bulan',
+        level: 'Menengah',
+        schedule: 'Full Time',
+        format: 'Online',
+        rating: 4.9,
+        students: 1800,
+        image: 'https://picsum.photos/seed/academy2/400/300.jpg'
+      },
+      {
+        id: 'academy3',
+        title: 'Machine Learning Basics',
+        description: 'Pengenalan machine learning dan implementasi',
+        duration: '4 bulan',
+        level: 'Menengah',
+        schedule: 'Full Time',
+        format: 'Online',
+        rating: 4.7,
+        students: 1200,
+        image: 'https://picsum.photos/seed/academy3/400/300.jpg'
+      }
+    ],
+    blogs: [
+      {
+        id: 'blog1',
+        slug: 'pengenalan-data-analitik',
+        title: 'Pengenalan Data Analitik untuk Pemula',
+        excerpt: 'Memulai perjalanan di dunia data analitik dengan panduan lengkap untuk pemula.',
+        content: '<p>Data analitik adalah proses inspeksi, pembersihan, transformasi, dan pemodelan data...</p><p>Dalam artikel ini, kita akan membahas dasar-dasar data analitik...</p>',
+        author: 'Dr. Ahmad Wijaya',
+        date: '2024-01-15',
+        readTime: 5,
+        tags: ['Data Analitik', 'Pemula', 'Tutorial'],
+        image: 'https://picsum.photos/seed/blog1/800/400.jpg'
+      },
+      {
+        id: 'blog2',
+        slug: 'tools-data-analitik-2024',
+        title: 'Tools Data Analitik Terpopuler di 2024',
+        excerpt: 'Daftar tools data analitik yang wajib diketahui oleh para profesional di tahun 2024.',
+        content: '<p>Tahun 2024 membawa banyak perkembangan dalam dunia data analitik...</p><p>Berikut adalah tools yang paling populer...</p>',
+        author: 'Sarah Putri',
+        date: '2024-01-20',
+        readTime: 7,
+        tags: ['Tools', '2024', 'Technology'],
+        image: 'https://picsum.photos/seed/blog2/800/400.jpg'
+      },
+      {
+        id: 'blog3',
+        slug: 'karir-data-scientist',
+        title: 'Bagaimana Memulai Karir sebagai Data Scientist',
+        excerpt: 'Panduan lengkap untuk memulai karir di bidang data science dari nol hingga profesional.',
+        content: '<p>Data scientist adalah salah satu profesi paling diminati saat ini...</p><p>Berikut langkah-langkah untuk memulai karir...</p>',
+        author: 'Budi Santoso',
+        date: '2024-01-25',
+        readTime: 10,
+        tags: ['Karir', 'Data Science', 'Profesi'],
+        image: 'https://picsum.photos/seed/blog3/800/400.jpg'
+      }
+    ]
+  };
+  
+  res.json(mockData);
 });
 
 // Synergy Experts route
