@@ -798,7 +798,7 @@
             });
             
             div.innerHTML = 
-                '<div class="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition cursor-pointer">' +
+                '<div class="rounded-lg p-4 hover:shadow-md transition cursor-pointer">' +
                     '<div class="flex items-start space-x-4">' +
                         '<img src="' + expertImage + '" alt="' + expertName + '" class="w-16 h-16 rounded-lg object-cover flex-shrink-0">' +
                         '<div class="flex-1 min-w-0">' +
@@ -809,7 +809,7 @@
                             '</div>' +
                             '<div class="flex items-center">' +
                                 generateStars(expertRating) +
-                                '<span class="ml-2 text-sm text-gray-500">' + expertRating + '</span>' +
+                                '<span class="ml-2 text-sm text-gray-500">' + expertRating + ' (' + expertReviewCount + ')</span>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
@@ -821,15 +821,16 @@
             console.log('Card HTML created for:', expertName);
             console.log('Card HTML preview:', div.innerHTML.substring(0, 200) + '...');
             
-            // Additional debugging for rugged design
+            // Additional debugging for borderless design
             setTimeout(() => {
-                const cardElement = div.querySelector('.border');
+                const cardElement = div.querySelector('.rounded-lg');
                 if (cardElement) {
                     const computedStyle = window.getComputedStyle(cardElement);
                     console.log('Card background color:', computedStyle.backgroundColor);
+                    console.log('Card border:', computedStyle.border);
                     console.log('Card element found:', !!cardElement);
                 } else {
-                    console.log('Card element with .border class not found');
+                    console.log('Card element with .rounded-lg class not found');
                 }
             }, 100);
             
