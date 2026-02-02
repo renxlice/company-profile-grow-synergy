@@ -1116,12 +1116,19 @@
                 console.log('DEBUG: Hero section docs:', results[0]?.docs?.length);
                 console.log('DEBUG: About section docs:', results[1]?.docs?.length);
                 
-                // Process API data for different sections
-                const heroData = results.hero ? [results.hero] : [];
-                const aboutData = results.about ? [results.about] : [];
-                const expertsData = results.experts ? results.experts : [];
-                const portfoliosData = results.portfolios ? results.portfolios : [];
-                const academiesData = results.academies ? results.academies : [];
+                // Process API data for different sections from Firebase results
+                const heroResult = results.find(r => r.collection === 'heroSection');
+                const aboutResult = results.find(r => r.collection === 'aboutSection');
+                const expertsResult = results.find(r => r.collection === 'experts');
+                const portfoliosResult = results.find(r => r.collection === 'portfolios');
+                const academiesResult = results.find(r => r.collection === 'academies');
+                
+                // Extract data from documents
+                const heroData = heroResult?.docs?.map(doc => doc.data()) || [];
+                const aboutData = aboutResult?.docs?.map(doc => doc.data()) || [];
+                const expertsData = expertsResult?.docs?.map(doc => doc.data()) || [];
+                const portfoliosData = portfoliosResult?.docs?.map(doc => doc.data()) || [];
+                const academiesData = academiesResult?.docs?.map(doc => doc.data()) || [];
                 
                 console.log('DEBUG: Hero data length:', heroData.length);
                 console.log('DEBUG: About data length:', aboutData.length);

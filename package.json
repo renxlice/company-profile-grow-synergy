@@ -28,6 +28,7 @@
     "firebase:setup": "npm run setup:firestore",
     "firebase:deploy-rules": "node scripts/deploy-firestore-rules.js",
     "firebase:deploy-rules:auto": "node scripts/deploy-firestore-rules.js --deploy",
+    "firebase:seed-data": "node scripts/seed-firestore-data.js",
     "setup:env": "node scripts/setup-env.js",
     "security:check": "node scripts/deploy-check.js",
     "seed:firestore": "echo 'Please add data via admin panel at http://localhost:3001/admin/login'",

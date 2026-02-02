@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Firestore Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-danger {
+            background-color: #f44336;
+        }
+        .btn-danger:hover {
+            background-color: #da190b;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .progress {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 30px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firestore Data Seeding Tool</h1>
+        <p>Use this tool to populate your Firebase Firestore with sample data for the GROW SYNERGY INDONESIA website.</p>
+        
+        <div id="status" class="status info">
+            Ready to seed data. Click the button below to start.
+        </div>
+        
+        <div class="progress">
+            <div id="progressBar" class="progress-bar">0%</div>
+        </div>
+        
+        <button id="seedBtn" class="btn" onclick="seedAllData()">🌱 Seed All Data</button>
+        <button id="clearBtn" class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+        <button id="testBtn" class="btn" onclick="testConnection()">🔍 Test Connection</button>
+        
+        <div id="details" style="margin-top: 20px;"></div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+            authDomain: "company-profile-grow-synergy.firebaseapp.com",
+            projectId: "company-profile-grow-synergy",
+            storageBucket: "company-profile-grow-synergy.appspot.com",
+            messagingSenderId: "584312572709",
+            appId: "1:584312572709:web:1e0ad87867af7b878668cc"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Sample data
+        const seedData = {
+            heroSection: [
+                {
+                    backgroundImage: '/images/hero1.jpg',
+                    title: 'Transformasi Karir dengan Data Analitik',
+                    subtitle: 'Pelatihan intensif dengan mentor profesional dan proyek real-world',
+                    description: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
+                    buttonText1: 'Mulai Belajar',
+                    buttonText2: 'Konsultasi Gratis'
+                }
+            ],
+            aboutSection: [
+                {
+                    title: 'Tentang GROW SYNERGY INDONESIA',
+                    description: 'GROW SYNERGY INDONESIA adalah platform pembelajaran data analitik terbaik di Indonesia. Kami menyediakan pelatihan intensif dengan instruktur profesional dan proyek real-world.',
+                    image: '/images/about1.jpg',
+                    features: [
+                        'Instruktur Profesional dengan 10+ tahun pengalaman',
+                        'Sertifikat Bersertifikat BNSP yang diakui industri',
+                        'Proyek Real-World dari perusahaan ternama',
+                        'Mentorship 1-on-1 untuk karir Anda',
+                        '100% Garansi Kerja untuk lulusan terbaik'
+                    ],
+                    stats: {
+                        students: '1000+',
+                        courses: '50+',
+                        instructors: '20+',
+                        successRate: '95%',
+                        partners: '15+'
+                    },
+                    buttonText1: 'Lihat Kursus',
+                    buttonText2: 'Testimoni Alumni'
+                }
+            ],
+            experts: [
+                {
+                    name: 'Dr. Ahmad Wijaya, M.Sc.',
+                    title: 'Data Science Expert & Founder',
+                    organization: 'GROW SYNERGY INDONESIA',
+                    image: 'https://picsum.photos/seed/ahmad-wijaya/300/300.jpg',
+                    bio: 'Expert dengan 10+ tahun pengalaman di bidang data science dan machine learning. Alumni dari universitas ternama dengan publikasi internasional.',
+                    specialties: ['Data Science', 'Machine Learning', 'Python', 'SQL', 'Tableau'],
+                    experience: '10+ tahun',
+                    rating: 4.9,
+                    reviewCount: 156,
+                    education: 'S2, Data Science - Stanford University',
+                    certifications: ['Google Cloud Certified', 'AWS Certified Data Scientist']
+                },
+                {
+                    name: 'Sarah Putri, S.Kom., M.T.',
+                    title: 'Business Intelligence Specialist',
+                    organization: 'GROW SYNERGY INDONESIA',
+                    image: 'https://picsum.photos/seed/sarah-putri/300/300.jpg',
+                    bio: 'Spesialis dalam business intelligence dan data visualization dengan pengalaman di berbagai industri seperti banking, retail, dan e-commerce.',
+                    specialties: ['Business Intelligence', 'Tableau', 'Power BI', 'Data Visualization', 'SQL'],
+                    experience: '8+ tahun',
+                    rating: 4.8,
+                    reviewCount: 124,
+                    education: 'S2, Information Systems - UIUC',
+                    certifications: ['Microsoft Certified BI Professional', 'Tableau Certified Associate']
+                },
+                {
+                    name: 'Budi Santoso, S.E., M.M.',
+                    title: 'Data Analytics Consultant',
+                    organization: 'GROW SYNERGY INDONESIA',
+                    image: 'https://picsum.photos/seed/budi-santoso/300/300.jpg',
+                    bio: 'Konsultan data analytics dengan fokus pada implementasi solusi bisnis berbasis data. Berpengalaman membantu perusahaan mengoptimalkan proses bisnis.',
+                    specialties: ['Data Analytics', 'Business Analysis', 'R', 'Python', 'Excel', 'Power BI'],
+                    experience: '12+ tahun',
+                    rating: 4.7,
+                    reviewCount: 98,
+                    education: 'MBA, Business Analytics - University of Indonesia',
+                    certifications: ['SAS Certified Data Scientist', 'IBM Data Science Professional']
+                }
+            ],
+            portfolios: [
+                {
+                    title: 'Retail Analytics Dashboard',
+                    category: 'Dashboard',
+                    description: 'Dashboard real-time untuk monitoring sales dan inventory retail dengan visualisasi interaktif dan alert system otomatis.',
+                    image: 'https://picsum.photos/seed/retail-dashboard/600/400.jpg',
+                    technologies: ['Tableau', 'SQL', 'Python', 'D3.js'],
+                    client: 'PT. Retail Maju Indonesia',
+                    duration: '3 bulan',
+                    impact: 'Meningkatkan efisiensi monitoring 40%',
+                    link: '#'
+                },
+                {
+                    title: 'Customer Segmentation Analysis',
+                    category: 'Analytics',
+                    description: 'Analisis segmentasi customer menggunakan machine learning untuk strategi pemasaran yang lebih efektif dan personalisasi pengalaman.',
+                    image: 'https://picsum.photos/seed/customer-segmentation/600/400.jpg',
+                    technologies: ['Python', 'Scikit-learn', 'Pandas', 'Jupyter'],
+                    client: 'PT. E-Commerce Indonesia',
+                    duration: '2 bulan',
+                    impact: 'Meningkatkan konversi 25%',
+                    link: '#'
+                },
+                {
+                    title: 'Supply Chain Optimization',
+                    category: 'Optimization',
+                    description: 'Optimasi rantai pasok menggunakan analisis prediktif untuk mengurangi biaya dan meningkatkan efisiensi distribusi.',
+                    image: 'https://picsum.photos/seed/supply-chain/600/400.jpg',
+                    technologies: ['Python', 'R', 'SQL', 'Power BI'],
+                    client: 'PT. Logistics Nusantara',
+                    duration: '4 bulan',
+                    impact: 'Mengurangi biaya operasional 30%',
+                    link: '#'
+                }
+            ],
+            academies: [
+                {
+                    title: 'Data Analyst Fundamentals',
+                    level: 'Pemula',
+                    duration: '3 bulan',
+                    description: 'Kursus dasar-dasar analisis data dengan tools modern seperti Excel, SQL, dan Tableau. Cocok untuk pemula.',
+                    image: 'https://picsum.photos/seed/data-analyst-fundamentals/600/400.jpg',
+                    price: 'Rp 5.000.000',
+                    rating: 4.8,
+                    students: 150,
+                    schedule: 'Weekend (Sabtu & Minggu)',
+                    instructor: 'Dr. Ahmad Wijaya, M.Sc.',
+                    curriculum: ['Excel Advanced', 'SQL Fundamentals', 'Tableau Visualization', 'Data Analysis Basics'],
+                    certificate: 'BNSP Certified'
+                },
+                {
+                    title: 'Business Intelligence Professional',
+                    level: 'Menengah',
+                    duration: '4 bulan',
+                    description: 'Pelajari business intelligence dari dasar hingga expert level dengan tools seperti Power BI, Tableau, dan SQL Server.',
+                    image: 'https://picsum.photos/seed/bi-professional/600/400.jpg',
+                    price: 'Rp 8.000.000',
+                    rating: 4.9,
+                    students: 89,
+                    schedule: 'Weekday (Senin-Jumat)',
+                    instructor: 'Sarah Putri, S.Kom., M.T.',
+                    curriculum: ['Power BI Advanced', 'SQL Server', 'Data Modeling', 'Dashboard Design', 'KPI Development'],
+                    certificate: 'Microsoft Certified'
+                },
+                {
+                    title: 'Machine Learning Specialist',
+                    level: 'Lanjutan',
+                    duration: '6 bulan',
+                    description: 'Kursus machine learning komprehensif dari basic hingga advanced dengan Python, TensorFlow, dan real-world projects.',
+                    image: 'https://picsum.photos/seed/ml-specialist/600/400.jpg',
+                    price: 'Rp 15.000.000',
+                    rating: 4.9,
+                    students: 67,
+                    schedule: 'Flexible (Online + Offline)',
+                    instructor: 'Dr. Ahmad Wijaya, M.Sc.',
+                    curriculum: ['Python ML', 'TensorFlow', 'Neural Networks', 'Deep Learning', 'Computer Vision', 'NLP'],
+                    certificate: 'Google TensorFlow Developer'
+                }
+            ]
+        };
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = percent + '%';
+        }
+
+        function updateDetails(html) {
+            document.getElementById('details').innerHTML = html;
+        }
+
+        async function testConnection() {
+            updateStatus('Testing Firebase connection...', 'info');
+            try {
+                await db.collection('_connection_test').limit(1).get();
+                updateStatus('✅ Firebase connection successful!', 'success');
+                updateDetails('<p>Connected to project: <strong>' + firebaseConfig.projectId + '</strong></p>');
+            } catch (error) {
+                updateStatus('❌ Firebase connection failed: ' + error.message, 'error');
+                updateDetails('<p>Error: ' + error.message + '</p><p>Please check your Firebase configuration and security rules.</p>');
+            }
+        }
+
+        async function seedCollection(collectionName, documents) {
+            updateStatus(`Seeding ${collectionName}...`, 'info');
+            
+            for (const doc of documents) {
+                try {
+                    await db.collection(collectionName).add(doc);
+                    console.log(`✅ Added document to ${collectionName}`);
+                } catch (error) {
+                    console.error(`❌ Error adding document to ${collectionName}:`, error);
+                    throw error;
+                }
+            }
+        }
+
+        async function seedAllData() {
+            const seedBtn = document.getElementById('seedBtn');
+            seedBtn.disabled = true;
+            
+            try {
+                updateStatus('Starting data seeding...', 'info');
+                updateProgress(0);
+                
+                const collections = Object.keys(seedData);
+                const totalCollections = collections.length;
+                
+                for (let i = 0; i < collections.length; i++) {
+                    const collectionName = collections[i];
+                    const documents = seedData[collectionName];
+                    
+                    await seedCollection(collectionName, documents);
+                    
+                    const progress = Math.round(((i + 1) / totalCollections) * 100);
+                    updateProgress(progress);
+                    
+                    updateStatus(`Seeded ${collectionName} (${documents.length} documents)`, 'success');
+                }
+                
+                updateStatus('✅ All data seeded successfully!', 'success');
+                updateDetails(`
+                    <h3>📊 Seeding Complete!</h3>
+                    <p>The following collections have been populated:</p>
+                    <ul>
+                        ${Object.entries(seedData).map(([name, docs]) => 
+                            `<li><strong>${name}</strong>: ${docs.length} documents</li>`
+                        ).join('')}
+                    </ul>
+                    <p>You can now refresh your main website to see the data loaded.</p>
+                `);
+                
+            } catch (error) {
+                updateStatus('❌ Error seeding data: ' + error.message, 'error');
+                updateDetails('<p>Error details: ' + error.message + '</p>');
+            } finally {
+                seedBtn.disabled = false;
+            }
+        }
+
+        async function clearAllData() {
+            if (!confirm('⚠️ Are you sure you want to delete ALL data from Firestore? This action cannot be undone!')) {
+                return;
+            }
+            
+            const clearBtn = document.getElementById('clearBtn');
+            clearBtn.disabled = true;
+            
+            try {
+                updateStatus('Clearing all data...', 'info');
+                updateProgress(0);
+                
+                const collections = Object.keys(seedData);
+                const totalCollections = collections.length;
+                
+                for (let i = 0; i < collections.length; i++) {
+                    const collectionName = collections[i];
+                    
+                    const snapshot = await db.collection(collectionName).get();
+                    const batch = db.batch();
+                    
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    
+                    await batch.commit();
+                    
+                    const progress = Math.round(((i + 1) / totalCollections) * 100);
+                    updateProgress(progress);
+                    
+                    updateStatus(`Cleared ${collectionName} (${snapshot.size} documents)`, 'info');
+                }
+                
+                updateStatus('✅ All data cleared successfully!', 'success');
+                updateDetails('<p>All collections have been cleared. You can now seed fresh data.</p>');
+                
+            } catch (error) {
+                updateStatus('❌ Error clearing data: ' + error.message, 'error');
+                updateDetails('<p>Error details: ' + error.message + '</p>');
+            } finally {
+                clearBtn.disabled = false;
+            }
+        }
+
+        // Test connection on page load
+        window.onload = function() {
+            testConnection();
+        };
+    </script>
+</body>
+</html>
