@@ -945,6 +945,9 @@
                 try {
                     const testDoc = await db.collection('heroSection').limit(1).get();
                     console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
+                } catch (testError) {
+                    console.log('DEBUG: Firebase test connection failed:', testError);
+                }
                 
                 // Try to load from API with timeout
                 const loadWithTimeout = async () => {
