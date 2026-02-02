@@ -949,6 +949,30 @@
                     console.log('DEBUG: Firebase test connection failed:', testError);
                 }
                 
+                // Load data from Firebase API
+        async function loadFromAPI() {
+            const collections = ['heroSection', 'aboutSection', 'experts', 'portfolios', 'academies'];
+            const results = [];
+            
+            for (const collectionName of collections) {
+                try {
+                    const snapshot = await db.collection(collectionName).get();
+                    results.push({
+                        collection: collectionName,
+                        docs: snapshot.docs
+                    });
+                } catch (error) {
+                    console.warn(`Failed to load ${collectionName}:`, error);
+                    results.push({
+                        collection: collectionName,
+                        docs: []
+                    });
+                }
+            }
+            
+            return results;
+        }
+        
                 // Try to load from API with timeout
                 const loadWithTimeout = async () => {
                     const timeout = new Promise((_, reject) => 

@@ -22,7 +22,11 @@
 
         // Initialize Firebase only if not already initialized
         if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+            firebase.initializeApp({
+                ...firebaseConfig,
+                appId: firebaseConfig.appId,
+                measurementId: firebaseConfig.measurementId
+            });
             console.log('Firebase initialized successfully');
         } else {
             console.log('Firebase already initialized, skipping...');
