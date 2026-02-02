@@ -191,8 +191,12 @@
             </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="expertsGrid">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="expertsGrid" style="min-height: 400px;">
             <!-- Expert cards will be dynamically loaded here -->
+            <div class="col-span-full text-center py-8 text-gray-500">
+                <div class="text-4xl mb-4">⏳</div>
+                <p>Loading experts...</p>
+            </div>
         </div>
         
         <!-- Pagination -->
@@ -338,13 +342,34 @@
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    {{> firebase-config}}
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js?v=2.0"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js?v=2.0"></script>
+    
+    <!-- Custom JavaScript -->
     <script>
+        // Cache busting
+        console.log('Loading synergy-experts page - v2.0', new Date().toISOString());
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForTesting",
+            authDomain: "grow-synergy.firebaseapp.com",
+            projectId: "grow-synergy",
+            storageBucket: "grow-synergy.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        console.log('Firebase initialized');
+        
         // Initialize Firestore explicitly if not available
         if (!window.db) {
             window.db = firebase.firestore();
+            console.log('Firestore initialized');
         }
 
         // Pagination variables
