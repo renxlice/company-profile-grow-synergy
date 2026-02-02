@@ -742,60 +742,23 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     {{> firebase-config}}
+    
     <script>
-        // Initialize Firestore explicitly if not available
+        // Initialize Firebase and Firestore
         if (!window.db) {
             window.db = firebase.firestore();
         }
         
-        // Load hero section data from API
-        async function loadHeroSection() {
-            try {
-                const response = await fetch('/api/hero-section');
-                const heroSections = await response.json();
-                
-                if (heroSections.length > 0) {
-                    const hero = heroSections[0];
-                    const backgroundImage = document.getElementById('hero-background-image');
-                    const heroTitle = document.getElementById('hero-title');
-                    const heroSubtitle = document.getElementById('hero-subtitle');
-                    const heroDescription = document.getElementById('hero-description');
-                    
-                    // Update background image
-                    if (hero.backgroundImage && backgroundImage) {
-                        backgroundImage.style.backgroundImage = `url('${hero.backgroundImage}')`;
-                        console.log('Academy hero section updated with background:', hero.backgroundImage);
-                    }
-                    
-                    // Update hero text content
-                    if (hero.title && heroTitle) {
-                        heroTitle.textContent = hero.title;
-                    }
-                    if (hero.subtitle && heroSubtitle) {
-                        heroSubtitle.textContent = hero.subtitle;
-                    }
-                    if (hero.description && heroDescription) {
-                        heroDescription.textContent = hero.description;
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading hero section for academy:', error);
-            }
-        }
-        
-        // Pagination variables
-        let currentPage = 1;
-        const itemsPerPage = 8; // Show 8 courses per page
+        // Global variables
         let allAcademies = [];
+        let currentPage = 1;
+        let itemsPerPage = 8;
         
-        // Load academies from Firestore
+        // Load academies from Firestore or use mock data
         async function loadAcademies() {
+            console.log('Loading academies...');
             try {
-                console.log('Loading academies from Firestore...');
-                console.log('Firebase db available:', !!window.db);
-                
                 // Test connection first
-                console.log('Testing connection to academies collection...');
                 const testDoc = await window.db.collection('academies').limit(1).get();
                 console.log('Test connection successful, docs:', testDoc.docs.length);
                 
@@ -819,6 +782,7 @@
                 
                 // Update academies grid with pagination
                 updateAcademyGridWithPagination();
+                initializeFilters();
             } catch (error) {
                 console.error('Error loading academies:', error);
                 console.error('Error stack:', error.stack);
@@ -828,6 +792,7 @@
                 console.log('Falling back to mock data...');
                 allAcademies = getMockAcademies();
                 updateAcademyGridWithPagination();
+                initializeFilters();
             }
         }
         
@@ -836,274 +801,35 @@
             return [
                 {
                     id: 'academy-1',
-                    title: 'Data Science Fundamental',
-                    description: 'Pelajari dasar-dasar data science dari pemula hingga mahir dengan Python programming dan statistical analysis.',
-                    duration: '12 minggu',
-                    level: 'Beginner',
+                    title: 'Data Science Fundamentals',
+                    instructor: 'Dr. Ahmad Wijaya',
+                    duration: '8 Minggu',
+                    level: 'Pemula',
+                    rating: 4.9,
+                    students: 2500,
+                    image: 'https://picsum.photos/seed/academy1/400/300.jpg',
+                    description: 'Pelajari dasar-dasar data science dari nol hingga mahir.',
                     schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.8,
-                    students: 1250,
-                    image: 'https://picsum.photos/seed/data-science/400/300.jpg',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
                     price: 2500000
                 },
                 {
                     id: 'academy-2',
-                    title: 'Full Stack Web Development',
-                    description: 'Menjadi full stack developer dengan React, Node.js, dan MongoDB. Frontend dan backend development.',
-                    duration: '16 minggu',
-                    level: 'Intermediate',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.9,
-                    students: 890,
-                    image: 'https://picsum.photos/seed/web-dev/400/300.jpg',
-                    price: 3000000
-                },
-                {
-                    id: 'academy-3',
-                    title: 'Mobile Development Fundamental',
-                    description: 'Mempelajari dasar-dasar React Native dan Flutter untuk pemula. Cross-platform mobile development.',
-                    duration: '10 minggu',
-                    level: 'Beginner',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.7,
-                    students: 650,
-                    image: 'https://picsum.photos/seed/mobile-dev/400/300.jpg',
-                    price: 2750000
-                },
-                {
-                    id: 'academy-4',
-                    title: 'UI/UX Design Masterclass',
-                    description: 'Master dalam user interface dan user experience design dengan Figma dan design thinking principles.',
-                    duration: '8 minggu',
-                    level: 'Intermediate',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.8,
-                    students: 480,
-                    image: 'https://picsum.photos/seed/uiux-design/400/300.jpg',
-                    price: 2200000
-                },
-                {
-                    id: 'academy-5',
-                    title: 'Machine Learning Advanced',
-                    description: 'Deep learning dan neural networks untuk advanced users dengan TensorFlow dan PyTorch.',
-                    duration: '12 minggu',
-                    level: 'Advanced',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.9,
-                    students: 320,
-                    image: 'https://picsum.photos/seed/ml-advanced/400/300.jpg',
-                    price: 4500000
-                },
-                {
-                    id: 'academy-6',
-                    title: 'Frontend Development with React',
-                    description: 'Spesialisasi dalam React.js, Redux, hooks, dan modern frontend development practices.',
-                    duration: '8 minggu',
-                    level: 'Intermediate',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.8,
-                    students: 560,
-                    image: 'https://picsum.photos/seed/react-frontend/400/300.jpg',
-                    price: 2800000
-                },
-                {
-                    id: 'academy-7',
-                    title: 'Flutter Mobile Development',
-                    description: 'Build cross-platform mobile apps dengan Flutter dan Dart untuk iOS dan Android.',
-                    duration: '10 minggu',
-                    level: 'Intermediate',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.7,
-                    students: 290,
-                    image: 'https://picsum.photos/seed/flutter-mobile/400/300.jpg',
-                    price: 3200000
-                },
-                {
-                    id: 'academy-8',
-                    title: 'Product Design Workshop',
-                    description: 'Workshop intensif product design, design systems, dan building scalable design solutions.',
-                    duration: '4 minggu',
-                    level: 'Workshop',
-                    schedule: 'Full Time',
-                    format: 'Online',
-                    rating: 4.9,
-                    students: 180,
-                    image: 'https://picsum.photos/seed/product-design/400/300.jpg',
-                    price: 1500000
-                }
-            ];
-        }
-        
-        // Update academy grid with pagination
-        function updateAcademyGridWithPagination() {
-            const academyGrid = document.getElementById('academyGrid');
-            if (!academyGrid) return;
-            
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const paginatedAcademies = allAcademies.slice(startIndex, endIndex);
-            
-            academyGrid.innerHTML = '';
-            
-            paginatedAcademies.forEach(academy => {
-                const academyCard = createAcademyCard(academy);
-                academyGrid.appendChild(academyCard);
-            });
-            
-            // Update pagination
-            updatePagination();
-        }
-        
-        // Create academy card element
-        function createAcademyCard(academy) {
-            const card = document.createElement('div');
-            card.className = 'academy-card';
-            card.innerHTML = `
-                <div class="academy-image-container">
-                    <img src="${academy.image}" alt="${academy.title}" class="w-full h-full object-cover">
-                    <div class="academy-overlay">
-                        <h3 class="academy-title">${academy.title}</h3>
-                        <p class="academy-description">${academy.description}</p>
-                        <div class="academy-stats">
-                            <div class="academy-stat">
-                                <span class="academy-stat-value">${academy.duration.split(' ')[0]}</span>
-                                <span class="academy-stat-label">Minggu</span>
-                            </div>
-                            <div class="academy-stat">
-                                <span class="academy-stat-value">${academy.rating}</span>
-                                <span class="academy-stat-label">Rating</span>
-                            </div>
-                            <div class="academy-stat">
-                                <span class="academy-stat-value">${academy.students}</span>
-                                <span class="academy-stat-label">Siswa</span>
-                            </div>
-                        </div>
-                        <div class="academy-badges">
-                            <span class="badge-academy">${academy.level}</span>
-                            <span class="badge-academy">Certificate</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-2">${academy.title}</h3>
-                    <p class="text-gray-600 mb-4">${academy.description}</p>
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <i class="fas fa-users text-blue-600 mr-2"></i>
-                            <span class="text-gray-600">${academy.students}+ Siswa</span>
-                        </div>
-                        <div class="flex items-center">
-                            <i class="fas fa-certificate text-blue-600 mr-2"></i>
-                            <span class="text-gray-600">Sertifikat</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-between mb-4">
-                        <span class="text-lg font-bold text-green-600">Rp ${(academy.price || 0).toLocaleString('id-ID')}</span>
-                        <span class="text-sm text-gray-500">per kursus</span>
-                    </div>
-                    <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition" onclick="window.open('https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA,%20saya%20ingin%20mendaftar%20pelatihan%20ini:%20${encodeURIComponent(academy.title)}', '_blank')">
-                        Daftar Sekarang
-                    </button>
-                </div>
-            `;
-            return card;
-        }
-        
-        // Update pagination controls
-        function updatePagination() {
-            const totalPages = Math.ceil(allAcademies.length / itemsPerPage);
-            // Implementation for pagination controls would go here
-            console.log(`Page ${currentPage} of ${totalPages}`);
-        }
-        
-        // Auto-refresh hero section every 5 seconds
-        function startAutoRefresh() {
-            setInterval(() => {
-                loadHeroSection();
-            }, 5000);
-        }
-        
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DEBUG: DOMContentLoaded fired for synergy-academy');
-            const currentPageNav = 'synergy-academy';
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.dataset.page === currentPageNav) {
-                    link.classList.add('active');
-                }
-            });
-
-            console.log('DEBUG: About to call loadAcademies and loadHeroSection...');
-            // Load academies from Firestore
-            loadAcademies();
-            // Load hero section data
-            loadHeroSection();
-            console.log('DEBUG: loadAcademies and loadHeroSection called');
-        });
-        
-        // Start auto-refresh after initial load
-        setTimeout(startAutoRefresh, 2000);
-    </script>
-    <script>
-        // Set active navigation based on current page
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentPage = 'synergy-academy';
-            const navLinks = document.querySelectorAll('.nav-link');
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.dataset.page === currentPage) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Load academies from Firestore
-            loadAcademies();
-
-            // Debug hero section background
-            const heroSections = [];
-            console.log('Hero sections data:', heroSections);
-            console.log('Hero sections length:', heroSections.length);
-            
-            const backgroundDiv = document.querySelector('.hero-section .background-image');
-            if (backgroundDiv) {
-                console.log('Background div found:', backgroundDiv);
-                
-                // Set background image manually - use Picsum image for consistency
-                if (heroSections.length > 0) {
-                    const firstHero = heroSections[0];
-                    backgroundDiv.style.backgroundImage = `url('${firstHero.backgroundImage}')`;
-                    console.log('Setting background to:', firstHero.backgroundImage);
-                } else {
-                    backgroundDiv.style.backgroundImage = "url('https://picsum.photos/seed/hero1/1920/1080.jpg')";
-                    console.log('Setting fallback background from Picsum');
-                }
-                
-                console.log('Final background style:', backgroundDiv.style.backgroundImage);
-            } else {
-                console.log('Background div not found');
-            }
-        });
-    </script>
-    
-    <!-- WhatsApp Floating Button -->
-    {{> whatsapp-button}}
-</body>
-</html>
+                    title: 'Machine Learning with Python',
+                    instructor: 'Sarah Putri',
+                    duration: '12 Minggu',
+                    level: 'Menengah',
                     rating: 4.8,
                     students: 1800,
                     image: 'https://picsum.photos/seed/academy2/400/300.jpg',
-                    description: 'Master machine learning menggunakan Python dan library populer.'
+                    description: 'Master machine learning menggunakan Python dan library populer.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 3000000
                 },
                 {
                     id: 'academy-3',
@@ -1114,7 +840,12 @@
                     rating: 4.7,
                     students: 3200,
                     image: 'https://picsum.photos/seed/academy3/400/300.jpg',
-                    description: 'Full stack web development dari dasar hingga deployment.'
+                    description: 'Full stack web development dari dasar hingga deployment.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2750000
                 },
                 {
                     id: 'academy-4',
@@ -1125,7 +856,12 @@
                     rating: 4.9,
                     students: 1500,
                     image: 'https://picsum.photos/seed/academy4/400/300.jpg',
-                    description: 'Desain interface dan user experience yang modern dan efektif.'
+                    description: 'Desain interface dan user experience yang modern dan efektif.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2200000
                 },
                 {
                     id: 'academy-5',
@@ -1136,7 +872,12 @@
                     rating: 4.6,
                     students: 2100,
                     image: 'https://picsum.photos/seed/academy5/400/300.jpg',
-                    description: 'Develop aplikasi mobile untuk iOS dan Android.'
+                    description: 'Develop aplikasi mobile untuk iOS dan Android.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 3200000
                 },
                 {
                     id: 'academy-6',
@@ -1147,7 +888,12 @@
                     rating: 4.8,
                     students: 1200,
                     image: 'https://picsum.photos/seed/academy6/400/300.jpg',
-                    description: 'Arsitektur cloud dan best practices untuk enterprise.'
+                    description: 'Arsitektur cloud dan best practices untuk enterprise.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 4500000
                 },
                 {
                     id: 'academy-7',
@@ -1158,7 +904,12 @@
                     rating: 4.7,
                     students: 900,
                     image: 'https://picsum.photos/seed/academy7/400/300.jpg',
-                    description: 'CI/CD pipeline, containerization, dan infrastructure automation.'
+                    description: 'CI/CD pipeline, containerization, dan infrastructure automation.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 4000000
                 },
                 {
                     id: 'academy-8',
@@ -1169,7 +920,12 @@
                     rating: 4.8,
                     students: 1600,
                     image: 'https://picsum.photos/seed/academy8/400/300.jpg',
-                    description: 'Build data pipeline dan ETL processes yang scalable.'
+                    description: 'Build data pipeline dan ETL processes yang scalable.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 3500000
                 },
                 {
                     id: 'academy-9',
@@ -1180,7 +936,12 @@
                     rating: 4.9,
                     students: 2000,
                     image: 'https://picsum.photos/seed/academy9/400/300.jpg',
-                    description: 'Dashboard analytics dan business intelligence tools.'
+                    description: 'Dashboard analytics dan business intelligence tools.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2800000
                 },
                 {
                     id: 'academy-10',
@@ -1191,7 +952,12 @@
                     rating: 4.7,
                     students: 1800,
                     image: 'https://picsum.photos/seed/academy10/400/300.jpg',
-                    description: 'Keamanan jaringan dan cybersecurity best practices.'
+                    description: 'Keamanan jaringan dan cybersecurity best practices.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2400000
                 },
                 {
                     id: 'academy-11',
@@ -1202,7 +968,12 @@
                     rating: 4.6,
                     students: 1400,
                     image: 'https://picsum.photos/seed/academy11/400/300.jpg',
-                    description: 'Database design, optimization, dan administration.'
+                    description: 'Database design, optimization, dan administration.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2600000
                 },
                 {
                     id: 'academy-12',
@@ -1213,7 +984,12 @@
                     rating: 4.8,
                     students: 2500,
                     image: 'https://picsum.photos/seed/academy12/400/300.jpg',
-                    description: 'Project management dengan metodologi agile dan scrum.'
+                    description: 'Project management dengan metodologi agile dan scrum.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2000000
                 },
                 {
                     id: 'academy-13',
@@ -1224,7 +1000,12 @@
                     rating: 4.7,
                     students: 1700,
                     image: 'https://picsum.photos/seed/academy13/400/300.jpg',
-                    description: 'Master React, Vue, dan modern frontend frameworks.'
+                    description: 'Master React, Vue, dan modern frontend frameworks.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 3200000
                 },
                 {
                     id: 'academy-14',
@@ -1235,7 +1016,12 @@
                     rating: 4.8,
                     students: 1300,
                     image: 'https://picsum.photos/seed/academy14/400/300.jpg',
-                    description: 'RESTful API design, microservices, dan backend architecture.'
+                    description: 'RESTful API design, microservices, dan backend architecture.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 3500000
                 },
                 {
                     id: 'academy-15',
@@ -1246,7 +1032,12 @@
                     rating: 4.6,
                     students: 1100,
                     image: 'https://picsum.photos/seed/academy15/400/300.jpg',
-                    description: 'Automated testing, QA methodologies, dan quality assurance.'
+                    description: 'Automated testing, QA methodologies, dan quality assurance.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 2200000
                 },
                 {
                     id: 'academy-16',
@@ -1257,11 +1048,16 @@
                     rating: 4.9,
                     students: 1900,
                     image: 'https://picsum.photos/seed/academy16/400/300.jpg',
-                    description: 'Product development, user research, dan strategic planning.'
+                    description: 'Product development, user research, dan strategic planning.',
+                    schedule: 'Full Time',
+                    mode: 'Online',
+                    certification: 'Certificate Available',
+                    pdf: null,
+                    price: 3000000
                 }
             ];
         }
-
+        
         // Update academies grid with pagination
         function updateAcademyGridWithPagination() {
             const academyGrid = document.getElementById('academyGrid');
@@ -1269,7 +1065,7 @@
                 console.log('Academy grid not found');
                 return;
             }
-
+            
             if (allAcademies.length === 0) {
                 console.log('No academies data available');
                 return;
@@ -1288,25 +1084,25 @@
                 const academyCard = createAcademyCard(academy);
                 academyGrid.appendChild(academyCard);
             });
-            
+
             // Update pagination buttons
             updatePaginationButtons();
             
             // Setup pagination event listeners (only once)
             setupPaginationListeners();
         }
-
+        
         // Setup pagination event listeners
         function setupPaginationListeners() {
             const paginationButtons = document.querySelectorAll('button[data-page]');
             console.log('Pagination buttons found:', paginationButtons.length);
             console.log('All academies loaded:', allAcademies.length);
-            
+
             // Remove existing listeners to prevent duplicates
             paginationButtons.forEach(button => {
                 button.replaceWith(button.cloneNode(true));
             });
-            
+
             // Add new listeners
             const newPaginationButtons = document.querySelectorAll('button[data-page]');
             newPaginationButtons.forEach(button => {
@@ -1331,18 +1127,12 @@
                                 const firstVisibleCard = academiesSection.querySelector('.academy-card:not([style*="display: none"])');
                                 if (firstVisibleCard) {
                                     // Scroll to the first visible card
-                                    firstVisibleCard.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'center'
-                                    });
+                                    firstVisibleCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 } else {
                                     // Fallback to section center
                                     const sectionRect = academiesSection.getBoundingClientRect();
                                     const offset = sectionRect.top + window.pageYOffset - (window.innerHeight / 2) + (sectionRect.height / 2);
-                                    window.scrollTo({
-                                        top: offset,
-                                        behavior: 'smooth'
-                                    });
+                                    window.scrollTo({ top: offset, behavior: 'smooth' });
                                 }
                             }
                         }, 100);
@@ -1350,7 +1140,7 @@
                 });
             });
         }
-
+        
         // Update pagination buttons
         function updatePaginationButtons() {
             const paginationButtons = document.querySelectorAll('button[data-page]');
@@ -1374,7 +1164,7 @@
                 }
             });
         }
-
+        
         // Create academy card HTML
         function createAcademyCard(academy) {
             try {
@@ -1403,7 +1193,7 @@
                 const academyRating = academy.rating || 0;
                 const academyStudents = academy.students || 0;
                 const academyDuration = academy.duration || '4 weeks';
-                const academyInstructor = academy.author || 'Instructor';
+                const academyInstructor = academy.instructor || academy.author || 'Instructor';
                 const academyLevel = academy.level || 'Beginner';
                 const academySchedule = academy.schedule || 'Flexible';
                 const academyMode = academy.mode || 'Online';
@@ -1415,17 +1205,17 @@
                 div.innerHTML = 
                     '<div class="relative">' +
                         '<img src="' + academyImage + '" alt="' + academyTitle + '" class="w-full h-48 object-cover">' +
-                        '<div class="absolute top-4 left-4">' +
-                            (academyPrice ? '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-bold">Rp ' + Number(academyPrice).toLocaleString('id-ID') + '</span>' : '') +
+                        '<div class="absolute top-2 right-2">' +
+                            (academyPrice ? '<span class="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold">Rp ' + Number(academyPrice).toLocaleString('id-ID') + '</span>' : '') +
                         '</div>' +
-                        '<div class="absolute top-4 right-4">' +
+                        '<div class="absolute top-2 left-2">' +
                             '<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">' + academyLevel + '</span>' +
+                            (academyPdf ? '<span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded ml-1">PDF Available</span>' : '') +
                         '</div>' +
-                        (academyPdf ? '<div class="absolute bottom-4 left-4"><span class="bg-red-100 text-xs px-2 py-1 rounded" style="color: black !important;"><i class="fas fa-file-pdf mr-1" style="color: black !important;"></i>PDF Available</span></div>' : '') +
                     '</div>' +
-                    '<div class="p-6">' +
-                        '<h3 class="text-xl font-bold text-gray-800 mb-2">' + academyTitle + '</h3>' +
-                        '<p class="text-gray-600 mb-4">' + academyDescription + '</p>' +
+                    '<div class="p-4">' +
+                        '<h3 class="text-lg font-semibold mb-2">' + academyTitle + '</h3>' +
+                        '<p class="text-gray-600 mb-4 text-sm">' + academyDescription + '</p>' +
                         '<div class="text-center mb-4">' +
                             '<span class="text-sm text-gray-500 italic"><i class="fas fa-hand-pointer mr-1"></i>Tekan untuk melihat detail</span>' +
                         '</div>' +
@@ -1478,7 +1268,7 @@
                 return errorDiv;
             }
         }
-
+        
         function generateStars(rating) {
             const fullStars = Math.floor(rating);
             const hasHalfStar = rating % 1 !== 0;
@@ -1496,7 +1286,7 @@
             
             return stars;
         }
-
+        
         // Academy Modal functionality
         function showAcademyModal(academy) {
             const modal = document.getElementById('academyModal');
@@ -1622,16 +1412,6 @@
             document.body.style.overflow = 'auto';
         }
         
-        // Close modal when clicking outside
-        document.getElementById('academyModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeAcademyModal();
-            }
-        });
-        
-        // Close modal when clicking close button
-        document.getElementById('closeAcademyModal').addEventListener('click', closeAcademyModal);
-
         // Enhanced search functionality with pagination support and glitch prevention
         let searchTimeout;
         let isSearching = false;
@@ -1734,7 +1514,7 @@
                 }, 300); // Increased delay to ensure grid is fully updated
             }, 300); // Debounce delay
         });
-
+        
         // Initialize filter functionality
         function initializeFilters() {
             // Filter functionality
@@ -1830,9 +1610,7 @@
                 card.style.display = 'block';
             });
         }
-    </script>
-    
-    <script>
+        
         // Load hero section data from API
         async function loadHeroSection() {
             console.log('DEBUG: Starting loadHeroSection for synergy-academy...');
@@ -1868,9 +1646,32 @@
             }
         }
         
-        // Load hero section when page loads
+        // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - Initializing Academy Page');
+            
+            // Load academies data
+            loadAcademies();
+            
+            // Load hero section
             loadHeroSection();
+            
+            // Setup modal event listeners
+            const modal = document.getElementById('academyModal');
+            if (modal) {
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeAcademyModal();
+                    }
+                });
+                
+                // Close modal when clicking close button
+                const closeBtn = document.getElementById('closeAcademyModal');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', closeAcademyModal);
+                }
+            }
             
             // Mobile menu functionality
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -1898,26 +1699,6 @@
                     });
                 });
             }
-        });
-    </script>
-    
-    <script>
-        // Simple navigation fix - remove all JavaScript interference
-        document.addEventListener('DOMContentLoaded', function() {
-            // Remove all event listeners from navigation links
-            const berandaLinks = document.querySelectorAll('a[href="/"]');
-            berandaLinks.forEach(link => {
-                // Replace with fresh link that has no event listeners
-                const freshLink = document.createElement('a');
-                freshLink.href = '/';
-                freshLink.className = link.className;
-                freshLink.textContent = link.textContent;
-                freshLink.setAttribute('data-page', 'home');
-                freshLink.style.cssText = 'pointer-events: auto !important; cursor: pointer !important;';
-                
-                // Replace of old link
-                link.parentNode.replaceChild(freshLink, link);
-            });
         });
     </script>
     
