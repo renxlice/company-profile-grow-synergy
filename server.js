@@ -1,5 +1,6 @@
 const express = require('express');
-const path = require('path');
+const { NestFactory } = require('@nestjs/core');
+const { ExpressAdapter } = require('@nestjs/platform-express');
 
 async function bootstrap() {
   try {
@@ -9,9 +10,6 @@ async function bootstrap() {
     server.get('/health', (req, res) => {
       res.json({ status: 'OK', timestamp: new Date().toISOString() });
     });
-    
-    // Static files
-    server.use(express.static(path.join(__dirname, 'public')));
     
     // Basic route for testing
     server.get('/', (req, res) => {
@@ -33,6 +31,28 @@ async function bootstrap() {
         </html>
       `);
     });
+    
+    console.log('Initializing NestJS...');
+    
+    // Try to initialize NestJS with minimal setup
+    try {
+      const AppModule = require('./dist/src/app.module').AppModule;
+      const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+      
+      // Enable CORS
+      app.enableCors({
+        origin: true,
+        credentials: true,
+      });
+      
+      // Initialize NestJS
+      await app.init();
+      console.log('NestJS initialized successfully');
+      
+    } catch (error) {
+      console.error('NestJS initialization failed:', error.message);
+      console.log('Continuing with Express only...');
+    }
     
     // Start server
     const port = process.env.PORT || 3001;
