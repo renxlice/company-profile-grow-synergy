@@ -429,6 +429,7 @@ app.post('/admin/login', (req, res) => {
   // Simple authentication (in production, use proper hashing and database)
   const validCredentials = {
     'admin@growsynergy.com': 'admin123',
+    'admin@grow-synergy.com': 'Mieayam1',
     'grow.synergy.id@gmail.com': 'admin123'
   };
   
