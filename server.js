@@ -559,6 +559,107 @@ app.get('/admin/blogs', (req, res) => {
   });
 });
 
+// Admin Form Routes
+app.get('/admin/hero-section-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/hero-section-form', {
+    title: 'Add Hero Section - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/about-section-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/about-section-form', {
+    title: 'Add About Section - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/about-section-edit', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/about-section-edit', {
+    title: 'Edit About Section - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/experts-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/experts-form', {
+    title: 'Add Expert - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/experts-edit', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/experts-edit', {
+    title: 'Edit Expert - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/portfolios-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/portfolios-form', {
+    title: 'Add Portfolio - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/portfolios-edit', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/portfolios-edit', {
+    title: 'Edit Portfolio - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/academies-form-fixed', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/academies-form-fixed', {
+    title: 'Add Academy - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/academies-edit', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/academies-edit', {
+    title: 'Edit Academy - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/blogs-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/blogs-form', {
+    title: 'Add Blog - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
 // API Routes
 app.get('/api/hero-section', (req, res) => {
   console.log('🔥 Hero section API request received');
