@@ -643,227 +643,136 @@ app.get('/about', (req, res) => {
   `);
 });
 
-// Synergy Experts route - serve synergy-experts.hbs with Firestore data
+// Synergy Experts route - serve synergy-experts.hbs with proper Handlebars rendering
 app.get('/synergy-experts', (req, res) => {
-  console.log('👥 Serving synergy-experts page with Firestore data...');
+  console.log('👥 Serving synergy-experts page with Handlebars rendering...');
   try {
-    const expertsPath = path.join(__dirname, 'src', 'views', 'synergy-experts.hbs');
-    if (fs.existsSync(expertsPath)) {
-      let content = fs.readFileSync(expertsPath, 'utf8');
-      
-      // Remove all Handlebars template variables
-      content = content.replace(/\{\{#if heroSections\}\}/g, '');
-      content = content.replace(/\{\{#each heroSections\}\}/g, '');
-      content = content.replace(/\{\{\/each\}\}/g, '');
-      content = content.replace(/\{\{\/if\}\}/g, '');
-      content = content.replace(/\{\{#if\}\}/g, '');
-      content = content.replace(/\{\{#unless\}\}/g, '');
-      content = content.replace(/\{\{\/unless\}\}/g, '');
-      content = content.replace(/\{\{#each\}\}/g, '');
-      content = content.replace(/\{\{#with\}\}/g, '');
-      content = content.replace(/\{\{\/with\}\}/g, '');
-      content = content.replace(/\{\{#[^}]*\}\}/g, '');
-      content = content.replace(/\{\{\/[^}]*\}\}/g, '');
-      content = content.replace(/\{\{[^}]*\}\}/g, '');
-      content = content.replace(/\{\{image\}\}/g, '/images/hero-background.jpg');
-      content = content.replace(/\{\{this\.backgroundImage\}\}/g, '/images/hero-background.jpg');
-      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
-      content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
-      
-      // Add Firebase SDK
-      content = content.replace('</head>', `
-        <!-- Firebase SDK -->
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
-        <script src="/firebase-config.js"></script>
-      `);
-      
-      res.send(content);
-    } else {
-      res.status(404).send('Synergy Experts page not found');
-    }
+    res.render('synergy-experts', {
+      title: 'Synergy Experts - Instruktur Data Analitik Profesional | GROW SYNERGY INDONESIA',
+      description: 'Temukan instruktur data analitik berpengalaman dengan dedikasi tinggi untuk mengembangkan talenta digital Indonesia. Expert trainer dengan sertifikat internasional.',
+      keywords: 'instruktur data analitik, expert trainer, data science instructor, mentor data analyst, kursus data analitik',
+      author: 'GROW SYNERGY INDONESIA',
+      robots: 'index, follow',
+      googlebot: 'index, follow',
+      ogTitle: 'Synergy Experts - Instruktur Data Analitik Profesional',
+      ogDescription: 'Instruktur berpengalaman dengan dedikasi tinggi untuk mengembangkan talenta digital Indonesia',
+      ogImage: 'https://grow-synergy-indonesia.com/images/synergy-experts-og-image.jpg',
+      ogUrl: 'https://grow-synergy-indonesia.com/synergy-experts',
+      ogType: 'website',
+      ogSiteName: 'GROW SYNERGY INDONESIA',
+      twitterCard: 'summary_large_image',
+      twitterTitle: 'Synergy Experts - Instruktur Data Analitik Profesional',
+      twitterDescription: 'Instruktur berpengalaman dengan dedikasi tinggi untuk mengembangkan talenta digital Indonesia',
+      twitterImage: 'https://grow-synergy-indonesia.com/images/synergy-experts-twitter-image.jpg',
+      canonical: 'https://grow-synergy-indonesia.com/synergy-experts',
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+      structuredDataJson: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Synergy Experts - GROW SYNERGY INDONESIA",
+        "description": "Instruktur data analitik berpengalaman dengan dedikasi tinggi untuk mengembangkan talenta digital Indonesia",
+        "url": "https://grow-synergy-indonesia.com/synergy-experts",
+        "provider": {
+          "@type": "Organization",
+          "name": "GROW SYNERGY INDONESIA",
+          "url": "https://grow-synergy-indonesia.com"
+        }
+      })
+    });
   } catch (error) {
     console.error('Error serving synergy-experts:', error);
     res.status(500).send('Error loading page');
   }
 });
 
-// Synergy Portfolio route - serve synergy-portfolio.hbs with Firestore data
+// Synergy Portfolio route - serve synergy-portfolio.hbs with proper Handlebars rendering
 app.get('/synergy-portfolio', (req, res) => {
-  console.log('💼 Serving synergy-portfolio page with Firestore data...');
+  console.log('💼 Serving synergy-portfolio page with Handlebars rendering...');
   try {
-    const portfolioPath = path.join(__dirname, 'src', 'views', 'synergy-portfolio.hbs');
-    if (fs.existsSync(portfolioPath)) {
-      let content = fs.readFileSync(portfolioPath, 'utf8');
-      
-      // Add Firebase SDK and data loading
-      content = content.replace('</head>', `
-        <!-- Firebase SDK -->
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
-        <script src="/firebase-config.js"></script>
-        </head>
-      `);
-      
-      // Add data loading script
-      content = content.replace('</body>', `
-        <script>
-          // Load portfolio data from API
-          async function loadPortfolioData() {
-            try {
-              console.log('🔥 Loading portfolio data from API...');
-              const response = await fetch('/api/firebase/data');
-              const data = await response.json();
-              console.log('✅ Portfolio data loaded:', data.portfolio);
-              
-              // Update portfolio section
-              if (data.portfolio) {
-                const portfolioContainer = document.querySelector('.portfolio-container');
-                if (portfolioContainer) {
-                  portfolioContainer.innerHTML = '';
-                  data.portfolio.forEach(project => {
-                    const projectCard = createProjectCard(project);
-                    portfolioContainer.appendChild(projectCard);
-                  });
-                }
-              }
-              
-              console.log('🎉 Portfolio page updated with Firestore data!');
-            } catch (error) {
-              console.error('❌ Error loading portfolio data:', error);
-            }
-          }
-          
-          function createProjectCard(project) {
-            const card = document.createElement('div');
-            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300';
-            card.innerHTML = \`
-              <div class="text-center">
-                <img src="\${project.image}" alt="\${project.title}" class="w-full h-48 object-cover rounded-lg mb-4">
-                <h3 class="text-xl font-semibold mb-2">\${project.title}</h3>
-                <p class="text-gray-600 mb-2">\${project.description}</p>
-                <div class="flex flex-wrap justify-center gap-2 mb-2">
-                  \${project.tags.map(tag => \`<span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded">\${tag}</span>\`).join('')}
-                </div>
-                <p class="text-sm text-gray-500">Client: \${project.client}</p>
-                <p class="text-sm text-gray-500">Category: \${project.category}</p>
-              </div>
-            \`;
-            return card;
-          }
-          
-          // Initialize when page loads
-          document.addEventListener('DOMContentLoaded', loadPortfolioData);
-        </script>
-        </body>
-      `);
-      
-      res.send(content);
-    } else {
-      res.status(404).send('Synergy Portfolio page not found');
-    }
+    res.render('synergy-portfolio', {
+      title: 'Synergy Portfolio - Portfolio Alumni | GROW SYNERGY INDONESIA',
+      description: 'Portfolio alumni terbaik dari program pelatihan data analitik GROW SYNERGY INDONESIA. Karya dan proyek inovatif dari talenta digital Indonesia.',
+      keywords: 'portfolio alumni, karya alumni, proyek data analitik, portfolio data science, alumni grow synergy',
+      author: 'GROW SYNERGY INDONESIA',
+      robots: 'index, follow',
+      googlebot: 'index, follow',
+      ogTitle: 'Synergy Portfolio - Portfolio Alumni',
+      ogDescription: 'Portfolio alumni terbaik dari program pelatihan data analitik GROW SYNERGY INDONESIA',
+      ogImage: 'https://grow-synergy-indonesia.com/images/synergy-portfolio-og-image.jpg',
+      ogUrl: 'https://grow-synergy-indonesia.com/synergy-portfolio',
+      ogType: 'website',
+      ogSiteName: 'GROW SYNERGY INDONESIA',
+      twitterCard: 'summary_large_image',
+      twitterTitle: 'Synergy Portfolio - Portfolio Alumni',
+      twitterDescription: 'Portfolio alumni terbaik dari program pelatihan data analitik GROW SYNERGY INDONESIA',
+      twitterImage: 'https://grow-synergy-indonesia.com/images/synergy-portfolio-twitter-image.jpg',
+      canonical: 'https://grow-synergy-indonesia.com/synergy-portfolio',
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+      structuredDataJson: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Synergy Portfolio - GROW SYNERGY INDONESIA",
+        "description": "Portfolio alumni terbaik dari program pelatihan data analitik GROW SYNERGY INDONESIA",
+        "url": "https://grow-synergy-indonesia.com/synergy-portfolio",
+        "provider": {
+          "@type": "Organization",
+          "name": "GROW SYNERGY INDONESIA",
+          "url": "https://grow-synergy-indonesia.com"
+        }
+      })
+    });
   } catch (error) {
     console.error('Error serving synergy-portfolio:', error);
     res.status(500).send('Error loading page');
   }
 });
 
-// Synergy Academy route - serve synergy-academy.hbs with Firestore data
+// Synergy Academy route - serve synergy-academy.hbs with proper Handlebars rendering
 app.get('/synergy-academy', (req, res) => {
-  console.log('🎓 Serving synergy-academy page with Firestore data...');
+  console.log('� Serving synergy-academy page with Handlebars rendering...');
   try {
-    const academyPath = path.join(__dirname, 'src', 'views', 'synergy-academy.hbs');
-    if (fs.existsSync(academyPath)) {
-      let content = fs.readFileSync(academyPath, 'utf8');
-      
-      // Remove all Handlebars template variables
-      content = content.replace(/\{\{#if heroSections\}\}/g, '');
-      content = content.replace(/\{\{#each heroSections\}\}/g, '');
-      content = content.replace(/\{\{\/each\}\}/g, '');
-      content = content.replace(/\{\{\/if\}\}/g, '');
-      content = content.replace(/\{\{#if\}\}/g, '');
-      content = content.replace(/\{\{#unless\}\}/g, '');
-      content = content.replace(/\{\{\/unless\}\}/g, '');
-      content = content.replace(/\{\{#each\}\}/g, '');
-      content = content.replace(/\{\{#with\}\}/g, '');
-      content = content.replace(/\{\{\/with\}\}/g, '');
-      content = content.replace(/\{\{#[^}]*\}\}/g, '');
-      content = content.replace(/\{\{\/[^}]*\}\}/g, '');
-      content = content.replace(/\{\{[^}]*\}\}/g, '');
-      content = content.replace(/\{\{image\}\}/g, '/images/hero-background.jpg');
-      content = content.replace(/\{\{this\.backgroundImage\}\}/g, '/images/hero-background.jpg');
-      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
-      content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
-      
-      // Add Firebase SDK and data loading
-      content = content.replace('</head>', `
-        <!-- Firebase SDK -->
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
-        <script src="/firebase-config.js"></script>
-        </head>
-      `);
-      
-      // Add data loading script
-      content = content.replace('</body>', `
-        <script>
-          // Load academy data from API
-          async function loadAcademyData() {
-            try {
-              console.log('🔥 Loading academy data from API...');
-              const response = await fetch('/api/firebase/data');
-              const data = await response.json();
-              console.log('✅ Academy data loaded:', data.academy);
-              
-              // Update academy section
-              if (data.academy && data.academy.length > 0) {
-                const academyContainer = document.querySelector('.academy-container');
-                if (academyContainer) {
-                  academyContainer.innerHTML = '';
-                  data.academy.forEach(course => {
-                    const courseCard = createCourseCard(course);
-                    academyContainer.appendChild(courseCard);
-                  });
-                }
-              }
-              
-              console.log('🎉 Academy page updated with Firestore data!');
-            } catch (error) {
-              console.error('❌ Error loading academy data:', error);
-            }
-          }
-          
-          function createCourseCard(course) {
-            const card = document.createElement('div');
-            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300';
-            card.innerHTML = \`
-              <div class="text-center">
-                <img src="\${course.image}" alt="\${course.title}" class="w-full h-48 object-cover rounded-lg mb-4">
-                <h3 class="text-xl font-semibold mb-2">\${course.title}</h3>
-                <p class="text-gray-600 mb-2">\${course.description}</p>
-                <div class="flex items-center justify-center mb-2">
-                  <span class="text-yellow-400">★</span>
-                  <span class="ml-1 text-gray-700">\${course.rating}</span>
-                  <span class="ml-2 text-gray-500">(\${course.students} students)</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-sm text-gray-500">
-                  <span>Duration: \${course.duration}</span>
-                  <span>Level: \${course.level}</span>
-                  <span>Schedule: \${course.schedule}</span>
-                  <span>Format: \${course.format}</span>
-                </div>
-              </div>
-            \`;
-            return card;
-          }
-          
-          // Initialize when page loads
-          document.addEventListener('DOMContentLoaded', loadAcademyData);
-        </script>
-        </body>
+    res.render('synergy-academy', {
+      title: 'Synergy Academy - Kursus Data Analitik | GROW SYNERGY INDONESIA',
+      description: 'Kursus data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat. Pelatihan intensif data science dan machine learning.',
+      keywords: 'kursus data analitik, pelatihan data science, bootcamp data analyst, training machine learning, kursus big data',
+      author: 'GROW SYNERGY INDONESIA',
+      robots: 'index, follow',
+      googlebot: 'index, follow',
+      ogTitle: 'Synergy Academy - Kursus Data Analitik',
+      ogDescription: 'Kursus data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat',
+      ogImage: 'https://grow-synergy-indonesia.com/images/synergy-academy-og-image.jpg',
+      ogUrl: 'https://grow-synergy-indonesia.com/synergy-academy',
+      ogType: 'website',
+      ogSiteName: 'GROW SYNERGY INDONESIA',
+      twitterCard: 'summary_large_image',
+      twitterTitle: 'Synergy Academy - Kursus Data Analitik',
+      twitterDescription: 'Kursus data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat',
+      twitterImage: 'https://grow-synergy-indonesia.com/images/synergy-academy-twitter-image.jpg',
+      canonical: 'https://grow-synergy-indonesia.com/synergy-academy',
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+      structuredDataJson: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Synergy Academy - GROW SYNERGY INDONESIA",
+        "description": "Kursus data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat",
+        "url": "https://grow-synergy-indonesia.com/synergy-academy",
+        "provider": {
+          "@type": "Organization",
+          "name": "GROW SYNERGY INDONESIA",
+          "url": "https://grow-synergy-indonesia.com"
+        }
+      })
+    });
+  } catch (error) {
+    console.error('Error serving synergy-academy:', error);
+    res.status(500).send('Error loading page');
+  }
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(` Server running on port ${PORT}`);
+  console.log(` Open http://localhost:${PORT} in your browser`);
+});
       `);
       
       res.send(content);
