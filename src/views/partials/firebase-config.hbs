@@ -7,7 +7,8 @@
             throw new Error('Firebase SDK not loaded');
         }
 
-        firebase.initializeApp({
+        // Firebase configuration from server
+        const firebaseConfig = {
             apiKey: "{{firebaseApiKey}}",
             authDomain: "{{firebaseAuthDomain}}",
             projectId: "{{firebaseProjectId}}",
@@ -15,13 +16,35 @@
             messagingSenderId: "{{firebaseMessagingSenderId}}",
             appId: "{{firebaseAppId}}",
             measurementId: "{{firebaseMeasurementId}}"
-        });
+        };
 
+        console.log('Firebase config from server:', firebaseConfig);
+
+        // Initialize Firebase only if not already initialized
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log('Firebase initialized successfully');
+        } else {
+            console.log('Firebase already initialized, skipping...');
+        }
+
+        // Initialize services
         db = firebase.firestore();
-        const analytics = firebase.analytics();
-        console.log('Firebase initialized successfully');
+        window.db = db; // Make db globally available
+        
+        // Initialize Analytics if available
+        if (typeof firebase.analytics === 'function') {
+            const analytics = firebase.analytics();
+            window.analytics = analytics; // Make analytics globally available
+            console.log('Firebase Analytics initialized');
+        } else {
+            console.warn('Firebase Analytics not available');
+        }
+
+        console.log('Firebase services ready - DB:', !!db, 'Analytics:', !!window.analytics);
+        
     } catch (error) {
-        console.warn('Firebase initialization skipped:', error.message);
+        console.error('Firebase initialization failed:', error);
         // Fallback to mock mode if Firebase fails
         db = {
             collection: () => ({
@@ -32,7 +55,10 @@
                     update: async () => {},
                     delete: async () => {}
                 }),
+                limit: () => ({ get: async () => ({ docs: [] }) }) // Add limit method
             }),
         };
+        window.db = db;
+        console.warn('Using mock Firebase mode');
     }
 </script>
