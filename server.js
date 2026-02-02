@@ -49,8 +49,17 @@ try {
   else {
     const serviceAccountPath = path.join(__dirname, 'company-profile-grow-synergy-firebase-adminsdk.json');
     
+    console.log('🔍 Current directory (__dirname):', __dirname);
     console.log('🔍 Checking service account file:', serviceAccountPath);
     console.log('🔍 File exists:', fs.existsSync(serviceAccountPath));
+    
+    // List all files in current directory for debugging
+    try {
+      const files = fs.readdirSync(__dirname);
+      console.log('📁 Files in directory:', files.filter(f => f.includes('firebase')));
+    } catch (err) {
+      console.log('❌ Cannot read directory:', err.message);
+    }
     
     if (fs.existsSync(serviceAccountPath)) {
       try {
