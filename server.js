@@ -76,6 +76,11 @@ app.get('/', (req, res) => {
   });
 });
 
+// Home route - redirects to main page
+app.get('/home', (req, res) => {
+  res.redirect('/');
+});
+
 app.get('/synergy-experts', (req, res) => {
   res.render('synergy-experts', {
     title: 'Synergy Experts - Instruktur Data Analitik Profesional | GROW SYNERGY INDONESIA',
