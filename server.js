@@ -1,6 +1,4 @@
 const express = require('express');
-const { NestFactory } = require('@nestjs/core');
-const { ExpressAdapter } = require('@nestjs/platform-express');
 
 async function bootstrap() {
   try {
@@ -9,6 +7,11 @@ async function bootstrap() {
     // Health check endpoint
     server.get('/health', (req, res) => {
       res.json({ status: 'OK', timestamp: new Date().toISOString() });
+    });
+    
+    // Test route
+    server.get('/test', (req, res) => {
+      res.json({ message: 'Test route working!', env: process.env.NODE_ENV });
     });
     
     // Basic route for testing
@@ -26,46 +29,14 @@ async function bootstrap() {
           <p>Environment: ${process.env.NODE_ENV || 'development'}</p>
           <p>Port: ${process.env.PORT || 3001}</p>
           <p>Time: ${new Date().toISOString()}</p>
-          <a href="/health">Health Check</a>
+          <a href="/health">Health Check</a> | 
+          <a href="/test">Test Route</a>
         </body>
         </html>
       `);
     });
     
-    console.log('Initializing NestJS...');
-    console.log('Environment variables:', {
-      NODE_ENV: process.env.NODE_ENV,
-      FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
-      FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL ? 'SET' : 'NOT SET',
-      FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY ? 'SET' : 'NOT SET'
-    });
-    
-    // Try to initialize NestJS with minimal setup
-    try {
-      console.log('Loading AppModule...');
-      const AppModule = require('./dist/src/app.module').AppModule;
-      console.log('AppModule loaded successfully');
-      
-      console.log('Creating NestJS application...');
-      const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
-      console.log('NestJS application created');
-      
-      // Enable CORS
-      app.enableCors({
-        origin: true,
-        credentials: true,
-      });
-      
-      console.log('Initializing NestJS...');
-      // Initialize NestJS
-      await app.init();
-      console.log('NestJS initialized successfully');
-      
-    } catch (error) {
-      console.error('NestJS initialization failed:', error.message);
-      console.error('Full error:', error);
-      console.log('Continuing with Express only...');
-    }
+    console.log('Starting server without NestJS for debugging...');
     
     // Start server
     const port = process.env.PORT || 3001;
@@ -73,6 +44,7 @@ async function bootstrap() {
       console.log(`Server running on port ${port}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`Health check: http://localhost:${port}/health`);
+      console.log(`Test route: http://localhost:${port}/test`);
     });
     
   } catch (error) {
