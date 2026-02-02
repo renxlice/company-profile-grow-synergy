@@ -1,5 +1,4 @@
 import * as admin from 'firebase-admin';
-import serviceAccount from '../../config/firebase-service-account.json';
 
 // Initialize Firebase Admin SDK
 let db: admin.firestore.Firestore;
@@ -8,36 +7,43 @@ let storage: admin.storage.Storage;
 // Check if we want to use Firebase or Mock mode
 const USE_FIREBASE = true; // Firebase is now working!
 
-if (USE_FIREBASE && !admin.apps.length) {
+// Initialize Firebase with environment variables
+if (USE_FIREBASE) {
   try {
-    console.log('🔥 Initializing Firebase in production mode...');
-    
-    admin.initializeApp({
-      credential: admin.credential.cert(
-        serviceAccount as admin.ServiceAccount
-      ),
-      projectId: serviceAccount.project_id
-    });
+    // Check if we're in production environment
+    if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY) {
+      // Production: Use environment variables
+      const serviceAccount = {
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      };
 
-    db = admin.firestore();
-    storage = admin.storage();
-
-    console.log('✅ Firebase initialization successful!');
-    
-    // Test connection
-    const testConnection = async () => {
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      });
+    } else {
+      // Development: Use service account file if available
       try {
-        console.log('🔍 Testing Firebase connection...');
-        await db.collection('test').limit(1).get();
-        console.log('✅ Firebase connection test successful');
+        const serviceAccount = require('../../config/firebase-service-account.json');
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+          projectId: process.env.FIREBASE_PROJECT_ID || 'company-profile-grow-synergy',
+          storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'company-profile-grow-synergy.appspot.com',
+        });
       } catch (error) {
-        console.error('❌ Firebase connection test failed:', error.message);
+        console.warn('Firebase service account file not found, using mock mode');
+        db = null as any;
+        storage = null as any;
         console.error('🔄 Falling back to mock mode...');
         initializeMockMode();
       }
     };
     
-    setTimeout(testConnection, 2000);
+    db = admin.firestore();
+    storage = admin.storage();
     
   } catch (error) {
     console.error('❌ Firebase initialization failed:', error.message);
