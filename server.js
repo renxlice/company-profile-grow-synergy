@@ -314,8 +314,8 @@ app.get('/firebase-config.js', (req, res) => {
       authDomain: "company-profile-grow-synergy.firebaseapp.com",
       projectId: "company-profile-grow-synergy",
       storageBucket: "company-profile-grow-synergy.appspot.com",
-      messagingSenderId: "123456789012",
-      appId: "1:123456789012:web:abcdef123456789"
+      messagingSenderId: "584312572709",
+      appId: "1:584312572709:web:1e0ad87867af7b878668cc"
     };
 
     // Initialize Firebase
