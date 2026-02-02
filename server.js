@@ -18,29 +18,85 @@ async function bootstrap() {
       res.json({ message: 'Test route working!', env: process.env.NODE_ENV });
     });
     
-    // Home route (serve the main website)
-    server.get('/', (req, res) => {
+    // Debug route to check file system
+    server.get('/debug-files', (req, res) => {
+      const fs = require('fs');
+      const publicPath = path.join(__dirname, 'public');
       const indexPath = path.join(__dirname, 'public', 'index.html');
-      console.log('Serving index.html from:', indexPath);
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          console.error('Error serving index.html:', err);
-          res.status(500).send('Error loading homepage');
+      
+      let debugInfo = {
+        currentDir: __dirname,
+        publicPath: publicPath,
+        indexPath: indexPath,
+        publicExists: false,
+        indexExists: false,
+        publicContents: [],
+        indexContent: null
+      };
+      
+      try {
+        debugInfo.publicExists = fs.existsSync(publicPath);
+        debugInfo.indexExists = fs.existsSync(indexPath);
+        
+        if (debugInfo.publicExists) {
+          debugInfo.publicContents = fs.readdirSync(publicPath);
         }
-      });
+        
+        if (debugInfo.indexExists) {
+          debugInfo.indexContent = fs.readFileSync(indexPath, 'utf8').substring(0, 500);
+        }
+      } catch (error) {
+        debugInfo.error = error.message;
+      }
+      
+      res.json(debugInfo);
     });
     
-    // Home alias route
-    server.get('/home', (req, res) => {
+    // Serve index.html with better error handling
+    function serveIndexHtml(req, res) {
       const indexPath = path.join(__dirname, 'public', 'index.html');
       console.log('Serving index.html from:', indexPath);
+      console.log('__dirname:', __dirname);
+      
       res.sendFile(indexPath, (err) => {
         if (err) {
           console.error('Error serving index.html:', err);
-          res.status(500).send('Error loading homepage');
+          console.error('File exists check:', require('fs').existsSync(indexPath));
+          
+          // Fallback: serve a simple HTML page
+          res.status(200).send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <title>GROW SYNERGY INDONESIA</title>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+            </head>
+            <body>
+              <div class="min-h-screen bg-blue-50 flex items-center justify-center">
+                <div class="text-center">
+                  <h1 class="text-4xl font-bold text-blue-600 mb-4">GROW SYNERGY INDONESIA</h1>
+                  <p class="text-gray-600 mb-8">Platform Pelatihan Data Analitik Terbaik di Indonesia</p>
+                  <div class="space-y-4">
+                    <a href="/about" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Tentang Kami</a>
+                    <a href="/admin/login" class="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">Admin Login</a>
+                    <a href="/debug-files" class="block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">Debug Files</a>
+                  </div>
+                </div>
+              </div>
+            </body>
+            </html>
+          `);
         }
       });
-    });
+    }
+    
+    // Home route (serve the main website)
+    server.get('/', serveIndexHtml);
+    
+    // Home alias route
+    server.get('/home', serveIndexHtml);
     
     // Favicon route
     server.get('/favicon.ico', (req, res) => {
