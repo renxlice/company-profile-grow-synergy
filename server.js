@@ -310,7 +310,7 @@ app.get('/firebase-config.js', (req, res) => {
   const firebaseConfig = `
     // Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
       authDomain: "company-profile-grow-synergy.firebaseapp.com",
       projectId: "company-profile-grow-synergy",
       storageBucket: "company-profile-grow-synergy.appspot.com",
