@@ -47,7 +47,7 @@ try {
   } 
   // Fallback to service account file
   else {
-    const serviceAccountPath = './company-profile-grow-synergy-firebase-adminsdk.json';
+    const serviceAccountPath = path.join(__dirname, 'company-profile-grow-synergy-firebase-adminsdk.json');
     
     console.log('🔍 Checking service account file:', serviceAccountPath);
     console.log('🔍 File exists:', fs.existsSync(serviceAccountPath));
