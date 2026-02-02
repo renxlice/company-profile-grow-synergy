@@ -359,7 +359,6 @@
     <script src="/js/main.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    {{> firebase-config}}
     <script>
         // Initialize Firestore explicitly jika belum ada
         if (!window.db) {
@@ -1371,6 +1370,9 @@
             }
         }
     </script>
+    
+    <!-- Firebase Config -->
+    {{> firebase-config}}
     
     <!-- WhatsApp Floating Button -->
     {{> whatsapp-button}}
