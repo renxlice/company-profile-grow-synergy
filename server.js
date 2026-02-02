@@ -188,6 +188,101 @@ app.get('/blog', (req, res) => {
   });
 });
 
+// API Routes
+app.get('/api/firebase/data', (req, res) => {
+  console.log('🔥 Firebase data request received');
+  // Mock data for now
+  const mockData = {
+    hero: {
+      backgroundImage: '/images/hero-background.jpg',
+      title: 'Transformasi Karir dengan Data Analitik',
+      description: 'Pelatihan intensif dengan mentor profesional dan proyek real-world'
+    },
+    experts: [
+      {
+        id: 'expert1',
+        name: 'Dr. Ahmad Wijaya',
+        category: 'Data Science',
+        role: 'Dosen',
+        organization: 'Founder Grow Synergy',
+        image: 'https://picsum.photos/seed/ahmad-wijaya/200/200.jpg'
+      },
+      {
+        id: 'expert2',
+        name: 'Sarah Putri',
+        category: 'Data Science',
+        role: 'Dosen',
+        organization: 'Founder Grow Synergy',
+        image: 'https://picsum.photos/seed/sarah-putri/200/200.jpg'
+      }
+    ],
+    portfolios: [
+      {
+        id: 'portfolio1',
+        title: 'Retail Analytics Dashboard',
+        description: 'Dashboard real-time untuk monitoring sales dan inventory',
+        category: 'Dashboard',
+        image: 'https://picsum.photos/seed/retail/400/300.jpg'
+      }
+    ],
+    academies: [
+      {
+        id: 'academy1',
+        title: 'Data Analyst Fundamentals',
+        description: 'Dasar-dasar analisis data dengan tools modern',
+        duration: '3 bulan',
+        level: 'Pemula',
+        image: 'https://picsum.photos/seed/academy1/400/300.jpg'
+      }
+    ],
+    blogs: [
+      {
+        id: 'blog1',
+        title: 'Panduan Lengkap Data Analitik untuk Pemula',
+        excerpt: 'Pelajari dasar-dasar data analitik langkah demi langkah',
+        author: 'GROW SYNERGY Team',
+        date: new Date().toISOString(),
+        image: 'https://picsum.photos/seed/blog1/400/300.jpg',
+        tags: ['data analitik', 'tutorial', 'pemula']
+      }
+    ]
+  };
+  
+  res.json(mockData);
+});
+
+app.post('/api/analytics/track', (req, res) => {
+  console.log('📊 Analytics tracking request received');
+  // Mock analytics tracking
+  res.json({ success: true, message: 'Analytics tracked' });
+});
+
+// Firebase config route
+app.get('/firebase-config.js', (req, res) => {
+  const firebaseConfig = `
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForTesting",
+      authDomain: "grow-synergy-indonesia.firebaseapp.com",
+      projectId: "grow-synergy-indonesia",
+      storageBucket: "grow-synergy-indonesia.appspot.com",
+      messagingSenderId: "1004183204068",
+      appId: "1:1004183204068:web:a26f30a911a37c9a6331a1",
+      measurementId: "G-49J1K6Y9WJ"
+    };
+
+    // Initialize Firebase
+    if (!window.firebase || !window.firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+      window.db = firebase.firestore();
+      window.analytics = firebase.analytics();
+    }
+  `;
+  
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(firebaseConfig);
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
