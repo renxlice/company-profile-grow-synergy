@@ -1707,11 +1707,11 @@
         async function loadHeroSection() {
             try {
                 console.log('Loading hero section background...');
-                console.log('DEBUG: Firebase db available:', !!db);
+                console.log('DEBUG: Firebase db available:', !!window.db);
                 
                 // Test Firebase connection
                 try {
-                    const testDoc = await db.collection('heroSection').limit(1).get();
+                    const testDoc = await window.db.collection('heroSection').limit(1).get();
                     console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
                 } catch (testError) {
                     console.log('DEBUG: Firebase test connection failed:', testError);
@@ -1719,10 +1719,10 @@
                 }
                 
                 // Load hero sections from Firebase
-                const heroSectionsSnapshot = await db.collection('heroSection').get();
+                const heroSectionsSnapshot = await window.db.collection('heroSection').get();
                 const heroSections = [];
                 
-                heroSectionsSnapshot.forEach(doc => {
+                heroSectionsSnapshot.docs.forEach(doc => {
                     const data = doc.data();
                     if (data.backgroundImage) {
                         heroSections.push({
