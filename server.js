@@ -65,6 +65,18 @@ app.get('/', (req, res) => {
   });
 });
 
+// Home route alias
+app.get('/home', (req, res) => {
+  console.log('🏠 Serving home page (alias)...');
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('Error serving index.html:', err);
+      res.redirect('/');
+    }
+  });
+});
+
 // About route
 app.get('/about', (req, res) => {
   res.send(`
@@ -129,6 +141,117 @@ app.get('/admin/login', (req, res) => {
         </form>
         <div class="mt-4 text-center">
           <a href="/" class="text-blue-600 hover:underline">Back to Home</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Synergy Academy route
+app.get('/synergy-academy', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Synergy Academy - GROW SYNERGY INDONESIA</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body>
+      <div class="min-h-screen bg-gray-50">
+        <nav class="bg-white shadow">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+              <div class="flex items-center">
+                <h1 class="text-xl font-bold text-blue-600">GROW SYNERGY</h1>
+              </div>
+              <div class="flex items-center space-x-4">
+                <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded">Admin</a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="max-w-7xl mx-auto px-4 py-12">
+          <h1 class="text-3xl font-bold mb-6">Synergy Academy</h1>
+          <p class="text-gray-600">Platform pembelajaran data analitik dengan kurikulum terbaik.</p>
+          <a href="/" class="text-blue-600 hover:underline">← Kembali ke Home</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Synergy Experts route
+app.get('/synergy-experts', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Synergy Experts - GROW SYNERGY INDONESIA</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body>
+      <div class="min-h-screen bg-gray-50">
+        <nav class="bg-white shadow">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+              <div class="flex items-center">
+                <h1 class="text-xl font-bold text-blue-600">GROW SYNERGY</h1>
+              </div>
+              <div class="flex items-center space-x-4">
+                <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded">Admin</a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="max-w-7xl mx-auto px-4 py-12">
+          <h1 class="text-3xl font-bold mb-6">Synergy Experts</h1>
+          <p class="text-gray-600">Tim ahli data analitik dengan pengalaman profesional.</p>
+          <a href="/" class="text-blue-600 hover:underline">← Kembali ke Home</a>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+});
+
+// Synergy Portfolio route
+app.get('/synergy-portfolio', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Synergy Portfolio - GROW SYNERGY INDONESIA</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body>
+      <div class="min-h-screen bg-gray-50">
+        <nav class="bg-white shadow">
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+              <div class="flex items-center">
+                <h1 class="text-xl font-bold text-blue-600">GROW SYNERGY</h1>
+              </div>
+              <div class="flex items-center space-x-4">
+                <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded">Admin</a>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="max-w-7xl mx-auto px-4 py-12">
+          <h1 class="text-3xl font-bold mb-6">Synergy Portfolio</h1>
+          <p class="text-gray-600">Koleksi proyek dan studi kasus data analitik kami.</p>
+          <a href="/" class="text-blue-600 hover:underline">← Kembali ke Home</a>
         </div>
       </div>
     </body>
