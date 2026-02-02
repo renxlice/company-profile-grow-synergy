@@ -46,7 +46,7 @@ if (USE_FIREBASE) {
       
       const serviceAccount = {
         projectId: projectId,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-xxxxx@your-project.iam.gserviceaccount.com',
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com',
         privateKey: privateKey,
       };
 
