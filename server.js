@@ -647,7 +647,9 @@ app.get('/admin/debug-template', async (req, res) => {
   }
   
   try {
-    // Simulate dashboard data fetching to debug
+    console.log('🔍 Debug route: Starting data fetch...');
+    
+    // Use the same Firebase connection as dashboard
     const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot] = await Promise.all([
       db.collection('experts').get(),
       db.collection('portfolios').get(),
@@ -663,6 +665,11 @@ app.get('/admin/debug-template', async (req, res) => {
     const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     const heroSections = heroSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    console.log('📊 Debug route: Data fetched successfully');
+    console.log(`  - Experts: ${experts.length}`);
+    console.log(`  - Portfolios: ${portfolios.length}`);
+    console.log(`  - Academies: ${academies.length}`);
 
     const debugData = {
       success: true,
@@ -702,35 +709,23 @@ app.get('/admin/debug-template', async (req, res) => {
         testimonials: testimonials.length,
         heroSections: heroSections.length
       },
-      templateData: {
-        title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
-        user: req.session.user,
-        username: req.session.user,
-        data: {
-          experts: experts.length > 0 ? experts.map(e => ({ id: e.id, name: e.name, position: e.position })) : [],
-          portfolios: portfolios.length > 0 ? portfolios.map(p => ({ id: p.id, title: p.title, client: p.client })) : [],
-          academies: academies.length > 0 ? academies.map(a => ({ id: a.id, title: a.title, level: a.level })) : [],
-          blogs: blogs.length > 0 ? blogs.map(b => ({ id: b.id, title: b.title, author: b.author })) : [],
-          testimonials: testimonials.length > 0 ? testimonials.map(t => ({ id: t.id, name: t.name, testimonial: t.testimonial })) : [],
-          heroSections: heroSections.length > 0 ? heroSections.map(h => ({ id: h.id, backgroundImage: h.backgroundImage })) : []
-        },
-        stats: {
-          experts: experts.length,
-          portfolios: portfolios.length,
-          academies: academies.length,
-          blogs: blogs.length,
-          testimonials: testimonials.length,
-          heroSections: heroSections.length
-        }
+      firebaseStatus: {
+        initialized: !!admin.apps.length,
+        dbAvailable: !!db
       }
     };
     
     res.json(debugData);
   } catch (error) {
+    console.error('❌ Debug route error:', error);
     res.status(500).json({
       success: false,
       error: error.message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      firebaseStatus: {
+        initialized: !!admin.apps.length,
+        dbAvailable: !!db
+      }
     });
   }
 });
