@@ -481,28 +481,82 @@ app.get('/api/admin/maintenance/status', (req, res) => {
   });
 });
 
+// Admin Page Routes
 app.get('/admin/hero-section', (req, res) => {
-  res.json([]);
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/hero-section', {
+    title: 'Hero Section Management - Admin Dashboard',
+    user: req.session.user
+  });
+});
+
+app.get('/admin/about-section', (req, res) => {
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/about-section', {
+    title: 'About Section Management - Admin Dashboard',
+    user: req.session.user
+  });
 });
 
 app.get('/admin/experts', (req, res) => {
-  res.json([]);
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/experts', {
+    title: 'Experts Management - Admin Dashboard',
+    user: req.session.user
+  });
 });
 
 app.get('/admin/portfolios', (req, res) => {
-  res.json([]);
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/portfolios', {
+    title: 'Portfolio Management - Admin Dashboard',
+    user: req.session.user
+  });
 });
 
 app.get('/admin/academies', (req, res) => {
-  res.json([]);
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/academies', {
+    title: 'Academy Management - Admin Dashboard',
+    user: req.session.user
+  });
 });
 
 app.get('/admin/testimonials', (req, res) => {
-  res.json([]);
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/testimonials', {
+    title: 'Testimonials Management - Admin Dashboard',
+    user: req.session.user
+  });
 });
 
 app.get('/admin/blogs', (req, res) => {
-  res.json([]);
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  res.render('admin/blogs', {
+    title: 'Blog Management - Admin Dashboard',
+    user: req.session.user
+  });
 });
 
 // API Routes
