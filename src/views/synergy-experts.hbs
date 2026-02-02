@@ -347,10 +347,43 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js?v=2.0"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js?v=2.0"></script>
     
+    <style>
+        /* Custom styles for expert cards */
+        .expert-card {
+            background-color: #225273 !important;
+        }
+        
+        .expert-card h3 {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }
+        
+        .expert-card .text-gray-300,
+        .expert-card .text-gray-600 {
+            color: #e5e7eb !important;
+        }
+        
+        .expert-card .text-gray-500 {
+            color: #d1d5db !important;
+        }
+        
+        /* Ensure badges are visible */
+        .expert-card .bg-yellow-400 {
+            background-color: #fbbf24 !important;
+            color: #1f2937 !important;
+            font-weight: 600 !important;
+        }
+        
+        .expert-card .bg-green-600 {
+            background-color: #16a34a !important;
+            color: #ffffff !important;
+        }
+    </style>
+    
     <!-- Custom JavaScript -->
     <script>
         // Cache busting
-        console.log('Loading synergy-experts page - v2.1', new Date().toISOString());
+        console.log('Loading synergy-experts page - v2.2', new Date().toISOString());
         
         // Check if Firebase is already initialized
         if (!window.firebase || !window.firebase.apps.length) {
@@ -756,7 +789,7 @@
 
         // Create expert card HTML
         function createExpertCard(expert) {
-            console.log('Creating card for expert:', expert.name, 'Category:', expert.category);
+            console.log('Creating card for expert:', expert.name, 'Category:', expert.category, 'Role:', expert.role);
             const div = document.createElement('div');
             div.className = 'expert-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer';
             
@@ -783,8 +816,15 @@
             const expertRole = expert.role || 'Dosen';
             const expertOrganization = expert.organization || 'Founder Grow Synergy';
             
+            console.log('Expert data for card:', {
+                name: expertName,
+                category: expertCategory,
+                role: expertRole,
+                organization: expertOrganization
+            });
+            
             div.innerHTML = 
-                '<div class="relative rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer" style="background-color: #225273;">' +
+                '<div class="relative rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer" style="background-color: #225273 !important;">' +
                     '<div class="aspect-w-16 aspect-h-9 bg-gray-200">' +
                         '<img src="' + expertImage + '" alt="' + expertName + '" class="w-full h-48 object-cover">' +
                     '</div>' +
@@ -795,18 +835,19 @@
                         '<span class="bg-yellow-400 text-gray-800 text-xs px-2 py-1 rounded-full font-semibold">' + expertCategory + '</span>' +
                     '</div>' +
                     '<div class="p-4">' +
-                        '<h3 class="text-lg font-semibold mb-2 text-white">' + expertName + '</h3>' +
-                        '<p class="text-gray-300 text-sm mb-2">' + expertOrganization + '</p>' +
+                        '<h3 class="text-lg font-semibold mb-2" style="color: #ffffff !important; font-weight: 600;">' + expertName + '</h3>' +
+                        '<p class="text-sm mb-2" style="color: #e5e7eb !important;">' + expertOrganization + '</p>' +
                         '<div class="flex items-center justify-between mb-3">' +
                             '<div class="flex items-center">' +
                                 generateStars(expertRating) +
                             '</div>' +
-                            '<span class="text-sm text-gray-300">' + expertRating + '</span>' +
+                            '<span class="text-sm" style="color: #e5e7eb !important;">' + expertRating + '</span>' +
                         '</div>' +
-                        '<p class="text-gray-300 text-sm line-clamp-3">' + expertDescription + '</p>' +
+                        '<p class="text-sm line-clamp-3" style="color: #d1d5db !important;">' + expertDescription + '</p>' +
                     '</div>' +
                 '</div>';
             
+            console.log('Card HTML created for:', expertName);
             return div;
         }
 
