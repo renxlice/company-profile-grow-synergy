@@ -905,23 +905,11 @@
         // Testimonial collection reference
         const testimonialsCollection = db.collection('testimonials');
         
-        // Enable offline persistence for testimonials
-        if (typeof db !== 'undefined' && db.enablePersistence) {
-            db.enablePersistence()
-                .catch((err) => {
-                    if (err.code == 'failed-precondition') {
-                        console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
-                    } else if (err.code == 'unimplemented') {
-                        console.log('The current browser does not support persistence.');
-                    }
-                });
-        }
-        
         // Check Firebase connection for testimonials
         if (typeof db !== 'undefined') {
             db.collection('testimonials').limit(1).get()
                 .then(() => {
-                    console.log('✅ Firebase Firestore for testimonials connected successfully!');
+                    console.log('Firebase Firestore for testimonials connected successfully!');
                 })
                 .catch((error) => {
                     console.error('❌ Firebase connection for testimonials failed:', error);

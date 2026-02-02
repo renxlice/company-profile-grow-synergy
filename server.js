@@ -67,9 +67,9 @@ app.get('/', (req, res) => {
     }),
     // Firebase configuration
     firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
-    firebaseProjectId: "grow-synergy-indonesia",
-    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
     firebaseMessagingSenderId: "584312572709",
     firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
     firebaseMeasurementId: "G-PKLP3Y3F4F"
@@ -110,9 +110,9 @@ app.get('/synergy-experts', (req, res) => {
     }),
     // Firebase configuration
     firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
-    firebaseProjectId: "grow-synergy-indonesia",
-    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
     firebaseMessagingSenderId: "584312572709",
     firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
     firebaseMeasurementId: "G-PKLP3Y3F4F"
@@ -153,9 +153,9 @@ app.get('/synergy-portfolio', (req, res) => {
     }),
     // Firebase configuration
     firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
-    firebaseProjectId: "grow-synergy-indonesia",
-    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
     firebaseMessagingSenderId: "584312572709",
     firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
     firebaseMeasurementId: "G-PKLP3Y3F4F"
@@ -196,9 +196,9 @@ app.get('/synergy-academy', (req, res) => {
     }),
     // Firebase configuration
     firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
-    firebaseProjectId: "grow-synergy-indonesia",
-    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
     firebaseMessagingSenderId: "584312572709",
     firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
     firebaseMeasurementId: "G-PKLP3Y3F4F"
@@ -227,9 +227,9 @@ app.get('/blog', (req, res) => {
     googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
     // Firebase configuration
     firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
-    firebaseProjectId: "grow-synergy-indonesia",
-    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
     firebaseMessagingSenderId: "584312572709",
     firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
     firebaseMeasurementId: "G-PKLP3Y3F4F"
@@ -522,9 +522,9 @@ app.get('/firebase-config.js', (req, res) => {
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-      authDomain: "grow-synergy-indonesia.firebaseapp.com",
-      projectId: "grow-synergy-indonesia",
-      storageBucket: "grow-synergy-indonesia.appspot.com",
+      authDomain: "company-profile-grow-synergy.firebaseapp.com",
+      projectId: "company-profile-grow-synergy",
+      storageBucket: "company-profile-grow-synergy.appspot.com",
       messagingSenderId: "584312572709",
       appId: "1:584312572709:web:1e0ad87867af7b878668cc",
       measurementId: "G-PKLP3Y3F4F"

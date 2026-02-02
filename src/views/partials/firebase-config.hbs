@@ -64,6 +64,18 @@
             try {
                 db = firebase.firestore();
                 
+                // Enable offline persistence BEFORE any other operations
+                db.enablePersistence()
+                    .catch((err) => {
+                        if (err.code == 'failed-precondition') {
+                            console.log('📝 Multiple tabs open, persistence can only be enabled in one tab at a time.');
+                        } else if (err.code == 'unimplemented') {
+                            console.log('📝 The current browser does not support persistence.');
+                        } else {
+                            console.warn('⚠️ Persistence enable failed:', err.message);
+                        }
+                    });
+                
                 // Test connection with a simple read operation
                 db.collection('_connection_test').limit(1).get()
                     .then(() => {
@@ -77,6 +89,7 @@
                             console.warn('2. Check Firestore security rules allow read access');
                             console.warn('3. Verify project ID matches your Firebase project');
                             console.warn('4. Confirm API key has correct permissions');
+                            console.warn('5. Deploy updated security rules: firebase deploy --only firestore:rules');
                         }
                     });
                     
