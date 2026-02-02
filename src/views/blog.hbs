@@ -37,6 +37,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -556,7 +560,91 @@
             
             // Initialize first page
             showPosts(currentPage);
+            
+            // Load hero section background
+            loadHeroSection();
         });
+        
+        // Firebase initialization
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyForTesting",
+            authDomain: "grow-synergy.firebaseapp.com",
+            projectId: "grow-synergy",
+            storageBucket: "grow-synergy.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Load Hero Section Background
+        async function loadHeroSection() {
+            try {
+                console.log('Loading hero section background...');
+                console.log('DEBUG: Firebase db available:', !!db);
+                
+                // Test Firebase connection
+                try {
+                    const testDoc = await db.collection('heroSection').limit(1).get();
+                    console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
+                } catch (testError) {
+                    console.log('DEBUG: Firebase test connection failed:', testError);
+                    return;
+                }
+                
+                // Load hero sections from Firebase
+                const heroSectionsSnapshot = await db.collection('heroSection').get();
+                const heroSections = [];
+                
+                heroSectionsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.backgroundImage) {
+                        heroSections.push({
+                            id: doc.id,
+                            backgroundImage: data.backgroundImage
+                        });
+                    }
+                });
+                
+                console.log('Hero sections data:', heroSections);
+                console.log('Hero sections length:', heroSections.length);
+                
+                // Update hero background
+                const backgroundDiv = document.getElementById('hero-background-image');
+                if (backgroundDiv) {
+                    console.log('Background div found:', backgroundDiv);
+                    
+                    if (heroSections.length > 0) {
+                        // Use first hero section background
+                        const firstSection = heroSections[0];
+                        if (firstSection.backgroundImage) {
+                            backgroundDiv.style.backgroundImage = `url(${firstSection.backgroundImage})`;
+                            console.log('Setting background from Firebase:', firstSection.backgroundImage);
+                        }
+                    } else {
+                        // Fallback to default
+                        console.log('No hero sections found, using fallback background');
+                        backgroundDiv.style.backgroundImage = 'url("https://picsum.photos/seed/hero1/1920/1080.jpg")';
+                    }
+                    
+                    console.log('Final background style:', backgroundDiv.style.backgroundImage);
+                } else {
+                    console.log('Background div not found');
+                }
+                
+            } catch (error) {
+                console.error('Error loading hero section:', error);
+                
+                // Fallback to default background
+                const backgroundDiv = document.getElementById('hero-background-image');
+                if (backgroundDiv) {
+                    backgroundDiv.style.backgroundImage = 'url("https://picsum.photos/seed/hero1/1920/1080.jpg")';
+                    console.log('Set fallback background due to error');
+                }
+            }
+        }
     </script>
     
     <!-- WhatsApp Floating Button -->
