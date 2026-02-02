@@ -2,8 +2,24 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 
 const app = express();
+
+// Body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Session middleware
+app.use(session({
+  secret: 'grow-synergy-secret-key-2024',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true in production with HTTPS
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 // Handlebars setup
 app.engine('hbs', exphbs.engine({
@@ -18,7 +34,7 @@ app.set('views', path.join(__dirname, 'src', 'views'));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Favicon route
 app.get('/favicon.ico', (req, res) => {
@@ -396,6 +412,52 @@ app.get('/blog/:slug', (req, res) => {
     firebaseMessagingSenderId: "584312572709",
     firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
     firebaseMeasurementId: "G-PKLP3Y3F4F"
+  });
+});
+
+// Admin Login Routes
+app.get('/admin/login', (req, res) => {
+  res.render('admin/login', {
+    title: 'Admin Login - GROW SYNERGY INDONESIA',
+    error: null
+  });
+});
+
+app.post('/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  
+  // Simple authentication (in production, use proper hashing and database)
+  const validCredentials = {
+    'admin@growsynergy.com': 'admin123',
+    'grow.synergy.id@gmail.com': 'admin123'
+  };
+  
+  if (validCredentials[username] && validCredentials[username] === password) {
+    // Set session (in production, use proper session management)
+    req.session = req.session || {};
+    req.session.isAuthenticated = true;
+    req.session.user = username;
+    
+    // Redirect to dashboard
+    res.redirect('/admin/dashboard');
+  } else {
+    // Show error
+    res.render('admin/login', {
+      title: 'Admin Login - GROW SYNERGY INDONESIA',
+      error: 'Email atau password salah. Silakan coba lagi.'
+    });
+  }
+});
+
+app.get('/admin/dashboard', (req, res) => {
+  // Check if authenticated (in production, use proper middleware)
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  res.render('admin/dashboard', {
+    title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
+    user: req.session.user
   });
 });
 
