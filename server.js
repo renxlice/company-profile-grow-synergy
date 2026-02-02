@@ -62,22 +62,7 @@ function getIndexHbsContent() {
       // Remove conditional blocks
       content = content.replace(/\{\{#if googleAnalyticsId\}\}[\s\S]*?\{\{\/if\}\}/g, '');
       
-      // Remove Firebase references and JavaScript that requires Firebase
-      content = content.replace(/firebase\.initialize\(.*?\);/g, '// Firebase disabled in static mode');
-      content = content.replace(/const db = firebase\.firestore\(\);/g, '// Firebase disabled in static mode');
-      content = content.replace(/const analytics = firebase\.analytics\(\);/g, '// Firebase disabled in static mode');
-      content = content.replace(/firebaseConfig/g, '// Firebase disabled in static mode');
-      
-      // Remove dynamic content loading JavaScript
-      content = content.replace(/loadDynamicContent\(\);/g, '// Dynamic content disabled in static mode');
-      content = content.replace(/updateHeroSection\(\);/g, '// Dynamic content disabled in static mode');
-      content = content.replace(/updateAboutSection\);/g, '// Dynamic content disabled in static mode');
-      content = content.replace(/updateExpertsSection\);/g, '// Dynamic content disabled in static mode');
-      content = content.replace(/updatePortfolioSection\);/g, '// Dynamic content disabled in static mode');
-      content = content.replace(/updateAcademySection\);/g, '// Dynamic content disabled in static mode');
-      content = content.replace(/updateBlogSection\);/g, '// Dynamic content disabled in static mode');
-      
-      // Fix image paths - keep existing images, add missing ones with placeholders
+      // Fix image paths - keep existing images
       content = content.replace(/src="\/images\/asdatin\.png"/g, 'src="/images/asdatin.png"');
       content = content.replace(/src="\/images\/ideaslab\.png"/g, 'src="/images/ideaslab.png"');
       content = content.replace(/src="\/images\/kompis\.jpg"/g, 'src="/images/kompis.jpg"');
@@ -89,7 +74,23 @@ function getIndexHbsContent() {
       content = content.replace(/src="\/images\/hero-background\.jpg"/g, 'src="/images/hero-background.jpg"');
       
       // Remove problematic background image reference
-      content = content.replace(/this\.backgroundImage/g, '// Background image disabled in static mode');
+      content = content.replace(/this\.backgroundImage/g, 'backgroundImage');
+      
+      // Add floating WhatsApp button
+      content = content.replace('</body>', `
+        <!-- Floating WhatsApp Button -->
+        <div class="fixed bottom-8 right-8 z-50">
+          <a href="https://wa.me/6281234567890?text=Halo%20saya%20tertarik%20dengan%20program%20data%20analitik%20di%20GROW%20SYNERGY%20INDONESIA" 
+             target="_blank" 
+             class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382zm-1.472 1.653c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382z"/>
+              <path d="M8.278 3.664c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382zm-1.472 1.653c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382z"/>
+            </svg>
+          </a>
+        </div>
+        </body>
+      `);
       
       // Re-enable Firebase for production mode
       if (process.env.NODE_ENV === 'production') {
@@ -117,6 +118,8 @@ function getIndexHbsContent() {
         // Re-enable event listeners
         content = content.replace(/\/\/ Event listeners disabled in static mode/g, 'document.addEventListener');
         content = content.replace(/\/\/ Event listeners disabled in static mode/g, 'window.addEventListener');
+        
+        console.log('🔥 Firebase enabled for production mode');
       } else {
         // Keep Firebase disabled for development
         console.log('🔥 Firebase disabled in development mode');
