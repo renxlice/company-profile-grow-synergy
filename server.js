@@ -20,6 +20,14 @@ app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
+// Favicon route
+app.get('/favicon.ico', (req, res) => {
+  const faviconPath = path.join(__dirname, 'public', 'images', 'logo_pt.png');
+  res.sendFile(faviconPath, (err) => {
+    if (err) res.status(404).send('Favicon not found');
+  });
+});
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -271,11 +279,23 @@ app.get('/firebase-config.js', (req, res) => {
       measurementId: "G-49J1K6Y9WJ"
     };
 
-    // Initialize Firebase
+    // Initialize Firebase only if not already initialized
     if (!window.firebase || !window.firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
+      console.log('Firebase initialized successfully');
+    } else {
+      console.log('Firebase already initialized, skipping...');
+    }
+    
+    // Initialize services
+    if (!window.db) {
       window.db = firebase.firestore();
+      console.log('Firestore initialized');
+    }
+    
+    if (!window.analytics) {
       window.analytics = firebase.analytics();
+      console.log('Analytics initialized');
     }
   `;
   
