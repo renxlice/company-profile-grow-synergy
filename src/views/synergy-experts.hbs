@@ -824,18 +824,18 @@
             });
             
             div.innerHTML = 
-                '<div class="relative rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer" style="background-color: #225273 !important;">' +
+                '<div class="relative rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer expert-card" style="background-color: #225273 !important;">' +
                     '<div class="aspect-w-16 aspect-h-9 bg-gray-200">' +
                         '<img src="' + expertImage + '" alt="' + expertName + '" class="w-full h-48 object-cover">' +
                     '</div>' +
                     '<div class="absolute top-2 right-2">' +
-                        '<span class="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold">' + expertRole + '</span>' +
+                        '<span class="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold" style="background-color: #16a34a !important; color: #ffffff !important;">' + expertRole + '</span>' +
                     '</div>' +
                     '<div class="absolute top-2 left-2">' +
-                        '<span class="bg-yellow-400 text-gray-800 text-xs px-2 py-1 rounded-full font-semibold">' + expertCategory + '</span>' +
+                        '<span class="bg-yellow-400 text-gray-800 text-xs px-2 py-1 rounded-full font-semibold" style="background-color: #fbbf24 !important; color: #1f2937 !important; font-weight: 600 !important;">' + expertCategory + '</span>' +
                     '</div>' +
                     '<div class="p-4">' +
-                        '<h3 class="text-lg font-semibold mb-2" style="color: #ffffff !important; font-weight: 600;">' + expertName + '</h3>' +
+                        '<h3 class="text-lg font-semibold mb-2" style="color: #ffffff !important; font-weight: 600 !important;">' + expertName + '</h3>' +
                         '<p class="text-sm mb-2" style="color: #e5e7eb !important;">' + expertOrganization + '</p>' +
                         '<div class="flex items-center justify-between mb-3">' +
                             '<div class="flex items-center">' +
@@ -848,6 +848,20 @@
                 '</div>';
             
             console.log('Card HTML created for:', expertName);
+            console.log('Card HTML preview:', div.innerHTML.substring(0, 200) + '...');
+            
+            // Additional debugging
+            setTimeout(() => {
+                const cardElement = div.querySelector('.expert-card');
+                if (cardElement) {
+                    const computedStyle = window.getComputedStyle(cardElement);
+                    console.log('Card background color:', computedStyle.backgroundColor);
+                    console.log('Card element found:', !!cardElement);
+                } else {
+                    console.log('Card element with .expert-card class not found');
+                }
+            }, 100);
+            
             return div;
         }
 
