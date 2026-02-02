@@ -619,7 +619,7 @@
                 console.log('Hero sections length:', heroSections.length);
                 
                 // Update hero background
-                const backgroundDiv = document.getElementById('hero-background-image');
+                const backgroundDiv = document.querySelector('.background-image');
                 if (backgroundDiv) {
                     console.log('Background div found:', backgroundDiv);
                     
@@ -645,7 +645,7 @@
                 console.error('Error loading hero section:', error);
                 
                 // Fallback to default background
-                const backgroundDiv = document.getElementById('hero-background-image');
+                const backgroundDiv = document.querySelector('.background-image');
                 if (backgroundDiv) {
                     backgroundDiv.style.backgroundImage = 'url("https://picsum.photos/seed/hero1/1920/1080.jpg")';
                     console.log('Set fallback background due to error');
