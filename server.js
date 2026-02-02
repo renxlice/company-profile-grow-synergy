@@ -202,7 +202,7 @@ app.get('/api/firebase/data', (req, res) => {
   // Mock data for now
   const mockData = {
     hero: {
-      backgroundImage: '/images/hero-background.jpg',
+      backgroundImage: '/images/hero1.jpg',
       title: 'Transformasi Karir dengan Data Analitik',
       description: 'Pelatihan intensif dengan mentor profesional dan proyek real-world'
     },
@@ -265,9 +265,33 @@ app.post('/api/analytics/track', (req, res) => {
   res.json({ success: true, message: 'Analytics tracked' });
 });
 
+// Firebase SDK loading route
+app.get('/firebase-sdk.js', (req, res) => {
+  const firebaseSDK = `
+    // Firebase App (the core Firebase SDK) is always required and must be listed first
+    importScripts("https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js");
+    
+    // Add Firebase products that you want to use
+    importScripts("https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js");
+    importScripts("https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js");
+    importScripts("https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js");
+    
+    console.log('Firebase SDK loaded successfully');
+  `;
+  
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(firebaseSDK);
+});
+
 // Firebase config route
 app.get('/firebase-config.js', (req, res) => {
   const firebaseConfig = `
+    // Check if Firebase SDK is loaded
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase SDK not loaded. Please include Firebase scripts before this config.');
+      return;
+    }
+
     // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
@@ -280,7 +304,7 @@ app.get('/firebase-config.js', (req, res) => {
     };
 
     // Initialize Firebase only if not already initialized
-    if (!window.firebase || !window.firebase.apps.length) {
+    if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
       console.log('Firebase initialized successfully');
     } else {
