@@ -640,18 +640,99 @@ app.get('/admin/logout', (req, res) => {
 });
 
 // Template debug route
-app.get('/admin/debug-template', (req, res) => {
+app.get('/admin/debug-template', async (req, res) => {
   // Check if authenticated
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
-  res.json({
-    success: true,
-    message: 'Template rendering debug info',
-    timestamp: new Date().toISOString(),
-    note: 'Check server console for detailed rendering logs when accessing /admin/dashboard'
-  });
+  try {
+    // Simulate dashboard data fetching to debug
+    const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot] = await Promise.all([
+      db.collection('experts').get(),
+      db.collection('portfolios').get(),
+      db.collection('academies').get(),
+      db.collection('blogs').get(),
+      db.collection('testimonials').get(),
+      db.collection('heroSection').get()
+    ]);
+
+    const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const portfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const academies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const heroSections = heroSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    const debugData = {
+      success: true,
+      message: 'Template rendering debug info',
+      timestamp: new Date().toISOString(),
+      data: {
+        experts: {
+          count: experts.length,
+          sample: experts.length > 0 ? experts[0] : null
+        },
+        portfolios: {
+          count: portfolios.length,
+          sample: portfolios.length > 0 ? portfolios[0] : null
+        },
+        academies: {
+          count: academies.length,
+          sample: academies.length > 0 ? academies[0] : null
+        },
+        blogs: {
+          count: blogs.length,
+          sample: blogs.length > 0 ? blogs[0] : null
+        },
+        testimonials: {
+          count: testimonials.length,
+          sample: testimonials.length > 0 ? testimonials[0] : null
+        },
+        heroSections: {
+          count: heroSections.length,
+          sample: heroSections.length > 0 ? heroSections[0] : null
+        }
+      },
+      stats: {
+        experts: experts.length,
+        portfolios: portfolios.length,
+        academies: academies.length,
+        blogs: blogs.length,
+        testimonials: testimonials.length,
+        heroSections: heroSections.length
+      },
+      templateData: {
+        title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
+        user: req.session.user,
+        username: req.session.user,
+        data: {
+          experts: experts.length > 0 ? experts.map(e => ({ id: e.id, name: e.name, position: e.position })) : [],
+          portfolios: portfolios.length > 0 ? portfolios.map(p => ({ id: p.id, title: p.title, client: p.client })) : [],
+          academies: academies.length > 0 ? academies.map(a => ({ id: a.id, title: a.title, level: a.level })) : [],
+          blogs: blogs.length > 0 ? blogs.map(b => ({ id: b.id, title: b.title, author: b.author })) : [],
+          testimonials: testimonials.length > 0 ? testimonials.map(t => ({ id: t.id, name: t.name, testimonial: t.testimonial })) : [],
+          heroSections: heroSections.length > 0 ? heroSections.map(h => ({ id: h.id, backgroundImage: h.backgroundImage })) : []
+        },
+        stats: {
+          experts: experts.length,
+          portfolios: portfolios.length,
+          academies: academies.length,
+          blogs: blogs.length,
+          testimonials: testimonials.length,
+          heroSections: heroSections.length
+        }
+      }
+    };
+    
+    res.json(debugData);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 // Environment variables debug route
