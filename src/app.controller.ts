@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Body, Render, Res, Param } from '@nestjs/common';
 import { Response } from 'express';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { AppService } from './app.service';
 import { SeoService } from './seo/seo.service';
 import { ContentService } from './common/services/content.service';
@@ -13,6 +15,18 @@ export class AppController {
     private readonly contentService: ContentService,
     private readonly blogService: BlogService,
   ) {}
+
+  @Get('favicon.ico')
+  getFavicon(@Res() res: Response) {
+    try {
+      const faviconPath = join(process.cwd(), 'public', 'images', 'logo_pt.png');
+      const favicon = readFileSync(faviconPath);
+      res.setHeader('Content-Type', 'image/png');
+      res.send(favicon);
+    } catch (error) {
+      res.status(404).send('Favicon not found');
+    }
+  }
 
   @Get()
   async getHome(@Res() res: Response) {
