@@ -87,7 +87,7 @@ function getIndexHbsContent() {
       content = content.replace(/this\.backgroundImage/g, 'backgroundImage');
       content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
       
-      // Add floating WhatsApp button
+      // Add floating WhatsApp button with logo
       content = content.replace('</body>', `
         <!-- Floating WhatsApp Button -->
         <div class="fixed bottom-8 right-8 z-50">
@@ -97,9 +97,71 @@ function getIndexHbsContent() {
             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M17.472 14.382c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382zm-1.472 1.653c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382z"/>
               <path d="M8.278 3.664c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382zm-1.472 1.653c-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382-.297-.149-1.358-.278-2.52-.382-1.663-.09-3.268-.09-4.871 0-1.623.09-3.208.292-4.871.382-1.162.104-2.223.233-3.52.382-1.297.149-2.223.233-3.52.382z"/>
+              <path d="M20.517 3.483a15.09 15.09 0 0 0-11.592-2.65A15.085 15.085 0 0 0 4.5 5.058a11.36 11.36 0 0 0 6.378 5.078.75.75 0 0 1 .498.565l.19 1.132a.75.75 0 0 0 1.492-.149l.19-1.131a.75.75 0 0 1 .498-.564 11.36 11.36 0 0 0 6.378-5.078 15.045 15.045 0 0 0-2.65-11.592z"/>
+              <path d="M6.662 3.413c-.81.77-1.439 1.724-1.856 2.84A12.042 12.042 0 0 0 4.094 9.5c0 1.228.242 2.409.68 3.513.418 1.116 1.047 2.07 1.856 2.84a11.362 11.362 0 0 0 3.513 1.856c1.104.438 2.285.68 3.513.68 1.228 0 2.409-.242 3.513-.68a11.362 11.362 0 0 0 3.513-1.856c.81-.77 1.439-1.724 1.856-2.84A12.042 12.042 0 0 0 21.906 9.5c0-1.228-.242-2.409-.68-3.513a11.362 11.362 0 0 0-1.856-2.84 11.362 11.362 0 0 0-3.513-1.856A12.042 12.042 0 0 0 12.342 1.5c-1.228 0-2.409.242-3.513.68a11.362 11.362 0 0 0-3.513 1.856c-.81.77-1.439 1.724-1.856 2.84z"/>
+              <path d="M12.342 8.413a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25z"/>
+              <path d="M12.342 12.413a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25z"/>
             </svg>
           </a>
         </div>
+        
+        <!-- Hero Section Centering Fix -->
+        <style>
+          .hero-section {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            min-height: 100vh !important;
+            position: relative !important;
+          }
+          
+          .hero-content {
+            max-width: 800px !important;
+            padding: 2rem !important;
+            z-index: 10 !important;
+            position: relative !important;
+          }
+          
+          .hero-title {
+            font-size: 3.5rem !important;
+            font-weight: 700 !important;
+            margin-bottom: 1.5rem !important;
+            line-height: 1.2 !important;
+          }
+          
+          .hero-subtitle {
+            font-size: 1.5rem !important;
+            margin-bottom: 2rem !important;
+            line-height: 1.6 !important;
+          }
+          
+          .hero-description {
+            font-size: 1.1rem !important;
+            margin-bottom: 2rem !important;
+            line-height: 1.7 !important;
+          }
+          
+          .background-image {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            z-index: 1 !important;
+          }
+          
+          .hero-overlay {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.5) !important;
+            z-index: 2 !important;
+          }
+        </style>
         
         <!-- Data Loading Script -->
         <script>
