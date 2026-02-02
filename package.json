@@ -26,6 +26,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "setup:firestore": "node setup-firestore.js",
     "firebase:setup": "npm run setup:firestore",
+    "firebase:deploy-rules": "node scripts/deploy-firestore-rules.js",
+    "firebase:deploy-rules:auto": "node scripts/deploy-firestore-rules.js --deploy",
     "setup:env": "node scripts/setup-env.js",
     "security:check": "node scripts/deploy-check.js",
     "seed:firestore": "echo 'Please add data via admin panel at http://localhost:3001/admin/login'",

@@ -1,6 +1,41 @@
 <script>
     // Initialize Firebase
     let db;
+    
+    // Mock Firestore function for fallback
+    function createMockFirestore() {
+        console.warn('🔄 Using mock Firestore mode');
+        return {
+            collection: (collectionName) => ({
+                get: async () => ({ 
+                    docs: [],
+                    empty: true,
+                    size: 0
+                }),
+                add: async () => ({ 
+                    get: async () => ({ id: 'mock-' + Date.now(), data: () => ({}) }) 
+                }),
+                doc: (docId) => ({
+                    get: async () => ({ 
+                        exists: false, 
+                        id: docId || 'mock-id', 
+                        data: () => ({}) 
+                    }),
+                    update: async () => ({ success: true }),
+                    delete: async () => ({ success: true })
+                }),
+                limit: () => ({ 
+                    get: async () => ({ docs: [], empty: true, size: 0 }) 
+                }),
+                orderBy: () => ({ 
+                    get: async () => ({ docs: [], empty: true, size: 0 }) 
+                }),
+                where: () => ({ 
+                    get: async () => ({ docs: [], empty: true, size: 0 }) 
+                })
+            })
+        };
+    }
     try {
         // Check if Firebase is available
         if (typeof firebase === 'undefined') {
@@ -22,19 +57,41 @@
 
         // Initialize Firebase only if not already initialized
         if (!firebase.apps.length) {
-            firebase.initializeApp({
-                ...firebaseConfig,
-                appId: firebaseConfig.appId,
-                measurementId: firebaseConfig.measurementId
-            });
+            firebase.initializeApp(firebaseConfig);
             console.log('Firebase initialized successfully');
+            
+            // Initialize Firestore with error handling
+            try {
+                db = firebase.firestore();
+                
+                // Test connection with a simple read operation
+                db.collection('_connection_test').limit(1).get()
+                    .then(() => {
+                        console.log('✅ Firebase Firestore connection successful!');
+                    })
+                    .catch((error) => {
+                        console.warn('⚠️ Firebase Firestore connection warning:', error.message);
+                        if (error.code === 'permission-denied') {
+                            console.warn('📋 Firebase Setup Checklist:');
+                            console.warn('1. Ensure Firestore API is enabled in Google Cloud Console');
+                            console.warn('2. Check Firestore security rules allow read access');
+                            console.warn('3. Verify project ID matches your Firebase project');
+                            console.warn('4. Confirm API key has correct permissions');
+                        }
+                    });
+                    
+                window.db = db;
+            } catch (firestoreError) {
+                console.error('❌ Firestore initialization failed:', firestoreError);
+                // Fallback to mock mode
+                db = createMockFirestore();
+                window.db = db;
+            }
         } else {
             console.log('Firebase already initialized, skipping...');
+            db = firebase.firestore();
+            window.db = db;
         }
-
-        // Initialize services
-        db = firebase.firestore();
-        window.db = db; // Make db globally available
         
         // Initialize Analytics if available
         if (typeof firebase.analytics === 'function') {
@@ -50,20 +107,8 @@
     } catch (error) {
         console.error('Firebase initialization failed:', error);
         // Fallback to mock mode if Firebase fails
-        db = {
-            collection: () => ({
-                get: async () => ({ docs: [] }),
-                add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
-                doc: () => ({
-                    get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
-                    update: async () => {},
-                    delete: async () => {}
-                }),
-                limit: () => ({ get: async () => ({ docs: [] }) }), // Add limit method
-                orderBy: () => ({ get: async () => ({ docs: [] }) }) // Add orderBy method
-            }),
-        };
+        db = createMockFirestore();
         window.db = db;
-        console.warn('Using mock Firebase mode');
+        console.warn('Using mock Firebase mode due to initialization failure');
     }
 </script>
