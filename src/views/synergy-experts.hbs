@@ -359,24 +359,8 @@
         // Cache busting
         console.log('Loading synergy-experts page - v2.2', new Date().toISOString());
         
-        // Check if Firebase is already initialized
-        if (!window.firebase || !window.firebase.apps.length) {
-            // Firebase configuration
-            const firebaseConfig = {
-                apiKey: "AIzaSyDummyKeyForTesting",
-                authDomain: "grow-synergy.firebaseapp.com",
-                projectId: "grow-synergy",
-                storageBucket: "grow-synergy.appspot.com",
-                messagingSenderId: "123456789",
-                appId: "1:123456789:web:abcdef123456"
-            };
-            
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            console.log('Firebase initialized');
-        } else {
-            console.log('Firebase already initialized');
-        }
+        // Firebase will be initialized by firebase-config partial
+        console.log('Firebase initialization will be handled by partial');
         
         // Initialize Firestore explicitly if not available
         if (!window.db) {

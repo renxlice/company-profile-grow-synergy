@@ -565,26 +565,8 @@
             loadHeroSection();
         });
         
-        // Firebase initialization - check if already initialized
-        if (!window.firebase || !window.firebase.apps.length) {
-            const firebaseConfig = {
-                apiKey: "AIzaSyDummyKeyForTesting",
-                authDomain: "grow-synergy.firebaseapp.com",
-                projectId: "grow-synergy",
-                storageBucket: "grow-synergy.appspot.com",
-                messagingSenderId: "123456789",
-                appId: "1:123456789:web:abcdef123456"
-            };
-            
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            if (!window.db) {
-                window.db = firebase.firestore();
-            }
-            console.log('Firebase initialized for blog page');
-        } else {
-            console.log('Firebase already initialized for blog page');
-        }
+        // Firebase will be initialized by firebase-config partial
+        console.log('Firebase initialization will be handled by partial');
         
         // Load Hero Section Background
         async function loadHeroSection() {

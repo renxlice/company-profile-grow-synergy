@@ -782,6 +782,10 @@
                                     });
                                 } else {
                                     // Fallback to section center
+                                    console.log('Loading synergy-portfolio page - v2.2', new Date().toISOString());
+        
+        // Firebase will be initialized by firebase-config partial
+        console.log('Firebase initialization will be handled by partial');
                                     const sectionRect = portfoliosSection.getBoundingClientRect();
                                     const offset = sectionRect.top + window.pageYOffset - (window.innerHeight / 2) + (sectionRect.height / 2);
                                     window.scrollTo({
