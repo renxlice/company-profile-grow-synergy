@@ -287,6 +287,9 @@ async function bootstrap() {
     // Home route (serve the main website)
     server.get('/', serveIndexHtml);
     
+    // Home alias route
+    server.get('/home', serveIndexHtml);
+    
     // Synergy Academy route
     server.get('/synergy-academy', (req, res) => {
       res.send(`
@@ -501,7 +504,7 @@ async function bootstrap() {
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div class="card-hover bg-white p-8 rounded-lg shadow-lg text-center">
-                            <img src="/images/expert1.jpg" alt="Expert 1" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                            <img src="/images/experts/expert1.jpg" alt="Expert 1" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
                             <h3 class="text-xl font-semibold mb-2">Dr. Ahmad Wijaya</h3>
                             <p class="text-blue-600 mb-4">Lead Data Scientist</p>
                             <p class="text-gray-600 mb-4">15+ tahun pengalaman di Google dan Microsoft</p>
@@ -513,7 +516,7 @@ async function bootstrap() {
                         </div>
                         
                         <div class="card-hover bg-white p-8 rounded-lg shadow-lg text-center">
-                            <img src="/images/expert2.jpg" alt="Expert 2" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                            <img src="/images/experts/expert2.jpg" alt="Expert 2" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
                             <h3 class="text-xl font-semibold mb-2">Sarah Putri, M.Sc.</h3>
                             <p class="text-blue-600 mb-4">Senior Data Analyst</p>
                             <p class="text-gray-600 mb-4">12+ tahun pengalaman di banking dan fintech</p>
@@ -525,7 +528,7 @@ async function bootstrap() {
                         </div>
                         
                         <div class="card-hover bg-white p-8 rounded-lg shadow-lg text-center">
-                            <img src="/images/expert3.jpg" alt="Expert 3" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                            <img src="/images/experts/expert3.jpg" alt="Expert 3" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
                             <h3 class="text-xl font-semibold mb-2">Budi Santoso, Ph.D.</h3>
                             <p class="text-blue-600 mb-4">ML Engineering Manager</p>
                             <p class="text-gray-600 mb-4">10+ tahun pengalaman di startup unicorn</p>
@@ -620,7 +623,7 @@ async function bootstrap() {
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden">
-                            <img src="/images/project1.jpg" alt="Project 1" class="w-full h-48 object-cover">
+                            <img src="/images/portfolio/project1.jpg" alt="Project 1" class="w-full h-48 object-cover">
                             <div class="p-6">
                                 <h3 class="text-xl font-semibold mb-2">Sales Prediction System</h3>
                                 <p class="text-gray-600 mb-4">Machine learning model untuk prediksi penjualan retail dengan accuracy 95%</p>
@@ -634,7 +637,7 @@ async function bootstrap() {
                         </div>
                         
                         <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden">
-                            <img src="/images/project2.jpg" alt="Project 2" class="w-full h-48 object-cover">
+                            <img src="/images/portfolio/project2.jpg" alt="Project 2" class="w-full h-48 object-cover">
                             <div class="p-6">
                                 <h3 class="text-xl font-semibold mb-2">Customer Analytics Dashboard</h3>
                                 <p class="text-gray-600 mb-4">Interactive dashboard untuk analisis perilaku customer real-time</p>
@@ -648,7 +651,7 @@ async function bootstrap() {
                         </div>
                         
                         <div class="card-hover bg-white rounded-lg shadow-lg overflow-hidden">
-                            <img src="/images/project3.jpg" alt="Project 3" class="w-full h-48 object-cover">
+                            <img src="/images/portfolio/project3.jpg" alt="Project 3" class="w-full h-48 object-cover">
                             <div class="p-6">
                                 <h3 class="text-xl font-semibold mb-2">Fraud Detection System</h3>
                                 <p class="text-gray-600 mb-4">AI-powered system untuk deteksi fraud transaksi keuangan</p>
