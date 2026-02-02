@@ -651,13 +651,20 @@ app.get('/admin/academies-edit', (req, res) => {
 });
 
 app.get('/admin/blogs-form', (req, res) => {
-  if (!req.session || !req.session.isAuthenticated) {
-    return res.redirect('/admin/login');
+  try {
+    if (!req.session || !req.session.isAuthenticated) {
+      return res.redirect('/admin/login');
+    }
+    console.log('Rendering blogs-form for user:', req.session.user);
+    res.render('admin/blogs-form', {
+      title: 'Add Blog - Admin Dashboard',
+      user: req.session.user,
+      username: req.session.user
+    });
+  } catch (error) {
+    console.error('Error rendering blogs-form:', error);
+    res.status(500).send('Internal Server Error: ' + error.message);
   }
-  res.render('admin/blogs-form', {
-    title: 'Add Blog - Admin Dashboard',
-    user: req.session.user
-  });
 });
 
 // Admin Create Routes (Redirect to forms)
