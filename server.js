@@ -270,13 +270,13 @@ app.get('/firebase-config.js', (req, res) => {
   const firebaseConfig = `
     // Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyDummyKeyForTesting",
+      apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
       authDomain: "grow-synergy-indonesia.firebaseapp.com",
       projectId: "grow-synergy-indonesia",
       storageBucket: "grow-synergy-indonesia.appspot.com",
-      messagingSenderId: "1004183204068",
-      appId: "1:1004183204068:web:a26f30a911a37c9a6331a1",
-      measurementId: "G-49J1K6Y9WJ"
+      messagingSenderId: "584312572709",
+      appId: "1:584312572709:web:1e0ad87867af7b878668cc",
+      measurementId: "G-PKLP3Y3F4F"
     };
 
     // Initialize Firebase only if not already initialized
