@@ -366,7 +366,50 @@
             window.db = firebase.firestore();
         }
         
-        // Pagination variables
+        // Load hero section data from API
+        async function loadHeroSection() {
+            try {
+                const response = await fetch('/api/hero-section');
+                const heroSections = await response.json();
+                
+                if (heroSections.length > 0) {
+                    const hero = heroSections[0];
+                    const backgroundImage = document.getElementById('hero-background-image');
+                    const heroTitle = document.getElementById('hero-title');
+                    const heroSubtitle = document.getElementById('hero-subtitle');
+                    const heroDescription = document.getElementById('hero-description');
+                    
+                    // Update background image
+                    if (hero.backgroundImage && backgroundImage) {
+                        backgroundImage.style.backgroundImage = `url('${hero.backgroundImage}')`;
+                        console.log('Portfolio hero section updated with background:', hero.backgroundImage);
+                    }
+                    
+                    // Update hero text content
+                    if (hero.title && heroTitle) {
+                        heroTitle.textContent = hero.title;
+                    }
+                    if (hero.subtitle && heroSubtitle) {
+                        heroSubtitle.textContent = hero.subtitle;
+                    }
+                    if (hero.description && heroDescription) {
+                        heroDescription.textContent = hero.description;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading hero section for portfolio:', error);
+            }
+        }
+        
+        // Auto-refresh hero section every 5 seconds
+        function startAutoRefresh() {
+            setInterval(() => {
+                loadHeroSection();
+            }, 5000);
+        }
+        
+        // Start auto-refresh after initial load
+        setTimeout(startAutoRefresh, 2000);
         let currentPage = 1;
         const itemsPerPage = 8; // Show 8 portfolios per page
         let allPortfolios = [];
@@ -384,10 +427,12 @@
                 }
             });
 
-            console.log('DEBUG: About to call loadPortfolios...');
+            console.log('DEBUG: About to call loadPortfolios and loadHeroSection...');
             // Load portfolios from Firestore
             loadPortfolios();
-            console.log('DEBUG: loadPortfolios called');
+            // Load hero section data
+            loadHeroSection();
+            console.log('DEBUG: loadPortfolios and loadHeroSection called');
         });
         
         // Load portfolios from Firestore

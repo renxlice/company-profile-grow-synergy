@@ -552,9 +552,24 @@
         async function loadExperts() {
             try {
                 console.log('Loading experts from Firestore...');
-                const expertsSnapshot = await db.collection('experts').get();
+                console.log('Firebase db available:', !!window.db);
+                
+                // Test connection first
+                console.log('Testing connection to experts collection...');
+                const testDoc = await window.db.collection('experts').limit(1).get();
+                console.log('Test connection successful, docs:', testDoc.docs.length);
+                
+                console.log('Fetching all experts...');
+                const expertsSnapshot = await window.db.collection('experts').get();
+                console.log('Snapshot received, docs count:', expertsSnapshot.docs.length);
+                
                 allExperts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 console.log('Experts loaded:', allExperts);
+                console.log('Experts length:', allExperts.length);
+                
+                if (allExperts.length > 0) {
+                    console.log('First expert data:', allExperts[0]);
+                }
                 
                 // If no data from Firestore, use mock data
                 if (allExperts.length === 0) {
@@ -566,7 +581,11 @@
                 updateExpertsGridWithPagination();
             } catch (error) {
                 console.error('Error loading experts:', error);
-                // Use mock data on error
+                console.error('Error stack:', error.stack);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                // Use mock data if Firestore fails
+                console.log('Falling back to mock data...');
                 allExperts = getMockExperts();
                 updateExpertsGridWithPagination();
             }
@@ -1344,19 +1363,31 @@
         /* Remove any event interference */
         a {
             pointer-events: auto !important;
-            cursor: pointer !important;
-        }
     </style>
     
     <script>
-        // Mobile menu functionality
+        // Initialize Firebase explicitly if not available
+        if (!window.db) {
+            window.db = firebase.firestore();
+        }
+        
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const closeMenuBtn = document.getElementById('close-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
+            console.log('DEBUG: DOMContentLoaded fired for synergy-experts');
+            const currentPageNav = 'synergy-experts';
+            const navLinks = document.querySelectorAll('.nav-link');
             
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function() {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === currentPageNav) {
+                    link.classList.add('active');
+                }
+            });
+
+            console.log('DEBUG: About to call loadExperts...');
+            // Load experts from Firestore
+            loadExperts();
+            console.log('DEBUG: loadExperts called');
                     mobileMenu.classList.remove('hidden');
                 });
             }

@@ -430,6 +430,26 @@ app.post('/api/analytics/track', (req, res) => {
   res.json({ status: 'success', message: 'Analytics tracked' });
 });
 
+// Add API route for hero section
+app.get('/api/hero-section', (req, res) => {
+  console.log('🎨 Hero section data request received');
+  
+  // Mock hero data for now (will be replaced with actual Firebase data)
+  const mockHeroData = [
+    {
+      id: 'hero-1',
+      backgroundImage: '/images/hero-background.jpg',
+      title: 'Transformasi Karir dengan Data Analitik',
+      subtitle: 'Platform Pembelajaran Terbaik',
+      description: 'Pelatihan intensif dengan mentor profesional dan proyek real-world untuk karir Anda',
+      buttonText1: 'Mulai Belajar Sekarang',
+      buttonText2: 'Download Kurikulum'
+    }
+  ];
+  
+  res.json(mockHeroData);
+});
+
 // Add API route for Firebase data
 app.get('/api/firebase/data', (req, res) => {
   console.log('🔥 Firebase data request received');
