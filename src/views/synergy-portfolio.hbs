@@ -37,11 +37,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/css/custom.css" rel="stylesheet">
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
-    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {{{structuredDataJson}}}
@@ -358,19 +353,24 @@
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    {{> firebase-config}}
     <script>
-        // Initialize Firestore explicitly jika belum ada
-        if (!window.db) {
-            window.db = firebase.firestore();
-        }
-        
         // Load hero section data from API
         async function loadHeroSection() {
             try {
-                const response = await fetch('/api/hero-section');
-                const heroSections = await response.json();
+                console.log('Loading hero section background...');
+                console.log('DEBUG: Firebase db available:', !!window.db);
+                
+                // Test connection first
+                const testDoc = await window.db.collection('heroSection').limit(1).get();
+                console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
+                
+                // Get hero section data
+                const heroSnapshot = await window.db.collection('heroSection').get();
+                const heroSections = heroSnapshot.docs.map(doc => doc.data());
+                
+                console.log('Hero sections data:', heroSections);
+                console.log('Hero sections length:', heroSections.length);
                 
                 if (heroSections.length > 0) {
                     const hero = heroSections[0];
@@ -379,10 +379,13 @@
                     const heroSubtitle = document.getElementById('hero-subtitle');
                     const heroDescription = document.getElementById('hero-description');
                     
+                    console.log('Background div found:', backgroundImage);
+                    
                     // Update background image
                     if (hero.backgroundImage && backgroundImage) {
+                        console.log('Setting background from Firebase:', hero.backgroundImage);
                         backgroundImage.style.backgroundImage = `url('${hero.backgroundImage}')`;
-                        console.log('Portfolio hero section updated with background:', hero.backgroundImage);
+                        console.log('Final background style:', backgroundImage.style.backgroundImage);
                     }
                     
                     // Update hero text content
@@ -397,7 +400,7 @@
                     }
                 }
             } catch (error) {
-                console.error('Error loading hero section for portfolio:', error);
+                console.error('Error loading hero section:', error);
             }
         }
         
