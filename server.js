@@ -670,69 +670,13 @@ app.get('/synergy-experts', (req, res) => {
       content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
       content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
       
-      // Add Firebase SDK and data loading
+      // Add Firebase SDK
       content = content.replace('</head>', `
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
         <script src="/firebase-config.js"></script>
-        </head>
-      `);
-      
-      // Add data loading script
-      content = content.replace('</body>', `
-        <script>
-          // Load experts data from API
-          async function loadExpertsData() {
-            try {
-              console.log('🔥 Loading experts data from API...');
-              const response = await fetch('/api/firebase/data');
-              const data = await response.json();
-              console.log('✅ Experts data loaded:', data.experts);
-              
-              // Update experts section
-              if (data.experts && data.experts.length > 0) {
-                const expertsContainer = document.querySelector('.experts-container');
-                if (expertsContainer) {
-                  expertsContainer.innerHTML = '';
-                  data.experts.forEach(expert => {
-                    const expertCard = createExpertCard(expert);
-                    expertsContainer.appendChild(expertCard);
-                  });
-                }
-              }
-              
-              console.log('🎉 Experts page updated with Firestore data!');
-            } catch (error) {
-              console.error('❌ Error loading experts data:', error);
-            }
-          }
-          
-          function createExpertCard(expert) {
-            const card = document.createElement('div');
-            card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300';
-            card.innerHTML = \`
-              <div class="text-center">
-                <img src="\${expert.image}" alt="\${expert.name}" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
-                <h3 class="text-xl font-semibold mb-2">\${expert.name}</h3>
-                <p class="text-gray-600 mb-2">\${expert.position}</p>
-                <p class="text-sm text-gray-500 mb-2">\${expert.experience}</p>
-                <div class="flex items-center justify-center mb-2">
-                  <span class="text-yellow-400">★</span>
-                  <span class="ml-1 text-gray-700">\${expert.rating}</span>
-                  <span class="ml-2 text-gray-500">(\${expert.reviewCount} reviews)</span>
-                </div>
-                <p class="text-gray-600 text-sm">\${expert.description}</p>
-              </div>
-            \`;
-            return card;
-          }
-          
-          // Initialize when page loads
-          document.addEventListener('DOMContentLoaded', loadExpertsData);
-        </script>
-        </body>
       `);
       
       res.send(content);
