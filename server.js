@@ -92,10 +92,24 @@ function getIndexHbsContent() {
       content = content.replace(/\{\{\/[^}]*\}\}/g, '');
       content = content.replace(/\{\{[^}]*\}\}/g, '');
       
+      // Remove image template variables
+      content = content.replace(/\{\{image\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{this\.backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
+      
       // Remove conditional blocks
       content = content.replace(/\{\{#if googleAnalyticsId\}\}[\s\S]*?\{\{\/if\}\}/g, '');
       
-      // Add Firebase SDK scripts and initialization
+      // Remove Firebase duplicate warning by checking if already loaded
+      content = content.replace(/<!-- Firebase SDK -->[\s\S]*?<\/head>/, (match) => {
+        if (content.includes('firebase-app-compat.js')) {
+          return '</head>';
+        }
+        return match;
+      });
+      
+      // Add Firebase SDK scripts and initialization only once
       content = content.replace('</head>', `
         <!-- Firebase SDK -->
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -617,6 +631,25 @@ app.get('/synergy-experts', (req, res) => {
     if (fs.existsSync(expertsPath)) {
       let content = fs.readFileSync(expertsPath, 'utf8');
       
+      // Remove all Handlebars template variables
+      content = content.replace(/\{\{#if heroSections\}\}/g, '');
+      content = content.replace(/\{\{#each heroSections\}\}/g, '');
+      content = content.replace(/\{\{\/each\}\}/g, '');
+      content = content.replace(/\{\{\/if\}\}/g, '');
+      content = content.replace(/\{\{#if\}\}/g, '');
+      content = content.replace(/\{\{#unless\}\}/g, '');
+      content = content.replace(/\{\{\/unless\}\}/g, '');
+      content = content.replace(/\{\{#each\}\}/g, '');
+      content = content.replace(/\{\{#with\}\}/g, '');
+      content = content.replace(/\{\{\/with\}\}/g, '');
+      content = content.replace(/\{\{#[^}]*\}\}/g, '');
+      content = content.replace(/\{\{\/[^}]*\}\}/g, '');
+      content = content.replace(/\{\{[^}]*\}\}/g, '');
+      content = content.replace(/\{\{image\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{this\.backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
+      
       // Add Firebase SDK and data loading
       content = content.replace('</head>', `
         <!-- Firebase SDK -->
@@ -639,7 +672,7 @@ app.get('/synergy-experts', (req, res) => {
               console.log('✅ Experts data loaded:', data.experts);
               
               // Update experts section
-              if (data.experts) {
+              if (data.experts && data.experts.length > 0) {
                 const expertsContainer = document.querySelector('.experts-container');
                 if (expertsContainer) {
                   expertsContainer.innerHTML = '';
@@ -781,6 +814,25 @@ app.get('/synergy-academy', (req, res) => {
     if (fs.existsSync(academyPath)) {
       let content = fs.readFileSync(academyPath, 'utf8');
       
+      // Remove all Handlebars template variables
+      content = content.replace(/\{\{#if heroSections\}\}/g, '');
+      content = content.replace(/\{\{#each heroSections\}\}/g, '');
+      content = content.replace(/\{\{\/each\}\}/g, '');
+      content = content.replace(/\{\{\/if\}\}/g, '');
+      content = content.replace(/\{\{#if\}\}/g, '');
+      content = content.replace(/\{\{#unless\}\}/g, '');
+      content = content.replace(/\{\{\/unless\}\}/g, '');
+      content = content.replace(/\{\{#each\}\}/g, '');
+      content = content.replace(/\{\{#with\}\}/g, '');
+      content = content.replace(/\{\{\/with\}\}/g, '');
+      content = content.replace(/\{\{#[^}]*\}\}/g, '');
+      content = content.replace(/\{\{\/[^}]*\}\}/g, '');
+      content = content.replace(/\{\{[^}]*\}\}/g, '');
+      content = content.replace(/\{\{image\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{this\.backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
+      
       // Add Firebase SDK and data loading
       content = content.replace('</head>', `
         <!-- Firebase SDK -->
@@ -803,7 +855,7 @@ app.get('/synergy-academy', (req, res) => {
               console.log('✅ Academy data loaded:', data.academy);
               
               // Update academy section
-              if (data.academy) {
+              if (data.academy && data.academy.length > 0) {
                 const academyContainer = document.querySelector('.academy-container');
                 if (academyContainer) {
                   academyContainer.innerHTML = '';
@@ -868,6 +920,25 @@ app.get('/blog', (req, res) => {
     if (fs.existsSync(blogPath)) {
       let content = fs.readFileSync(blogPath, 'utf8');
       
+      // Remove all Handlebars template variables
+      content = content.replace(/\{\{#if heroSections\}\}/g, '');
+      content = content.replace(/\{\{#each heroSections\}\}/g, '');
+      content = content.replace(/\{\{\/each\}\}/g, '');
+      content = content.replace(/\{\{\/if\}\}/g, '');
+      content = content.replace(/\{\{#if\}\}/g, '');
+      content = content.replace(/\{\{#unless\}\}/g, '');
+      content = content.replace(/\{\{\/unless\}\}/g, '');
+      content = content.replace(/\{\{#each\}\}/g, '');
+      content = content.replace(/\{\{#with\}\}/g, '');
+      content = content.replace(/\{\{\/with\}\}/g, '');
+      content = content.replace(/\{\{#[^}]*\}\}/g, '');
+      content = content.replace(/\{\{\/[^}]*\}\}/g, '');
+      content = content.replace(/\{\{[^}]*\}\}/g, '');
+      content = content.replace(/\{\{image\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{this\.backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
+      content = content.replace(/\{\{[^}]*image[^}]*\}\}/g, '/images/hero-background.jpg');
+      
       // Add Firebase SDK and data loading
       content = content.replace('</head>', `
         <!-- Firebase SDK -->
@@ -890,7 +961,7 @@ app.get('/blog', (req, res) => {
               console.log('✅ Blog data loaded:', data.blogs);
               
               // Update blog section
-              if (data.blogs) {
+              if (data.blogs && data.blogs.length > 0) {
                 const blogContainer = document.querySelector('.blog-container');
                 if (blogContainer) {
                   blogContainer.innerHTML = '';
