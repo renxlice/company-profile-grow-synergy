@@ -1,11 +1,12 @@
 import * as admin from 'firebase-admin';
 
 // Initialize Firebase Admin SDK
-let db: admin.firestore.Firestore;
-let storage: admin.storage.Storage;
+export let db: admin.firestore.Firestore;
+export let storage: admin.storage.Storage;
 
 // Check if we want to use Firebase or Mock mode
-const USE_FIREBASE = process.env.NODE_ENV === 'production' && process.env.FIREBASE_PRIVATE_KEY; // Only use Firebase if all env vars are set
+const USE_FIREBASE = process.env.NODE_ENV === 'production' && 
+  (process.env.FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID_PART1); // More flexible check
 
 // Initialize Firebase with environment variables
 if (USE_FIREBASE) {
@@ -35,6 +36,25 @@ if (USE_FIREBASE) {
         projectId: process.env.FIREBASE_PROJECT_ID,
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
       });
+    } else if (process.env.FIREBASE_PROJECT_ID_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART1) {
+      // Alternative: Use split environment variables
+      const projectId = process.env.FIREBASE_PROJECT_ID_PART1 + (process.env.FIREBASE_PROJECT_ID_PART2 || '');
+      let privateKey = process.env.FIREBASE_PRIVATE_KEY_PART1 + (process.env.FIREBASE_PRIVATE_KEY_PART2 || '');
+      
+      // Clean up the private key format
+      privateKey = privateKey.replace(/\\n/g, '\n').trim();
+      
+      const serviceAccount = {
+        projectId: projectId,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-xxxxx@your-project.iam.gserviceaccount.com',
+        privateKey: privateKey,
+      };
+
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        projectId: projectId,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || projectId + '.appspot.com',
+      });
     } else {
       // Development: Use service account file if available
       try {
@@ -48,207 +68,147 @@ if (USE_FIREBASE) {
         console.warn('Firebase service account file not found, using mock mode');
         db = null as any;
         storage = null as any;
-        console.error('🔄 Falling back to mock mode...');
-        initializeMockMode();
       }
-    };
+    }
     
-    db = admin.firestore();
-    storage = admin.storage();
-    
+    if (admin.apps.length > 0) {
+      db = admin.firestore();
+      storage = admin.storage();
+      console.log('✅ Firebase initialized successfully');
+    }
   } catch (error) {
-    console.error('❌ Firebase initialization failed:', error.message);
-    console.error('🔄 Using mock mode for development');
-    initializeMockMode();
+    console.error('❌ Firebase initialization failed:', error);
+    console.log('🔄 Using mock mode for development');
+    db = null as any;
+    storage = null as any;
   }
 } else {
-  console.log('🧪 Using mock mode for development');
-  console.log('💡 To use Firebase, set NODE_ENV=production or FORCE_FIREBASE=true');
-  initializeMockMode();
+  console.log('🔄 Firebase disabled, using mock mode');
+  db = null as any;
+  storage = null as any;
 }
 
-function initializeMockMode() {
-  console.log('Initializing mock mode for development');
-  
-  // Mock Firestore with sample data for dashboard
-  const mockData = {
-    heroSection: [
-      {
-        id: 'mock-hero-1',
-        title: 'Welcome to GROW SYNERGY INDONESIA',
-        subtitle: 'Platform terbaik untuk pengembangan profesional',
-        backgroundImage: '/uploads/admin/f4e88ab5e1beeab152609db1096dc6de.png',
-        buttonText1: 'Mulai Sekarang',
-        buttonText2: 'Pelajari Lebih Lanjut',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ],
-    aboutSection: [
-      {
-        id: 'mock-about-1',
-        title: 'Tentang Kami',
-        description: 'GROW SYNERGY INDONESIA adalah platform terkemuka yang menghubungkan para profesional dengan peluang pengembangan karir terbaik.',
-        image: '/images/about-us.jpg',
-        buttonText1: 'Tonton Video',
-        buttonText2: 'Lebih Lanjut',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ],
-    experts: [
-      {
-        id: 'mock-expert-1',
-        name: 'Dr. Budi Santoso',
-        position: 'Senior Data Scientist',
-        experience: '10+ Tahun',
-        rating: 4.8,
-        reviewCount: 150,
-        description: 'Expert dalam machine learning dan AI',
-        image: '/images/experts/expert1.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: 'mock-expert-2',
-        name: 'Siti Nurhaliza',
-        position: 'Business Intelligence Expert',
-        experience: '8+ Tahun',
-        rating: 4.9,
-        reviewCount: 200,
-        description: 'Spesialis dalam BI dan dashboard development',
-        image: '/images/experts/expert2.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ],
-    portfolios: [
-      {
-        id: 'mock-portfolio-1',
-        title: 'E-Commerce Platform',
-        category: 'Web Development',
-        description: 'Platform e-commerce modern dengan React dan Node.js',
-        technologies: ['React', 'Node.js', 'MongoDB'],
-        projectUrl: '#',
-        githubUrl: '#',
-        image: '/images/portfolio/project1.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: 'mock-portfolio-2',
-        title: 'Mobile Banking App',
-        category: 'Mobile Development',
-        description: 'Aplikasi mobile banking dengan Flutter',
-        technologies: ['Flutter', 'Firebase', 'Node.js'],
-        projectUrl: '#',
-        githubUrl: '#',
-        image: '/images/portfolio/project2.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ],
-    academies: [
-      {
-        id: 'mock-academy-1',
-        title: 'Data Science Fundamentals',
-        author: 'Dr. Budi Santoso',
-        price: 'Rp 2.500.000',
-        rating: 4.7,
-        studentCount: 150,
-        duration: '8 Minggu',
-        certification: 'Yes',
-        level: 'Beginner',
-        schedule: 'Weekend',
-        mode: 'Online',
-        description: 'Pengenalan dasar data science dan machine learning',
-        image: '/images/courses/course1.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        id: 'mock-academy-2',
-        title: 'Advanced React Development',
-        author: 'Siti Nurhaliza',
-        price: 'Rp 3.000.000',
-        rating: 4.8,
-        studentCount: 200,
-        duration: '10 Minggu',
-        certification: 'Yes',
-        level: 'Advanced',
-        schedule: 'Weekday',
-        mode: 'Hybrid',
-        description: 'React advanced patterns dan best practices',
-        image: '/images/courses/course2.jpg',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+// Mock data for development
+const mockData = {
+  home: {
+    title: "Pelatihan Data Analitik Terbaik di Indonesia #1",
+    description: "Kursus Online Bersertifikat BNSP | GROW SYNERGY INDONESIA",
+    heroTitle: "Transformasi Karir dengan Data Analitik",
+    heroDescription: "Pelatihan intensif dengan mentor profesional dan proyek real-world"
+  },
+  about: {
+    title: "Tentang GROW SYNERGY INDONESIA",
+    description: "Platform pembelajaran data analitik terbaik di Indonesia",
+    content: "GROW SYNERGY INDONESIA adalah platform pembelajaran data analitik dengan kurikulum terbaik dan mentor berpengalaman."
+  },
+  academy: {
+    title: "Synergy Academy",
+    description: "Platform pembelajaran data analitik dengan kurikulum terbaik",
+    courses: [
+      { title: "Data Analyst Fundamentals", duration: "3 bulan" },
+      { title: "Advanced SQL & Visualization", duration: "2 bulan" },
+      { title: "Machine Learning Basics", duration: "4 bulan" }
     ]
-  };
+  },
+  experts: {
+    title: "Synergy Experts",
+    description: "Tim ahli data analitik dengan pengalaman profesional",
+    team: [
+      { name: "Dr. Ahmad Wijaya", expertise: "Data Science" },
+      { name: "Sarah Putri", expertise: "Business Intelligence" },
+      { name: "Budi Santoso", expertise: "Machine Learning" }
+    ]
+  },
+  portfolio: {
+    title: "Synergy Portfolio", 
+    description: "Koleksi proyek dan studi kasus data analitik kami",
+    projects: [
+      { title: "Retail Analytics Dashboard", client: "PT. Retail Maju" },
+      { title: "Sales Prediction Model", client: "PT. Sales Global" },
+      { title: "Customer Segmentation", client: "PT. Customer First" }
+    ]
+  }
+};
 
-  // Mock Firestore implementation
-  db = {
-    collection: (collectionName: string) => ({
-      get: async () => {
-        const data = mockData[collectionName as keyof typeof mockData] || [];
-        return {
-          docs: data.map(item => ({
-            id: item.id,
-            data: () => item,
-            exists: true
-          }))
-        };
-      },
-      add: async (data: any) => {
-        console.log('Mock: Adding data to', collectionName, ':', data);
-        const newId = 'mock-' + Date.now();
-        const newItem = { ...data, id: newId, createdAt: new Date(), updatedAt: new Date() };
-        
-        // Add to mock data
-        if (mockData[collectionName as keyof typeof mockData]) {
-          (mockData[collectionName as keyof typeof mockData] as any[]).push(newItem);
-        }
-        
-        return {
-          get: async () => ({
-            id: newId,
-            data: () => newItem
-          })
-        };
-      },
-      doc: (id: string) => ({
-        get: async () => {
-          const data = mockData[collectionName as keyof typeof mockData] || [];
-          const item = data.find((item: any) => item.id === id);
-          return {
-            exists: !!item,
-            id: id,
-            data: () => item || {}
-          };
-        },
-        update: async (updateData: any) => {
-          console.log('Mock: Updating', collectionName, 'with id', id, ':', updateData);
-          const data = mockData[collectionName as keyof typeof mockData] || [];
-          const index = data.findIndex((item: any) => item.id === id);
-          if (index !== -1) {
-            (data as any)[index] = { ...data[index], ...updateData, updatedAt: new Date() };
-          }
-        },
-        delete: async () => {
-          console.log('Mock: Deleting', collectionName, 'with id', id);
-          const data = mockData[collectionName as keyof typeof mockData] || [];
-          const index = data.findIndex((item: any) => item.id === id);
-          if (index !== -1) {
-            data.splice(index, 1);
-          }
-        }
-      })
-    }),
-  } as any;
+export class FirebaseService {
+  getDb(): admin.firestore.Firestore {
+    return db;
+  }
 
-  // Mock Storage
-  storage = {} as any;
+  getStorage(): admin.storage.Storage {
+    return storage;
+  }
+
+  isFirebaseEnabled(): boolean {
+    return db !== null;
+  }
+
+  // Mock data methods for development
+  async getHomeData() {
+    if (this.isFirebaseEnabled()) {
+      try {
+        const doc = await db.collection('content').doc('home').get();
+        return doc.exists ? doc.data() : mockData.home;
+      } catch (error) {
+        console.error('Error fetching home data:', error);
+        return mockData.home;
+      }
+    }
+    return mockData.home;
+  }
+
+  async getAboutData() {
+    if (this.isFirebaseEnabled()) {
+      try {
+        const doc = await db.collection('content').doc('about').get();
+        return doc.exists ? doc.data() : mockData.about;
+      } catch (error) {
+        console.error('Error fetching about data:', error);
+        return mockData.about;
+      }
+    }
+    return mockData.about;
+  }
+
+  async getAcademyData() {
+    if (this.isFirebaseEnabled()) {
+      try {
+        const snapshot = await db.collection('academies').get();
+        if (!snapshot.empty) {
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+      } catch (error) {
+        console.error('Error fetching academy data:', error);
+      }
+    }
+    return mockData.academy;
+  }
+
+  async getExpertsData() {
+    if (this.isFirebaseEnabled()) {
+      try {
+        const snapshot = await db.collection('experts').get();
+        if (!snapshot.empty) {
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+      } catch (error) {
+        console.error('Error fetching experts data:', error);
+      }
+    }
+    return mockData.experts;
+  }
+
+  async getPortfolioData() {
+    if (this.isFirebaseEnabled()) {
+      try {
+        const snapshot = await db.collection('portfolios').get();
+        if (!snapshot.empty) {
+          return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+      } catch (error) {
+        console.error('Error fetching portfolio data:', error);
+      }
+    }
+    return mockData.portfolio;
+  }
 }
-
-export { db, storage };
-export default admin;
