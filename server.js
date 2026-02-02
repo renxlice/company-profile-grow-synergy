@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
+const admin = require('firebase-admin');
 
 const app = express();
 
@@ -20,6 +21,17 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
+
+// Initialize Firebase Admin SDK
+const serviceAccount = require('./company-profile-grow-synergy-firebase-adminsdk.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  projectId: 'company-profile-grow-synergy'
+});
+
+const db = admin.firestore();
+console.log('🔥 Firebase Admin SDK initialized');
 
 // Handlebars setup
 app.engine('hbs', exphbs.engine({
@@ -461,10 +473,74 @@ app.get('/admin/dashboard', (req, res) => {
     return res.redirect('/admin/login');
   }
   
-  res.render('admin/dashboard', {
-    title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
-    user: req.session.user
-  });
+  // Fetch data from Firestore
+  const fetchData = async () => {
+    try {
+      const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot] = await Promise.all([
+        db.collection('experts').get(),
+        db.collection('portfolios').get(),
+        db.collection('academies').get(),
+        db.collection('blogs').get(),
+        db.collection('testimonials').get(),
+        db.collection('heroSection').get()
+      ]);
+
+      const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const portfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const academies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const heroSections = heroSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      res.render('admin/dashboard', {
+        title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
+        user: req.session.user,
+        username: req.session.user,
+        data: {
+          experts,
+          portfolios,
+          academies,
+          blogs,
+          testimonials,
+          heroSections
+        },
+        stats: {
+          totalExperts: experts.length,
+          totalPortfolios: portfolios.length,
+          totalAcademies: academies.length,
+          totalBlogs: blogs.length,
+          totalTestimonials: testimonials.length,
+          totalHeroSections: heroSections.length
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      res.render('admin/dashboard', {
+        title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
+        user: req.session.user,
+        username: req.session.user,
+        data: {
+          experts: [],
+          portfolios: [],
+          academies: [],
+          blogs: [],
+          testimonials: [],
+          heroSections: []
+        },
+        stats: {
+          totalExperts: 0,
+          totalPortfolios: 0,
+          totalAcademies: 0,
+          totalBlogs: 0,
+          totalTestimonials: 0,
+          totalHeroSections: 0
+        },
+        error: 'Failed to load data from Firestore'
+      });
+    }
+  };
+
+  fetchData();
 });
 
 app.get('/admin/logout', (req, res) => {
@@ -492,10 +568,28 @@ app.get('/admin/hero-section', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/hero-section', {
-    title: 'Hero Section Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch hero sections from Firestore
+  db.collection('heroSection').get()
+    .then(snapshot => {
+      const heroSections = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/hero-section', {
+        title: 'Hero Section Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        heroSections
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching hero sections:', error);
+      res.render('admin/hero-section', {
+        title: 'Hero Section Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        heroSections: [],
+        error: 'Failed to load hero sections'
+      });
+    });
 });
 
 app.get('/admin/about-section', (req, res) => {
@@ -503,10 +597,28 @@ app.get('/admin/about-section', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/about-section', {
-    title: 'About Section Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch about sections from Firestore
+  db.collection('aboutSection').get()
+    .then(snapshot => {
+      const aboutSections = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/about-section', {
+        title: 'About Section Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        aboutSections
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching about sections:', error);
+      res.render('admin/about-section', {
+        title: 'About Section Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        aboutSections: [],
+        error: 'Failed to load about sections'
+      });
+    });
 });
 
 app.get('/admin/experts', (req, res) => {
@@ -514,10 +626,28 @@ app.get('/admin/experts', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/experts', {
-    title: 'Experts Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch experts from Firestore
+  db.collection('experts').get()
+    .then(snapshot => {
+      const experts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/experts', {
+        title: 'Experts Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        experts
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching experts:', error);
+      res.render('admin/experts', {
+        title: 'Experts Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        experts: [],
+        error: 'Failed to load experts'
+      });
+    });
 });
 
 app.get('/admin/portfolios', (req, res) => {
@@ -525,10 +655,28 @@ app.get('/admin/portfolios', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/portfolios', {
-    title: 'Portfolio Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch portfolios from Firestore
+  db.collection('portfolios').get()
+    .then(snapshot => {
+      const portfolios = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/portfolios', {
+        title: 'Portfolio Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        portfolios
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching portfolios:', error);
+      res.render('admin/portfolios', {
+        title: 'Portfolio Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        portfolios: [],
+        error: 'Failed to load portfolios'
+      });
+    });
 });
 
 app.get('/admin/academies', (req, res) => {
@@ -536,10 +684,28 @@ app.get('/admin/academies', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/academies', {
-    title: 'Academy Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch academies from Firestore
+  db.collection('academies').get()
+    .then(snapshot => {
+      const academies = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/academies', {
+        title: 'Academy Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        academies
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching academies:', error);
+      res.render('admin/academies', {
+        title: 'Academy Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        academies: [],
+        error: 'Failed to load academies'
+      });
+    });
 });
 
 app.get('/admin/testimonials', (req, res) => {
@@ -547,10 +713,28 @@ app.get('/admin/testimonials', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/testimonials', {
-    title: 'Testimonials Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch testimonials from Firestore
+  db.collection('testimonials').get()
+    .then(snapshot => {
+      const testimonials = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/testimonials', {
+        title: 'Testimonials Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        testimonials
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching testimonials:', error);
+      res.render('admin/testimonials', {
+        title: 'Testimonials Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        testimonials: [],
+        error: 'Failed to load testimonials'
+      });
+    });
 });
 
 app.get('/admin/blogs', (req, res) => {
@@ -558,10 +742,28 @@ app.get('/admin/blogs', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
-  res.render('admin/blogs', {
-    title: 'Blog Management - Admin Dashboard',
-    user: req.session.user
-  });
+  
+  // Fetch blogs from Firestore
+  db.collection('blogs').get()
+    .then(snapshot => {
+      const blogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      res.render('admin/blogs', {
+        title: 'Blog Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        blogs
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching blogs:', error);
+      res.render('admin/blogs', {
+        title: 'Blog Management - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        blogs: [],
+        error: 'Failed to load blogs'
+      });
+    });
 });
 
 // Admin Form Routes
@@ -571,7 +773,9 @@ app.get('/admin/hero-section-form', (req, res) => {
   }
   res.render('admin/hero-section-form', {
     title: 'Add Hero Section - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -581,7 +785,9 @@ app.get('/admin/about-section-form', (req, res) => {
   }
   res.render('admin/about-section-form', {
     title: 'Add About Section - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -591,7 +797,9 @@ app.get('/admin/about-section-edit', (req, res) => {
   }
   res.render('admin/about-section-edit', {
     title: 'Edit About Section - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -601,7 +809,9 @@ app.get('/admin/experts-form', (req, res) => {
   }
   res.render('admin/experts-form', {
     title: 'Add Expert - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -611,7 +821,9 @@ app.get('/admin/experts-edit', (req, res) => {
   }
   res.render('admin/experts-edit', {
     title: 'Edit Expert - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -621,7 +833,9 @@ app.get('/admin/portfolios-form', (req, res) => {
   }
   res.render('admin/portfolios-form', {
     title: 'Add Portfolio - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -631,7 +845,9 @@ app.get('/admin/portfolios-edit', (req, res) => {
   }
   res.render('admin/portfolios-edit', {
     title: 'Edit Portfolio - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -641,7 +857,9 @@ app.get('/admin/academies-form-fixed', (req, res) => {
   }
   res.render('admin/academies-form-fixed', {
     title: 'Add Academy - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
@@ -651,7 +869,9 @@ app.get('/admin/academies-edit', (req, res) => {
   }
   res.render('admin/academies-edit', {
     title: 'Edit Academy - Admin Dashboard',
-    user: req.session.user
+    user: req.session.user,
+    username: req.session.user,
+    item: null
   });
 });
 
