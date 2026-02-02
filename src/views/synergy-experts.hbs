@@ -1063,7 +1063,7 @@
             loadExperts();
 
             // Debug hero section background
-            const heroSections = {{#if heroSections}}[{{#each heroSections}}{backgroundImage: '{{this.backgroundImage}}'}{{#unless @last}},{{/unless}}{{/each}}]{{else}}[]{{/if}};
+            const heroSections = [];
             console.log('Hero sections data:', heroSections);
             console.log('Hero sections length:', heroSections.length);
             
@@ -1388,6 +1388,16 @@
             // Load experts from Firestore
             loadExperts();
             console.log('DEBUG: loadExperts called');
+        });
+        
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
                     mobileMenu.classList.remove('hidden');
                 });
             }
