@@ -99,7 +99,15 @@ app.get('/synergy-experts', (req, res) => {
         "name": "GROW SYNERGY INDONESIA",
         "url": "https://grow-synergy-indonesia.com"
       }
-    })
+    }),
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
+    firebaseProjectId: "grow-synergy-indonesia",
+    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
   });
 });
 
@@ -134,7 +142,15 @@ app.get('/synergy-portfolio', (req, res) => {
         "name": "GROW SYNERGY INDONESIA",
         "url": "https://grow-synergy-indonesia.com"
       }
-    })
+    }),
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
+    firebaseProjectId: "grow-synergy-indonesia",
+    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
   });
 });
 
@@ -169,7 +185,15 @@ app.get('/synergy-academy', (req, res) => {
         "name": "GROW SYNERGY INDONESIA",
         "url": "https://grow-synergy-indonesia.com"
       }
-    })
+    }),
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
+    firebaseProjectId: "grow-synergy-indonesia",
+    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
   });
 });
 
@@ -192,7 +216,15 @@ app.get('/blog', (req, res) => {
     twitterDescription: 'Blog data analitik dengan tips, tutorial, dan insights untuk karir data analyst',
     twitterImage: 'https://grow-synergy-indonesia.com/images/blog-twitter-image.jpg',
     canonical: 'https://grow-synergy-indonesia.com/blog',
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
+    firebaseProjectId: "grow-synergy-indonesia",
+    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
   });
 });
 
