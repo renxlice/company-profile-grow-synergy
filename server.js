@@ -109,6 +109,7 @@ function getIndexHbsContent() {
         
         <!-- Hero Section Centering Fix -->
         <style>
+          /* Force hero section centering */
           .hero-section {
             display: flex !important;
             align-items: center !important;
@@ -116,12 +117,16 @@ function getIndexHbsContent() {
             text-align: center !important;
             min-height: 100vh !important;
             position: relative !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 auto !important;
+            width: 100vw !important;
+            max-width: 100vw !important;
+            margin: 0 !important;
             padding: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            top: 0 !important;
           }
           
+          /* Force hero content centering */
           .hero-content {
             max-width: 800px !important;
             width: 100% !important;
@@ -130,14 +135,21 @@ function getIndexHbsContent() {
             position: relative !important;
             margin: 0 auto !important;
             text-align: center !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
           }
           
+          /* Force all hero text centering */
           .hero-title {
             font-size: 3.5rem !important;
             font-weight: 700 !important;
             margin-bottom: 1.5rem !important;
             line-height: 1.2 !important;
             text-align: center !important;
+            width: 100% !important;
+            display: block !important;
           }
           
           .hero-subtitle {
@@ -145,6 +157,8 @@ function getIndexHbsContent() {
             margin-bottom: 2rem !important;
             line-height: 1.6 !important;
             text-align: center !important;
+            width: 100% !important;
+            display: block !important;
           }
           
           .hero-description {
@@ -152,8 +166,11 @@ function getIndexHbsContent() {
             margin-bottom: 2rem !important;
             line-height: 1.7 !important;
             text-align: center !important;
+            width: 100% !important;
+            display: block !important;
           }
           
+          /* Background image */
           .background-image {
             position: absolute !important;
             top: 0 !important;
@@ -172,6 +189,30 @@ function getIndexHbsContent() {
             height: 100% !important;
             background: rgba(0, 0, 0, 0.5) !important;
             z-index: 2 !important;
+          }
+          
+          /* Force all containers to center */
+          .hero-section .container,
+          .hero-section .container-fluid,
+          .hero-section .row,
+          .hero-section .col,
+          .hero-section div {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            margin: 0 auto !important;
+            max-width: 100% !important;
+            width: 100% !important;
+          }
+          
+          /* Override any existing styles */
+          .hero-section * {
+            text-align: center !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
           }
           
           /* WhatsApp Button Styles */
@@ -205,22 +246,11 @@ function getIndexHbsContent() {
             height: 50px !important;
           }
           
-          /* Ensure hero section doesn't overflow */
-          .hero-section * {
-            box-sizing: border-box !important;
-          }
-          
-          /* Fix any existing hero section styles */
-          .hero-section .container,
-          .hero-section .container-fluid,
-          .hero-section .row,
-          .hero-section .col {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            text-align: center !important;
-            margin: 0 auto !important;
-            max-width: 100% !important;
+          /* Ensure no overflow */
+          body, html {
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
         </style>
         
