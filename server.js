@@ -34,190 +34,370 @@ app.get('/favicon.ico', (req, res) => {
 
 // Home route - serve static HTML
 app.get('/', (req, res) => {
-  console.log('🏠 Serving home page...');
-  // Serve the actual index.html file directly
+  console.log('🏠 Serving home page from index.hbs...');
+  // Serve the actual index.hbs content with static data
   res.send(`
     <!DOCTYPE html>
-    <html>
+    <html lang="id">
     <head>
-      <title>GROW SYNERGY INDONESIA</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link rel="icon" type="image/x-icon" href="/images/logo_pt.png">
-      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-      <style>
-        .hero-gradient {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Pelatihan Data Analitik Terbaik di Indonesia #1 | Kursus Online Bersertifikat BNSP | GROW SYNERGY INDONESIA</title>
+        
+        <!-- SEO Meta Tags -->
+        <meta name="description" content="Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat BNSP. Kursus online dari beginner hingga advanced.">
+        <meta name="keywords" content="pelatihan data analitik, kursus data analitik, data science training, business intelligence course, kursus online bersertifikat">
+        <meta name="author" content="GROW SYNERGY INDONESIA">
+        <meta name="robots" content="index, follow">
+        <meta name="googlebot" content="index, follow">
+        
+        <!-- Open Graph Meta Tags -->
+        <meta property="og:title" content="Pelatihan Data Analitik Terbaik di Indonesia #1 | GROW SYNERGY INDONESIA">
+        <meta property="og:description" content="Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat BNSP">
+        <meta property="og:image" content="https://growsynergyid.com/images/logo_pt.png">
+        <meta property="og:url" content="https://growsynergyid.com/">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="GROW SYNERGY INDONESIA">
+        
+        <!-- Twitter Card Meta Tags -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="Pelatihan Data Analitik Terbaik di Indonesia #1 | GROW SYNERGY INDONESIA">
+        <meta name="twitter:description" content="Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat BNSP">
+        <meta name="twitter:image" content="https://growsynergyid.com/images/logo_pt.png">
+        
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://growsynergyid.com/">
+        
+        <!-- Favicon -->
+        <link rel="icon" type="image/x-icon" href="/images/logo_pt.png">
+        
+        <!-- CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link href="/css/custom.css" rel="stylesheet">
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+            
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            
+            main {
+                flex: 1;
+            }
+            
+            /* Sticky navbar */
+            .sticky {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 50;
+            }
+            
+            /* Star rating persistence styles */
+            .star-btn.selected {
+                color: #fbbf24 !important;
+            }
+            
+            .star-btn:not(.selected) {
+                color: #d1d5db !important;
+            }
+            
+            /* Force star colors */
+            #ratingStars .star-btn[style*="color: rgb(251, 191, 36)"],
+            #ratingStars .star-btn[style*="color: #fbbf24"] {
+                color: #fbbf24 !important;
+            }
+        </style>
+        
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        
+        <!-- Structured Data -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            "name": "GROW SYNERGY INDONESIA",
+            "description": "Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat",
+            "url": "https://growsynergyid.com",
+            "logo": "https://growsynergyid.com/images/logo_pt.png",
+            "sameAs": [
+                "https://www.facebook.com/grow-synergy-indonesia",
+                "https://www.linkedin.com/company/grow-synergy-indonesia"
+            ],
+            "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "ID",
+                "addressLocality": "Jakarta"
+            },
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+62-812-3456-7890",
+                "contactType": "customer service",
+                "availableLanguage": "Indonesian"
+            },
+            "offers": {
+                "@type": "Offer",
+                "category": "Educational Services",
+                "name": "Pelatihan Data Analitik"
+            }
         }
-        .card-hover {
-          transition: all 0.3s ease;
+        </script>
+        
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Course",
+            "name": "Pelatihan Data Analitik Komprehensif",
+            "description": "Program pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat",
+            "provider": {
+                "@type": "EducationalOrganization",
+                "name": "GROW SYNERGY INDONESIA"
+            },
+            "educationalLevel": "Beginner to Advanced",
+            "inLanguage": "Indonesian",
+            "about": "Data Analytics, Data Science, Business Intelligence",
+            "keywords": "pelatihan data analitik, kursus data analitik, data science training, business intelligence course",
+            "hasCourseInstance": {
+                "@type": "CourseInstance",
+                "courseMode": "online",
+                "instructor": {
+                    "@type": "Person",
+                    "name": "Tim Instruktur Profesional"
+                }
+            },
+            "offers": {
+                "@type": "Offer",
+                "availability": "https://schema.org/InStock",
+                "priceCurrency": "IDR",
+                "description": "Harga terjangkau dengan pembayaran cicilan"
+            }
         }
-        .card-hover:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-      </style>
+        </script>
+        
+        <!-- Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-XXXXXXXXXX');
+        </script>
     </head>
     <body class="bg-gray-50">
-      <!-- Navigation -->
-      <nav class="bg-white shadow-lg fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            <div class="flex items-center">
-              <h1 class="text-xl font-bold text-blue-600">GROW SYNERGY</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-              <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
-              <a href="/about" class="text-gray-700 hover:text-blue-600">Tentang</a>
-              <a href="/synergy-academy" class="text-gray-700 hover:text-blue-600">Academy</a>
-              <a href="/synergy-experts" class="text-gray-700 hover:text-blue-600">Experts</a>
-              <a href="/synergy-portfolio" class="text-gray-700 hover:text-blue-600">Portfolio</a>
-              <a href="/blog" class="text-gray-700 hover:text-blue-600">Blog</a>
-              <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded">Admin</a>
-            </div>
-          </div>
-        </div>
-      </nav>
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <nav class="container mx-auto px-4 py-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <img src="/images/logo_pt.png" alt="GROW SYNERGY INDONESIA" class="w-12 h-12 md:w-20 md:h-20 rounded-lg object-cover">
+                        <a href="/" class="text-sm md:text-xl font-bold text-gray-800">GROW SYNERGY INDONESIA</a>
+                    </div>
+                    
+                    <div class="hidden md:flex space-x-4 lg:space-x-6">
+                        <a href="/" class="nav-link text-sm lg:text-base" data-page="home">Beranda</a>
+                        <a href="/synergy-experts" class="nav-link text-sm lg:text-base" data-page="synergy-experts">Instruktur Data Analitik</a>
+                        <a href="/synergy-portfolio" class="nav-link text-sm lg:text-base" data-page="synergy-portfolio">Portfolio Alumni</a>
+                        <a href="/synergy-academy" class="nav-link text-sm lg:text-base" data-page="synergy-academy">Kursus Data Analitik</a>
+                        <a href="/blog" class="nav-link text-sm lg:text-base" data-page="blog">Blog</a>
+                    </div>
+                    
+                    <!-- Mobile Menu -->
+                    <div id="mobile-menu" class="hidden fixed inset-0 bg-white z-50 md:hidden">
+                        <div class="flex flex-col h-full">
+                            <div class="flex justify-end items-center p-4 border-b">
+                                <button id="close-menu-btn" class="text-gray-600 p-2">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+                            <nav class="flex-1 p-4">
+                                <div class="flex flex-col space-y-4">
+                                    <a href="/" class="nav-link text-lg py-3 border-b" data-page="home">Beranda</a>
+                                    <a href="/synergy-experts" class="nav-link text-lg py-3 border-b" data-page="synergy-experts">Instruktur Data Analitik</a>
+                                    <a href="/synergy-portfolio" class="nav-link text-lg py-3 border-b" data-page="synergy-portfolio">Portfolio Alumni</a>
+                                    <a href="/synergy-academy" class="nav-link text-lg py-3 border-b" data-page="synergy-academy">Kursus Data Analitik</a>
+                                    <a href="/blog" class="nav-link text-lg py-3 border-b" data-page="blog">Blog</a>
+                                    <a href="/about" class="bg-gradient-to-r from-orange-500 to-green-500 text-white px-4 py-3 rounded-lg text-center mt-4" style="background: linear-gradient(to right, #f97316, #4bd68d) !important;">
+                                        Tentang Kami
+                                    </a>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <button id="mobile-menu-btn" class="md:hidden text-gray-600 p-2">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-      <!-- Hero Section -->
-      <section class="hero-gradient text-white py-20 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">
-              Platform Pelatihan Data Analitik Terbaik di Indonesia
-            </h1>
-            <p class="text-xl md:text-2xl mb-8 opacity-90">
-              Kursus Online Bersertifikat BNSP | GROW SYNERGY INDONESIA
-            </p>
-            <div class="space-y-4">
-              <a href="/synergy-academy" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-                Mulai Belajar Sekarang
-              </a>
-              <div class="text-sm opacity-75">
-                🎯 1000+ Alumni Berkarir di Top Companies
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        <!-- Main Content -->
+        <main>
+            <!-- Hero Section -->
+            <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
+                <div class="container mx-auto px-4">
+                    <div class="text-center">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-6">Transformasi Karir dengan Data Analitik</h1>
+                        <p class="text-xl md:text-2xl mb-8 opacity-90">Pelatihan intensif dengan mentor profesional dan proyek real-world</p>
+                        <div class="space-y-4">
+                            <a href="/synergy-academy" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                                Mulai Belajar Sekarang
+                            </a>
+                            <div class="text-sm opacity-75">
+                                🎯 1000+ Alumni Berkarir di Top Companies
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-      <!-- Features Section -->
-      <section class="py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 class="text-3xl font-bold text-center mb-12">Mengapa Memilih Kami?</h2>
-          <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-lg shadow card-hover">
-              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <span class="text-blue-600 font-bold">🎓</span>
-              </div>
-              <h3 class="text-xl font-semibold mb-2">Kurikulum Terstandar</h3>
-              <p class="text-gray-600">Materi pembelajaran disusun oleh praktisi industri dengan standar BNSP</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow card-hover">
-              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <span class="text-blue-600 font-bold">👨‍🏫</span>
-              </div>
-              <h3 class="text-xl font-semibold mb-2">Mentor Berpengalaman</h3>
-              <p class="text-gray-600">Dibimbing oleh expert dengan 10+ tahun pengalaman di data analytics</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow card-hover">
-              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <span class="text-blue-600 font-bold">💼</span>
-              </div>
-              <h3 class="text-xl font-semibold mb-2">Garansi Karir</h3>
-              <p class="text-gray-600">Dukungan karir hingga Anda mendapatkan pekerjaan impian</p>
-            </div>
-          </div>
-        </div>
-      </section>
+            <!-- Features Section -->
+            <section class="py-16">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-12">Mengapa Memilih Kami?</h2>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <span class="text-2xl">🎓</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2 text-center">Kurikulum Terstandar</h3>
+                            <p class="text-gray-600 text-center">Materi pembelajaran disusun oleh praktisi industri dengan standar BNSP</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <span class="text-2xl">👨‍🏫</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2 text-center">Mentor Berpengalaman</h3>
+                            <p class="text-gray-600 text-center">Dibimbing oleh expert dengan 10+ tahun pengalaman di data analytics</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <span class="text-2xl">💼</span>
+                            </div>
+                            <h3 class="text-xl font-semibold mb-2 text-center">Garansi Karir</h3>
+                            <p class="text-gray-600 text-center">Dukungan karir hingga Anda mendapatkan pekerjaan impian</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-      <!-- Programs Section -->
-      <section class="py-16 bg-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 class="text-3xl font-bold text-center mb-12">Program Unggulan</h2>
-          <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-lg shadow card-hover">
-              <h3 class="text-xl font-semibold mb-2">Data Analyst Fundamentals</h3>
-              <p class="text-gray-600 mb-4">Dasar-dasar analisis data dengan tools modern</p>
-              <div class="flex justify-between items-center">
-                <span class="text-blue-600 font-semibold">3 bulan</span>
-                <a href="/synergy-academy" class="text-blue-600 hover:underline">Detail →</a>
-              </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow card-hover">
-              <h3 class="text-xl font-semibold mb-2">Advanced SQL & Visualization</h3>
-              <p class="text-gray-600 mb-4">Query kompleks dan visualisasi data yang efektif</p>
-              <div class="flex justify-between items-center">
-                <span class="text-blue-600 font-semibold">2 bulan</span>
-                <a href="/synergy-academy" class="text-blue-600 hover:underline">Detail →</a>
-              </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow card-hover">
-              <h3 class="text-xl font-semibold mb-2">Machine Learning Basics</h3>
-              <p class="text-gray-600 mb-4">Pengenalan machine learning dan implementasi</p>
-              <div class="flex justify-between items-center">
-                <span class="text-blue-600 font-semibold">4 bulan</span>
-                <a href="/synergy-academy" class="text-blue-600 hover:underline">Detail →</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            <!-- Programs Section -->
+            <section class="py-16 bg-gray-100">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-12">Program Unggulan</h2>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                            <h3 class="text-xl font-semibold mb-2">Data Analyst Fundamentals</h3>
+                            <p class="text-gray-600 mb-4">Dasar-dasar analisis data dengan tools modern</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-600 font-semibold">3 bulan</span>
+                                <a href="/synergy-academy" class="text-blue-600 hover:underline">Detail →</a>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                            <h3 class="text-xl font-semibold mb-2">Advanced SQL & Visualization</h3>
+                            <p class="text-gray-600 mb-4">Query kompleks dan visualisasi data yang efektif</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-600 font-semibold">2 bulan</span>
+                                <a href="/synergy-academy" class="text-blue-600 hover:underline">Detail →</a>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                            <h3 class="text-xl font-semibold mb-2">Machine Learning Basics</h3>
+                            <p class="text-gray-600 mb-4">Pengenalan machine learning dan implementasi</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-blue-600 font-semibold">4 bulan</span>
+                                <a href="/synergy-academy" class="text-blue-600 hover:underline">Detail →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-      <!-- CTA Section -->
-      <section class="py-16 bg-blue-600 text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 class="text-3xl font-bold mb-4">Siap Transformasi Karir Anda?</h2>
-          <p class="text-xl mb-8 opacity-90">Bergabung dengan 1000+ alumni yang telah sukses</p>
-          <div class="space-x-4">
-            <a href="/synergy-academy" class="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-              Daftar Sekarang
-            </a>
-            <a href="/admin/login" class="inline-block border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition">
-              Login Admin
-            </a>
-          </div>
-        </div>
-      </section>
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4">
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">GROW SYNERGY</h3>
+                        <p class="text-gray-400">Platform pembelajaran data analitik terbaik di Indonesia</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Program</h3>
+                        <ul class="space-y-2 text-gray-400">
+                            <li><a href="/synergy-academy" class="hover:text-white">Academy</a></li>
+                            <li><a href="/synergy-experts" class="hover:text-white">Experts</a></li>
+                            <li><a href="/synergy-portfolio" class="hover:text-white">Portfolio</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                        <ul class="space-y-2 text-gray-400">
+                            <li><a href="/blog" class="hover:text-white">Blog</a></li>
+                            <li><a href="/about" class="hover:text-white">About</a></li>
+                            <li><a href="/admin/login" class="hover:text-white">Admin</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                        <ul class="space-y-2 text-gray-400">
+                            <li>📧 info@grow-synergy.com</li>
+                            <li>📱 +62 812-3456-7890</li>
+                            <li>📍 Jakarta, Indonesia</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
+                    <p>&copy; 2024 GROW SYNERGY INDONESIA. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
 
-      <!-- Footer -->
-      <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 class="text-lg font-semibold mb-4">GROW SYNERGY</h3>
-              <p class="text-gray-400">Platform pembelajaran data analitik terbaik di Indonesia</p>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold mb-4">Program</h3>
-              <ul class="space-y-2 text-gray-400">
-                <li><a href="/synergy-academy" class="hover:text-white">Academy</a></li>
-                <li><a href="/synergy-experts" class="hover:text-white">Experts</a></li>
-                <li><a href="/synergy-portfolio" class="hover:text-white">Portfolio</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold mb-4">Resources</h3>
-              <ul class="space-y-2 text-gray-400">
-                <li><a href="/blog" class="hover:text-white">Blog</a></li>
-                <li><a href="/about" class="hover:text-white">About</a></li>
-                <li><a href="/admin/login" class="hover:text-white">Admin</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold mb-4">Contact</h3>
-              <ul class="space-y-2 text-gray-400">
-                <li>📧 info@grow-synergy.com</li>
-                <li>📱 +62 812-3456-7890</li>
-                <li>📍 Jakarta, Indonesia</li>
-              </ul>
-            </div>
-          </div>
-          <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-400">
-            <p>&copy; 2024 GROW SYNERGY INDONESIA. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+        <!-- Scripts -->
+        <script>
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+
+            if (mobileMenuBtn && mobileMenu && closeMenuBtn) {
+                mobileMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.remove('hidden');
+                });
+
+                closeMenuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            }
+
+            // Firebase initialization (if needed)
+            const firebaseConfig = {
+                apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+                authDomain: "company-profile-grow-synergy.firebaseapp.com",
+                projectId: "company-profile-grow-synergy",
+                storageBucket: "company-profile-grow-synergy.appspot.com",
+                messagingSenderId: "123456789012",
+                appId: "1:123456789012:web:abcdef123456789"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const analytics = firebase.analytics();
+        </script>
     </body>
     </html>
   `);
