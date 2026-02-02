@@ -348,35 +348,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js?v=2.0"></script>
     
     <style>
-        /* Custom styles for expert cards */
+        /* Custom styles for expert cards - updated design */
         .expert-card {
-            background-color: #225273 !important;
-        }
-        
-        .expert-card h3 {
-            color: #ffffff !important;
-            font-weight: 600 !important;
-        }
-        
-        .expert-card .text-gray-300,
-        .expert-card .text-gray-600 {
-            color: #e5e7eb !important;
-        }
-        
-        .expert-card .text-gray-500 {
-            color: #d1d5db !important;
-        }
-        
-        /* Ensure badges are visible */
-        .expert-card .bg-yellow-400 {
-            background-color: #fbbf24 !important;
-            color: #1f2937 !important;
-            font-weight: 600 !important;
-        }
-        
-        .expert-card .bg-green-600 {
-            background-color: #16a34a !important;
-            color: #ffffff !important;
+            /* Card styling is now handled by inline Tailwind classes */
         }
     </style>
     
@@ -824,41 +798,36 @@
             });
             
             div.innerHTML = 
-                '<div class="relative rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer expert-card" style="background-color: #225273 !important;">' +
-                    '<div class="aspect-w-16 aspect-h-9 bg-gray-200">' +
-                        '<img src="' + expertImage + '" alt="' + expertName + '" class="w-full h-48 object-cover">' +
+                '<div class="bg-white rounded-lg shadow-md hover:shadow-lg transition cursor-pointer p-6 text-center">' +
+                    '<div class="mb-4">' +
+                        '<img src="' + expertImage + '" alt="' + expertName + '" class="w-24 h-24 rounded-full mx-auto object-cover">' +
                     '</div>' +
-                    '<div class="absolute top-2 right-2">' +
-                        '<span class="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold" style="background-color: #16a34a !important; color: #ffffff !important;">' + expertRole + '</span>' +
+                    '<h3 class="text-lg font-semibold text-gray-800 mb-1">' + expertName + '</h3>' +
+                    '<p class="text-sm text-gray-600 mb-3">' + expertPosition + '</p>' +
+                    '<div class="mb-3">' +
+                        '<span class="inline-block bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full font-medium">' + expertCategory + '</span>' +
                     '</div>' +
-                    '<div class="absolute top-2 left-2">' +
-                        '<span class="bg-yellow-400 text-gray-800 text-xs px-2 py-1 rounded-full font-semibold" style="background-color: #fbbf24 !important; color: #1f2937 !important; font-weight: 600 !important;">' + expertCategory + '</span>' +
-                    '</div>' +
-                    '<div class="p-4">' +
-                        '<h3 class="text-lg font-semibold mb-2" style="color: #ffffff !important; font-weight: 600 !important;">' + expertName + '</h3>' +
-                        '<p class="text-sm mb-2" style="color: #e5e7eb !important;">' + expertOrganization + '</p>' +
-                        '<div class="flex items-center justify-between mb-3">' +
-                            '<div class="flex items-center">' +
-                                generateStars(expertRating) +
-                            '</div>' +
-                            '<span class="text-sm" style="color: #e5e7eb !important;">' + expertRating + '</span>' +
+                    '<div class="flex items-center justify-center mb-3">' +
+                        '<div class="flex items-center">' +
+                            generateStars(expertRating) +
                         '</div>' +
-                        '<p class="text-sm line-clamp-3" style="color: #d1d5db !important;">' + expertDescription + '</p>' +
+                        '<span class="text-sm text-gray-600 ml-2">' + expertRating + '</span>' +
                     '</div>' +
+                    '<p class="text-sm text-gray-500 line-clamp-2">' + expertDescription + '</p>' +
                 '</div>';
             
             console.log('Card HTML created for:', expertName);
             console.log('Card HTML preview:', div.innerHTML.substring(0, 200) + '...');
             
-            // Additional debugging
+            // Additional debugging for new design
             setTimeout(() => {
-                const cardElement = div.querySelector('.expert-card');
+                const cardElement = div.querySelector('.bg-white');
                 if (cardElement) {
                     const computedStyle = window.getComputedStyle(cardElement);
                     console.log('Card background color:', computedStyle.backgroundColor);
                     console.log('Card element found:', !!cardElement);
                 } else {
-                    console.log('Card element with .expert-card class not found');
+                    console.log('Card element with .bg-white class not found');
                 }
             }, 100);
             
