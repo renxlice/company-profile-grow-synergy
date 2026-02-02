@@ -4,91 +4,7 @@ import * as admin from 'firebase-admin';
 export let db: admin.firestore.Firestore;
 export let storage: admin.storage.Storage;
 
-// Check if we want to use Firebase or Mock mode
-const USE_FIREBASE = process.env.NODE_ENV === 'production' && 
-  (process.env.FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID_PART1); // More flexible check
-
-// Initialize Firebase with environment variables
-if (USE_FIREBASE) {
-  try {
-    // Check if we're in production environment
-    if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY) {
-      // Production: Use environment variables
-      let privateKey = process.env.FIREBASE_PRIVATE_KEY;
-      
-      // Handle private key that might be split or formatted differently
-      if (process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2) {
-        // If private key is split into multiple parts
-        privateKey = process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2;
-      }
-      
-      // Clean up the private key format
-      privateKey = privateKey.replace(/\\n/g, '\n').trim();
-      
-      const serviceAccount = {
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: privateKey,
-      };
-
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-      });
-    } else if (process.env.FIREBASE_PROJECT_ID_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART1) {
-      // Alternative: Use split environment variables
-      const projectId = process.env.FIREBASE_PROJECT_ID_PART1 + (process.env.FIREBASE_PROJECT_ID_PART2 || '');
-      let privateKey = process.env.FIREBASE_PRIVATE_KEY_PART1 + (process.env.FIREBASE_PRIVATE_KEY_PART2 || '');
-      
-      // Clean up the private key format
-      privateKey = privateKey.replace(/\\n/g, '\n').trim();
-      
-      const serviceAccount = {
-        projectId: projectId,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com',
-        privateKey: privateKey,
-      };
-
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-        projectId: projectId,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || projectId + '.appspot.com',
-      });
-    } else {
-      // Development: Use service account file if available
-      try {
-        const serviceAccount = require('../../config/firebase-service-account.json');
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
-          projectId: process.env.FIREBASE_PROJECT_ID || 'company-profile-grow-synergy',
-          storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'company-profile-grow-synergy.appspot.com',
-        });
-      } catch (error) {
-        console.warn('Firebase service account file not found, using mock mode');
-        db = null as any;
-        storage = null as any;
-      }
-    }
-    
-    if (admin.apps.length > 0) {
-      db = admin.firestore();
-      storage = admin.storage();
-      console.log('✅ Firebase initialized successfully');
-    }
-  } catch (error) {
-    console.error('❌ Firebase initialization failed:', error);
-    console.log('🔄 Using mock mode for development');
-    db = null as any;
-    storage = null as any;
-  }
-} else {
-  console.log('🔄 Firebase disabled, using mock mode');
-  db = null as any;
-  storage = null as any;
-}
-
-// Mock data for development
+// Mock data for development/fallback
 const mockData = {
   home: {
     title: "Pelatihan Data Analitik Terbaik di Indonesia #1",
@@ -129,6 +45,118 @@ const mockData = {
     ]
   }
 };
+
+// Helper function to reconstruct private key from parts
+function reconstructPrivateKey(): string | null {
+  try {
+    // Try different combinations of environment variables
+    const combinations = [
+      // Full private key
+      process.env.FIREBASE_PRIVATE_KEY,
+      // Split into 2 parts
+      process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2 
+        ? process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2 
+        : null,
+      // Split into 3 parts
+      process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2 && process.env.FIREBASE_PRIVATE_KEY_PART3
+        ? process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2 + process.env.FIREBASE_PRIVATE_KEY_PART3
+        : null,
+      // Split into 4 parts
+      process.env.FIREBASE_PRIVATE_KEY_PART1 && process.env.FIREBASE_PRIVATE_KEY_PART2 && 
+      process.env.FIREBASE_PRIVATE_KEY_PART3 && process.env.FIREBASE_PRIVATE_KEY_PART4
+        ? process.env.FIREBASE_PRIVATE_KEY_PART1 + process.env.FIREBASE_PRIVATE_KEY_PART2 + 
+          process.env.FIREBASE_PRIVATE_KEY_PART3 + process.env.FIREBASE_PRIVATE_KEY_PART4
+        : null,
+    ];
+
+    for (const privateKey of combinations) {
+      if (privateKey && privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+        // Clean up the private key format
+        return privateKey.replace(/\\n/g, '\n').replace(/\n/g, '\n').trim();
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Error reconstructing private key:', error);
+    return null;
+  }
+}
+
+// Helper function to get project ID
+function getProjectId(): string | null {
+  try {
+    // Try different combinations
+    const combinations = [
+      // Full project ID
+      process.env.FIREBASE_PROJECT_ID,
+      // Split into 2 parts
+      process.env.FIREBASE_PROJECT_ID_PART1 && process.env.FIREBASE_PROJECT_ID_PART2 
+        ? process.env.FIREBASE_PROJECT_ID_PART1 + process.env.FIREBASE_PROJECT_ID_PART2 
+        : null,
+      // Just first part
+      process.env.FIREBASE_PROJECT_ID_PART1,
+    ];
+
+    for (const projectId of combinations) {
+      if (projectId && projectId.trim()) {
+        return projectId.trim();
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting project ID:', error);
+    return null;
+  }
+}
+
+// Initialize Firebase with robust error handling
+function initializeFirebase() {
+  console.log('🔧 Initializing Firebase...');
+  
+  try {
+    // Get project ID and private key
+    const projectId = getProjectId();
+    const privateKey = reconstructPrivateKey();
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL || 'firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com';
+    
+    console.log('📋 Firebase config check:');
+    console.log('   Project ID:', projectId ? 'SET' : 'NOT SET');
+    console.log('   Private Key:', privateKey ? 'SET' : 'NOT SET');
+    console.log('   Client Email:', clientEmail ? 'SET' : 'NOT SET');
+    
+    if (projectId && privateKey) {
+      const serviceAccount = {
+        projectId: projectId,
+        clientEmail: clientEmail,
+        privateKey: privateKey,
+      };
+
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+        projectId: projectId,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || projectId + '.appspot.com',
+      });
+      
+      if (admin.apps.length > 0) {
+        db = admin.firestore();
+        storage = admin.storage();
+        console.log('✅ Firebase initialized successfully');
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error('❌ Firebase initialization failed:', error.message);
+  }
+  
+  // Fallback to mock mode
+  console.log('🔄 Using mock mode for development');
+  db = null as any;
+  storage = null as any;
+  return false;
+}
+
+// Try to initialize Firebase
+const firebaseEnabled = initializeFirebase();
 
 export class FirebaseService {
   getDb(): admin.firestore.Firestore {
