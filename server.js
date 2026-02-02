@@ -557,6 +557,24 @@ app.get('/admin/dashboard', (req, res) => {
         console.log('👤 Sample Expert:', experts[0]);
       }
 
+      console.log('🎯 Rendering dashboard with data:');
+      console.log('  - Stats object:', {
+        experts: experts.length,
+        portfolios: portfolios.length,
+        academies: academies.length,
+        blogs: blogs.length,
+        testimonials: testimonials.length,
+        heroSections: heroSections.length
+      });
+      console.log('  - Data object keys:', Object.keys({
+        experts,
+        portfolios,
+        academies,
+        blogs,
+        testimonials,
+        heroSections
+      }));
+
       res.render('admin/dashboard', {
         title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
         user: req.session.user,
@@ -618,6 +636,21 @@ app.get('/admin/logout', (req, res) => {
     }
     // Redirect to login page
     res.redirect('/admin/login');
+  });
+});
+
+// Template debug route
+app.get('/admin/debug-template', (req, res) => {
+  // Check if authenticated
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  res.json({
+    success: true,
+    message: 'Template rendering debug info',
+    timestamp: new Date().toISOString(),
+    note: 'Check server console for detailed rendering logs when accessing /admin/dashboard'
   });
 });
 
