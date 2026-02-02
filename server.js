@@ -241,6 +241,164 @@ app.get('/blog', (req, res) => {
   });
 });
 
+// About page route
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'Tentang Kami - GROW SYNERGY INDONESIA',
+    description: 'Tentang Grow Synergy Indonesia - Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
+    keywords: 'tentang kami, grow synergy indonesia, data analitik, pelatihan, kursus',
+    author: 'GROW SYNERGY INDONESIA',
+    robots: 'index, follow',
+    googlebot: 'index, follow',
+    ogTitle: 'Tentang Kami - GROW SYNERGY INDONESIA',
+    ogDescription: 'Tentang Grow Synergy Indonesia - Platform pembelajaran data analitik terbaik di Indonesia',
+    ogImage: 'https://grow-synergy-indonesia.com/images/og-image.jpg',
+    ogUrl: 'https://grow-synergy-indonesia.com/about',
+    ogType: 'website',
+    ogSiteName: 'GROW SYNERGY INDONESIA',
+    twitterCard: 'summary_large_image',
+    twitterTitle: 'Tentang Kami - GROW SYNERGY INDONESIA',
+    twitterDescription: 'Tentang Grow Synergy Indonesia',
+    twitterImage: 'https://grow-synergy-indonesia.com/images/twitter-image.jpg',
+    canonical: 'https://grow-synergy-indonesia.com/about',
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
+  });
+});
+
+// Blog detail route
+app.get('/blog/:slug', (req, res) => {
+  const { slug } = req.params;
+  
+  // Mock blog data - in real implementation, this would come from database
+  const blogPosts = {
+    'panduan-lengkap-data-analitik-pemula': {
+      id: 'panduan-lengkap-data-analitik-pemula',
+      title: 'Panduan Lengkap Data Analitik untuk Pemula',
+      slug: 'panduan-lengkap-data-analitik-pemula',
+      description: 'Panduan lengkap untuk memulai karir di bidang data analitik dengan langkah-langkah praktis dan tools yang harus dikuasai.',
+      content: `
+        <h2>Apa itu Data Analitik?</h2>
+        <p>Data analitik adalah proses memeriksa, membersihkan, mengubah, dan memodelkan data untuk menemukan informasi yang berguna, menyimpulkan kesimpulan, dan mendukung pengambilan keputusan.</p>
+        
+        <h2>Langkah 1: Pahami Dasar-Dasar Statistik</h2>
+        <p>Sebelum terjun ke data analitik, penting untuk memahami konsep dasar statistik seperti mean, median, modus, standar deviasi, dan konsep probabilitas.</p>
+        
+        <h2>Langkah 2: Kuasai Tools Dasar</h2>
+        <p>Beberapa tools yang harus dikuasai:</p>
+        <ul>
+          <li><strong>Excel/Google Sheets:</strong> Untuk data cleaning dan analisis dasar</li>
+          <li><strong>SQL:</strong> Untuk mengambil dan memanipulasi data dari database</li>
+          <li><strong>Python:</strong> Untuk analisis data yang lebih kompleks</li>
+          <li><strong>Tableau/Power BI:</strong> Untuk data visualization</li>
+        </ul>
+        
+        <h2>Langkah 3: Praktik dengan Proyek Real</h2>
+        <p>Teori saja tidak cukup. Mulailah dengan proyek-proyek sederhana seperti analisis penjualan toko online atau prediksi churn customer.</p>
+        
+        <h2>Langkah 4: Terus Belajar dan Berkembang</h2>
+        <p>Data analitik adalah bidang yang terus berkembang. Ikuti tren terbaru, belajar machine learning, dan jangan pernah berhenti belajar.</p>
+      `,
+      author: 'Tim GROW SYNERGY INDONESIA',
+      date: '15 Januari 2024',
+      readTime: '8',
+      category: 'Tutorial',
+      image: 'https://picsum.photos/seed/data-analytics-guide/1200/600.jpg',
+      tags: ['data analitik', 'pemula', 'tutorial', 'python', 'sql']
+    },
+    'tips-karir-data-scientist-indonesia': {
+      id: 'tips-karir-data-scientist-indonesia',
+      title: 'Tips Karir Data Scientist di Indonesia',
+      slug: 'tips-karir-data-scientist-indonesia',
+      description: 'Tips dan strategi untuk sukses berkarir sebagai data scientist di Indonesia, dari pendidikan hingga networking.',
+      content: `
+        <h2>Pendidikan yang Tepat</h2>
+        <p>Data scientist membutuhkan kombinasi keahlian teknis dan bisnis. Pendidikan yang relevan meliputi:</p>
+        <ul>
+          <li>S1 Teknik Informatika, Matematika, atau Statistika</li>
+          <li>S2 Data Science atau bidang terkait</li>
+          <li>Sertifikasi profesional dari platform terkemuka</li>
+        </ul>
+        
+        <h2>Skills yang Harus Dikuasai</h2>
+        <p>Beberapa skills krusial untuk data scientist:</p>
+        <ul>
+          <li><strong>Programming:</strong> Python, R, SQL</li>
+          <li><strong>Machine Learning:</strong> Scikit-learn, TensorFlow, PyTorch</li>
+          <li><strong>Data Visualization:</strong> Tableau, Power BI, Matplotlib</li>
+          <li><strong>Business Acumen:</strong> Memahami bisnis dan domain knowledge</li>
+        </ul>
+        
+        <h2>Networking dan Komunitas</h2>
+        <p>Bergabung dengan komunitas data scientist Indonesia sangat penting:</p>
+        <ul>
+          <li>Ikuti meetup dan conference</li>
+          <li>Bergabung di grup WhatsApp dan Telegram</li>
+          <li>Aktif di LinkedIn dan GitHub</li>
+        </ul>
+      `,
+      author: 'Sarah Putri, S.Kom., M.T.',
+      date: '20 Januari 2024',
+      readTime: '6',
+      category: 'Karir',
+      image: 'https://picsum.photos/seed/data-scientist-career/1200/600.jpg',
+      tags: ['karir', 'data scientist', 'networking', 'indonesia']
+    }
+  };
+  
+  const blog = blogPosts[slug];
+  
+  if (!blog) {
+    return res.status(404).render('404', {
+      title: 'Blog Post Not Found',
+      message: 'Maaf, artikel yang Anda cari tidak ditemukan.'
+    });
+  }
+  
+  // Get related blogs (exclude current blog)
+  const relatedBlogs = Object.values(blogPosts)
+    .filter(post => post.id !== blog.id)
+    .slice(0, 3);
+  
+  res.render('blog-detail', {
+    title: `${blog.title} - Blog GROW SYNERGY INDONESIA`,
+    description: blog.description,
+    keywords: blog.tags.join(', '),
+    author: 'GROW SYNERGY INDONESIA',
+    robots: 'index, follow',
+    googlebot: 'index, follow',
+    ogTitle: blog.title,
+    ogDescription: blog.description,
+    ogImage: blog.image,
+    ogUrl: `https://grow-synergy-indonesia.com/blog/${slug}`,
+    ogType: 'article',
+    ogSiteName: 'GROW SYNERGY INDONESIA',
+    twitterCard: 'summary_large_image',
+    twitterTitle: blog.title,
+    twitterDescription: blog.description,
+    twitterImage: blog.image,
+    canonical: `https://grow-synergy-indonesia.com/blog/${slug}`,
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+    blog: blog,
+    relatedBlogs: relatedBlogs,
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+    firebaseProjectId: "company-profile-grow-synergy",
+    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
+  });
+});
+
 // API Routes
 app.get('/api/firebase/data', (req, res) => {
   console.log('🔥 Firebase data request received');
