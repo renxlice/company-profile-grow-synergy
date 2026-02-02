@@ -973,7 +973,137 @@
                     console.log('DEBUG: Firebase results received successfully');
                 } catch (error) {
                     console.log('DEBUG: Firebase loading failed:', error.message);
-                    return;
+                    console.log('DEBUG: Using mock data fallback');
+                    
+                    // Use mock data fallback
+                    results = [
+                        // Hero Section mock data
+                        {
+                            docs: [{
+                                id: 'mock-hero-1',
+                                data: {
+                                    backgroundImage: '/images/hero1.jpg',
+                                    title: 'Transformasi Karir dengan Data Analitik',
+                                    description: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
+                                    subtitle: 'Pelatihan intensif dengan mentor profesional dan proyek real-world'
+                                }
+                            }]
+                        },
+                        // About Section mock data
+                        {
+                            docs: [{
+                                id: 'mock-about-1',
+                                data: {
+                                    title: 'Tentang GROW SYNERGY INDONESIA',
+                                    description: 'GROW SYNERGY INDONESIA adalah platform pembelajaran data analitik terbaik di Indonesia. Kami menyediakan pelatihan intensif dengan instruktur profesional dan proyek real-world.',
+                                    features: [
+                                        'Instruktur Profesional',
+                                        'Sertifikat Bersertifikat',
+                                        'Proyek Real-World',
+                                        'Mentorship 1-on-1'
+                                    ],
+                                    stats: {
+                                        students: '1000+',
+                                        courses: '50+',
+                                        instructors: '20+',
+                                        successRate: '95%'
+                                    }
+                                }
+                            }]
+                        },
+                        // Experts mock data
+                        {
+                            docs: [
+                                {
+                                    id: 'mock-expert-1',
+                                    data: {
+                                        name: 'Dr. Ahmad Wijaya, M.Sc.',
+                                        role: 'Data Science Expert',
+                                        organization: 'Founder Grow Synergy',
+                                        image: 'https://picsum.photos/seed/ahmad-wijaya/200/200.jpg',
+                                        bio: 'Expert dengan 10+ tahun pengalaman di bidang data science dan machine learning.',
+                                        expertise: ['Data Science', 'Machine Learning', 'Python', 'SQL']
+                                    }
+                                },
+                                {
+                                    id: 'mock-expert-2',
+                                    data: {
+                                        name: 'Sarah Putri, S.Kom., M.T.',
+                                        role: 'Business Intelligence Specialist',
+                                        organization: 'Founder Grow Synergy',
+                                        image: 'https://picsum.photos/seed/sarah-putri/200/200.jpg',
+                                        bio: 'Spesialis dalam business intelligence dan data visualization dengan pengalaman di berbagai industri.',
+                                        expertise: ['Business Intelligence', 'Tableau', 'Power BI', 'Data Visualization']
+                                    }
+                                },
+                                {
+                                    id: 'mock-expert-3',
+                                    data: {
+                                        name: 'Budi Santoso, S.E., M.M.',
+                                        role: 'Data Analytics Consultant',
+                                        organization: 'Founder Grow Synergy',
+                                        image: 'https://picsum.photos/seed/budi-santoso/200/200.jpg',
+                                        bio: 'Konsultan data analytics dengan fokus pada implementasi solusi bisnis berbasis data.',
+                                        expertise: ['Data Analytics', 'Business Analysis', 'R', 'Excel']
+                                    }
+                                }
+                            ]
+                        },
+                        // Portfolios mock data
+                        {
+                            docs: [
+                                {
+                                    id: 'mock-portfolio-1',
+                                    data: {
+                                        title: 'Retail Analytics Dashboard',
+                                        category: 'Dashboard',
+                                        description: 'Dashboard real-time untuk monitoring sales dan inventory retail.',
+                                        image: 'https://picsum.photos/seed/retail/400/300.jpg',
+                                        technologies: ['Tableau', 'SQL', 'Python']
+                                    }
+                                },
+                                {
+                                    id: 'mock-portfolio-2',
+                                    data: {
+                                        title: 'Customer Segmentation Analysis',
+                                        category: 'Analytics',
+                                        description: 'Analisis segmentasi customer untuk strategi pemasaran yang lebih efektif.',
+                                        image: 'https://picsum.photos/seed/segmentation/400/300.jpg',
+                                        technologies: ['Python', 'Scikit-learn', 'Pandas']
+                                    }
+                                }
+                            ]
+                        },
+                        // Academies mock data
+                        {
+                            docs: [
+                                {
+                                    id: 'mock-academy-1',
+                                    data: {
+                                        title: 'Data Analyst Fundamentals',
+                                        level: 'Pemula',
+                                        duration: '3 bulan',
+                                        description: 'Kursus dasar-dasar analisis data dengan tools modern.',
+                                        image: 'https://picsum.photos/seed/academy1/400/300.jpg',
+                                        price: 'Rp 5.000.000',
+                                        rating: 4.8
+                                    }
+                                },
+                                {
+                                    id: 'mock-academy-2',
+                                    data: {
+                                        title: 'Advanced Machine Learning',
+                                        level: 'Lanjutan',
+                                        duration: '6 bulan',
+                                        description: 'Pelajari machine learning tingkat lanjut dengan proyek real-world.',
+                                        image: 'https://picsum.photos/seed/academy2/400/300.jpg',
+                                        price: 'Rp 15.000.000',
+                                        rating: 4.9
+                                    }
+                                }
+                            ]
+                        }
+                    ];
                 }
                 
                 console.log('DEBUG: Firebase results received:', results);
