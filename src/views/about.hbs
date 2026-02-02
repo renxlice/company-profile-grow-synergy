@@ -639,20 +639,34 @@
         async function loadHeroSection() {
             console.log('DEBUG: Starting loadHeroSection for about page...');
             try {
-                console.log('DEBUG: Fetching from /api/hero-section...');
-                const response = await fetch('/api/hero-section');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                // Use window.db from firebase-config partial
+                const db = window.db;
+                if (!db) {
+                    throw new Error('Firestore not available');
                 }
                 
-                const heroData = await response.json();
-                console.log('DEBUG: Hero sections response:', heroData);
+                console.log('DEBUG: Fetching hero section from Firestore...');
+                const heroSectionsSnapshot = await db.collection('heroSection').get();
+                const heroSections = [];
                 
-                // Handle both array and object responses
-                const hero = Array.isArray(heroData) ? (heroData.length > 0 ? heroData[0] : null) : heroData;
+                heroSectionsSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    if (data.backgroundImage) {
+                        heroSections.push({
+                            id: doc.id,
+                            backgroundImage: data.backgroundImage,
+                            title: data.title,
+                            subtitle: data.subtitle,
+                            description: data.description
+                        });
+                    }
+                });
                 
-                if (hero) {
+                console.log('DEBUG: Hero sections data:', heroSections);
+                console.log('DEBUG: Hero sections length:', heroSections.length);
+                
+                if (heroSections.length > 0) {
+                    const hero = heroSections[0]; // Use first hero section
                     const backgroundImage = document.getElementById('hero-background-image');
                     console.log('DEBUG: Elements found:', {
                         backgroundImage: !!backgroundImage
@@ -660,7 +674,7 @@
                     
                     if (hero.backgroundImage && backgroundImage) {
                         backgroundImage.style.cssText = `background-image: url('${hero.backgroundImage}') !important; background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important;`;
-                        console.log('DEBUG: Background image updated successfully');
+                        console.log('DEBUG: Background image updated successfully:', hero.backgroundImage);
                     }
                     
                     // Update text content
@@ -677,6 +691,16 @@
                     if (description && hero.description) {
                         description.textContent = hero.description;
                     }
+                } else {
+                    console.log('DEBUG: No hero sections found in Firestore');
+                    // Set fallback content
+                    const subtitle = document.getElementById('hero-subtitle');
+                    const title = document.getElementById('hero-title');
+                    const description = document.getElementById('hero-description');
+                    
+                    if (subtitle) subtitle.textContent = 'Tentang';
+                    if (title) title.textContent = 'GROW SYNERGY INDONESIA';
+                    if (description) description.textContent = 'Platform terbaik untuk pengembangan profesional dan karir di Indonesia';
                 }
             } catch (error) {
                 console.error('DEBUG: Error loading hero section:', error);
