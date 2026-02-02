@@ -1,6 +1,4 @@
 const express = require('express');
-const { NestFactory } = require('@nestjs/core');
-const { ExpressAdapter } = require('@nestjs/platform-express');
 const path = require('path');
 
 async function bootstrap() {
@@ -32,6 +30,7 @@ async function bootstrap() {
     });
   });
   
+  // Try NestJS first, fallback to Express
   try {
     console.log('🚀 Starting NestJS application...');
     console.log('📋 Environment check:');
@@ -40,7 +39,19 @@ async function bootstrap() {
     console.log('   FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL ? 'SET' : 'NOT SET');
     console.log('   FIREBASE_PRIVATE_KEY:', process.env.FIREBASE_PRIVATE_KEY ? 'SET' : 'NOT SET');
     
+    // Check if dist folder exists
+    const fs = require('fs');
+    const distPath = path.join(__dirname, 'dist', 'app.module.js');
+    console.log('📁 Checking dist path:', distPath);
+    console.log('📁 Dist file exists:', fs.existsSync(distPath));
+    
+    if (!fs.existsSync(distPath)) {
+      throw new Error(`Dist file not found: ${distPath}`);
+    }
+    
     // Import and create NestJS app
+    const { NestFactory } = require('@nestjs/core');
+    const { ExpressAdapter } = require('@nestjs/platform-express');
     const { AppModule } = require('./dist/app.module');
     const adapter = new ExpressAdapter(server);
     
@@ -67,34 +78,39 @@ async function bootstrap() {
     console.error('❌ Stack trace:', error.stack);
     console.log('🔄 Falling back to Express-only mode...');
     
-    // Fallback routes if NestJS fails
+    // Serve static HTML files directly
     server.get('/', (req, res) => {
-      res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>GROW SYNERGY INDONESIA</title>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        </head>
-        <body>
-          <div class="min-h-screen bg-blue-50 flex items-center justify-center">
-            <div class="text-center">
-              <h1 class="text-4xl font-bold text-blue-600 mb-4">GROW SYNERGY INDONESIA</h1>
-              <p class="text-gray-600 mb-8">Platform Pelatihan Data Analitik Terbaik di Indonesia</p>
-              <div class="space-y-4">
-                <a href="/about" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Tentang Kami</a>
-                <a href="/synergy-academy" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Synergy Academy</a>
-                <a href="/synergy-experts" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Synergy Experts</a>
-                <a href="/synergy-portfolio" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Synergy Portfolio</a>
-                <a href="/admin/login" class="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">Admin Login</a>
+      const indexPath = path.join(__dirname, 'public', 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>GROW SYNERGY INDONESIA</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+          </head>
+          <body>
+            <div class="min-h-screen bg-blue-50 flex items-center justify-center">
+              <div class="text-center">
+                <h1 class="text-4xl font-bold text-blue-600 mb-4">GROW SYNERGY INDONESIA</h1>
+                <p class="text-gray-600 mb-8">Platform Pelatihan Data Analitik Terbaik di Indonesia</p>
+                <div class="space-y-4">
+                  <a href="/about" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Tentang Kami</a>
+                  <a href="/synergy-academy" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Synergy Academy</a>
+                  <a href="/synergy-experts" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Synergy Experts</a>
+                  <a href="/synergy-portfolio" class="block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Synergy Portfolio</a>
+                  <a href="/admin/login" class="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">Admin Login</a>
+                </div>
               </div>
             </div>
-          </div>
-        </body>
-        </html>
-      `);
+          </body>
+          </html>
+        `);
+      }
     });
     
     server.get('/about', (req, res) => {
@@ -168,7 +184,7 @@ async function bootstrap() {
   }
   
   const PORT = process.env.PORT || 3001;
-  server.listen(PORT, () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
   });
