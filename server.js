@@ -47,20 +47,45 @@ function getIndexHbsContent() {
       content = content.replace(/\{\{author\}\}/g, 'GROW SYNERGY INDONESIA');
       content = content.replace(/\{\{ogTitle\}\}/g, 'Pelatihan Data Analitik Terbaik di Indonesia #1 | GROW SYNERGY INDONESIA');
       content = content.replace(/\{\{ogDescription\}\}/g, 'Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat BNSP');
-      content = content.replace(/\{\{ogImage\}\}/g, 'https://growsynergyid.com/images/logo_pt.png');
+      content = content.replace(/\{\{ogImage\}\}/g, '/images/logo_pt.png');
       content = content.replace(/\{\{ogUrl\}\}/g, 'https://growsynergyid.com/');
       content = content.replace(/\{\{ogType\}\}/g, 'website');
       content = content.replace(/\{\{ogSiteName\}\}/g, 'GROW SYNERGY INDONESIA');
       content = content.replace(/\{\{twitterCard\}\}/g, 'summary_large_image');
       content = content.replace(/\{\{twitterTitle\}\}/g, 'Pelatihan Data Analitik Terbaik di Indonesia #1 | GROW SYNERGY INDONESIA');
       content = content.replace(/\{\{twitterDescription\}\}/g, 'Platform pelatihan data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat BNSP');
-      content = content.replace(/\{\{twitterImage\}\}/g, 'https://growsynergyid.com/images/logo_pt.png');
+      content = content.replace(/\{\{twitterImage\}\}/g, '/images/logo_pt.png');
       content = content.replace(/\{\{canonical\}\}/g, 'https://growsynergyid.com/');
       content = content.replace(/\{\{siteName\}\}/g, 'GROW SYNERGY INDONESIA');
       content = content.replace(/\{\{googleAnalyticsId\}\}/g, 'G-XXXXXXXXXX');
       
       // Remove conditional blocks
       content = content.replace(/\{\{#if googleAnalyticsId\}\}[\s\S]*?\{\{\/if\}\}/g, '');
+      
+      // Remove Firebase references and JavaScript that requires Firebase
+      content = content.replace(/firebase\.initialize\(.*?\);/g, '// Firebase disabled in static mode');
+      content = content.replace(/const db = firebase\.firestore\(\);/g, '// Firebase disabled in static mode');
+      content = content.replace(/const analytics = firebase\.analytics\(\);/g, '// Firebase disabled in static mode');
+      content = content.replace(/firebaseConfig/g, '// Firebase disabled in static mode');
+      
+      // Remove dynamic content loading JavaScript
+      content = content.replace(/loadDynamicContent\(\);/g, '// Dynamic content disabled in static mode');
+      content = content.replace(/updateHeroSection\(\);/g, '// Dynamic content disabled in static mode');
+      content = content.replace(/updateAboutSection\);/g, '// Dynamic content disabled in static mode');
+      content = content.replace(/updateExpertsSection\);/g, '// Dynamic content disabled in static mode');
+      content = content.replace(/updatePortfolioSection\);/g, '// Dynamic content disabled in static mode');
+      content = content.replace(/updateAcademySection\);/g, '// Dynamic content disabled in static mode');
+      content = content.replace(/updateBlogSection\);/g, '// Dynamic content disabled in static mode');
+      
+      // Fix image paths
+      content = content.replace(/src="\/images\/hero-background\.jpg"/g, 'src="/images/hero-background.jpg"');
+      content = content.replace(/src="\/images\/.*?"/g, (match) => {
+        const filename = match.split('/').pop();
+        return `src="/images/${filename}"`;
+      });
+      
+      // Remove API calls
+      content = content.replace(/fetch\('.*?\/api\/analytics\/track.*?\);/g, '// Analytics disabled in static mode');
       
       return content;
     } else {
