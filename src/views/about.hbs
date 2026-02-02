@@ -528,48 +528,18 @@
 
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
+    {{> firebase-config}}
     <script>
-        // Initialize Firebase
-        let db;
-        try {
-            // Check if Firebase is available
-            if (typeof firebase === 'undefined') {
-                throw new Error('Firebase SDK not loaded');
-            }
-
-            firebase.initializeApp({
-                apiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-                authDomain: "company-profile-grow-synergy.firebaseapp.com",
-                projectId: "company-profile-grow-synergy",
-                storageBucket: "company-profile-grow-synergy.firebasestorage.app",
-                messagingSenderId: "584312572709",
-                appId: "1:584312572709:web:1e0ad87867af7b878668cc",
-                measurementId: "G-PKLP3Y3F4F"
-            });
-
-            db = firebase.firestore();
-            const analytics = firebase.analytics();
-            console.log('Firebase initialized successfully');
-        } catch (error) {
-            console.warn('Firebase initialization skipped:', error.message);
-            // Fallback to mock mode if Firebase fails
-            db = {
-                collection: () => ({
-                    get: async () => ({ docs: [] }),
-                    add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
-                    doc: () => ({
-                        get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
-                        update: async () => {},
-                        delete: async () => {}
-                    }),
-                }),
-            };
-        }
-
         // Load experts from Firestore
         async function loadExperts() {
             console.log('DEBUG: Starting loadExperts for about page...');
             try {
+                // Use window.db from firebase-config partial
+                const db = window.db;
+                if (!db) {
+                    throw new Error('Firestore not available');
+                }
+                
                 const expertsCollection = db.collection('experts');
                 const snapshot = await expertsCollection.get();
                 const expertsGrid = document.getElementById('expertsGrid');
@@ -671,11 +641,18 @@
             try {
                 console.log('DEBUG: Fetching from /api/hero-section...');
                 const response = await fetch('/api/hero-section');
-                const heroSections = await response.json();
-                console.log('DEBUG: Hero sections response:', heroSections);
                 
-                if (heroSections.length > 0) {
-                    const hero = heroSections[0];
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const heroData = await response.json();
+                console.log('DEBUG: Hero sections response:', heroData);
+                
+                // Handle both array and object responses
+                const hero = Array.isArray(heroData) ? (heroData.length > 0 ? heroData[0] : null) : heroData;
+                
+                if (hero) {
                     const backgroundImage = document.getElementById('hero-background-image');
                     console.log('DEBUG: Elements found:', {
                         backgroundImage: !!backgroundImage
@@ -703,6 +680,14 @@
                 }
             } catch (error) {
                 console.error('DEBUG: Error loading hero section:', error);
+                // Set fallback content
+                const subtitle = document.getElementById('hero-subtitle');
+                const title = document.getElementById('hero-title');
+                const description = document.getElementById('hero-description');
+                
+                if (subtitle) subtitle.textContent = 'Tentang';
+                if (title) title.textContent = 'GROW SYNERGY INDONESIA';
+                if (description) description.textContent = 'Platform terbaik untuk pengembangan profesional dan karir di Indonesia';
             }
         }
         

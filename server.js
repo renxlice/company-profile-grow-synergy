@@ -400,6 +400,19 @@ app.get('/blog/:slug', (req, res) => {
 });
 
 // API Routes
+app.get('/api/hero-section', (req, res) => {
+  console.log('🔥 Hero section API request received');
+  const heroData = {
+    backgroundImage: '/images/hero1.jpg',
+    title: 'Transformasi Karir dengan Data Analitik',
+    subtitle: 'GROW SYNERGY INDONESIA',
+    description: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
+    buttonText1: 'Mulai Belajar',
+    buttonText2: 'Konsultasi Gratis'
+  };
+  res.json(heroData);
+});
+
 app.get('/api/firebase/data', (req, res) => {
   console.log('🔥 Firebase data request received');
   // Enhanced mock data for production use
