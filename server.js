@@ -62,6 +62,16 @@ function getIndexHbsContent() {
       // Remove conditional blocks
       content = content.replace(/\{\{#if googleAnalyticsId\}\}[\s\S]*?\{\{\/if\}\}/g, '');
       
+      // Add Firebase SDK scripts and initialization
+      content = content.replace('</head>', `
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+        <script src="/firebase-config.js"></script>
+        </head>
+      `);
+      
       // Fix image paths - keep existing images
       content = content.replace(/src="\/images\/asdatin\.png"/g, 'src="/images/asdatin.png"');
       content = content.replace(/src="\/images\/ideaslab\.png"/g, 'src="/images/ideaslab.png"');
@@ -73,8 +83,9 @@ function getIndexHbsContent() {
       // Fix hero background image
       content = content.replace(/src="\/images\/hero-background\.jpg"/g, 'src="/images/hero-background.jpg"');
       
-      // Remove problematic background image reference
+      // Fix backgroundImage reference
       content = content.replace(/this\.backgroundImage/g, 'backgroundImage');
+      content = content.replace(/\{\{backgroundImage\}\}/g, '/images/hero-background.jpg');
       
       // Add floating WhatsApp button
       content = content.replace('</body>', `
@@ -89,6 +100,49 @@ function getIndexHbsContent() {
             </svg>
           </a>
         </div>
+        
+        <!-- Data Loading Script -->
+        <script>
+          // Wait for Firebase to be ready
+          function waitForFirebase() {
+            return new Promise((resolve) => {
+              if (window.firebase && window.db) {
+                resolve();
+              } else {
+                setTimeout(() => waitForFirebase().then(resolve), 100);
+              }
+            });
+          }
+          
+          // Load data from API
+          async function loadDataFromAPI() {
+            try {
+              console.log('🔥 Loading data from API...');
+              const response = await fetch('/api/firebase/data');
+              const data = await response.json();
+              console.log('✅ Data loaded:', data);
+              
+              // Update all sections with data
+              if (data.hero) updateHeroSection([data.hero]);
+              if (data.about) updateAboutSection([data.about]);
+              if (data.experts) updateExpertsSection(data.experts);
+              if (data.portfolio) updatePortfolioSection(data.portfolio);
+              if (data.academy) updateAcademySection(data.academy);
+              
+              console.log('🎉 All sections updated with data!');
+            } catch (error) {
+              console.error('❌ Error loading data:', error);
+            }
+          }
+          
+          // Initialize when page loads
+          document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Page loaded, waiting for Firebase...');
+            await waitForFirebase();
+            console.log('✅ Firebase ready, loading data...');
+            loadDataFromAPI();
+          });
+        </script>
         </body>
       `);
       
@@ -99,11 +153,6 @@ function getIndexHbsContent() {
         content = content.replace(/\/\/ Firestore disabled in static mode/g, 'firestore');
         content = content.replace(/\/\/ Analytics disabled in static mode/g, 'analytics');
         content = content.replace(/\/\/ Database disabled in static mode/g, 'db');
-        
-        // Re-enable Firebase SDK
-        content = content.replace(/<script src="https:\/\/www\.gstatic\.com\/firebasejs\/9\.6\.1\/firebase-app-compat\.js"><\/script>/g, '<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"><\/script>');
-        content = content.replace(/<script src="https:\/\/www\.gstatic\.com\/firebasejs\/9\.6\.1\/firebase-firestore-compat\.js"><\/script>/g, '<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"><\/script>');
-        content = content.replace(/<script src="https:\/\/www\.gstatic\.com\/firebasejs\/9\.6\.1\/firebase-analytics-compat\.js"><\/script>/g, '<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"><\/script>');
         
         // Re-enable dynamic content loading
         content = content.replace(/\/\/ Dynamic content disabled in static mode/g, 'loadDynamicContent');
