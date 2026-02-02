@@ -175,6 +175,164 @@ app.get('/home', (req, res) => {
   res.redirect('/');
 });
 
+// Add API route for analytics tracking
+app.post('/api/analytics/track', (req, res) => {
+  console.log('📊 Analytics tracking request received');
+  res.json({ status: 'success', message: 'Analytics tracked' });
+});
+
+// Add API route for Firebase data
+app.get('/api/firebase/data', (req, res) => {
+  console.log('🔥 Firebase data request received');
+  
+  // Mock data for now (will be replaced with actual Firebase data)
+  const mockData = {
+    hero: {
+      backgroundImage: '/images/hero-background.jpg',
+      title: 'Transformasi Karir dengan Data Analitik',
+      description: 'Pelatihan intensif dengan mentor profesional dan proyek real-world',
+      buttonText1: 'Mulai Belajar Sekarang',
+      buttonText2: 'Download Kurikulum'
+    },
+    about: {
+      title: 'Tentang Kami',
+      description: 'GROW SYNERGY INDONESIA adalah platform pembelajaran data analitik terbaik di Indonesia dengan kurikulum terstandar dan mentor berpengalaman.',
+      content: 'Menjadi platform pembelajaran data analitik terdepan di Indonesia yang menghasilkan talenta siap kerja.',
+      buttonText1: 'Hubungi Kami',
+      buttonText2: 'Lihat Portfolio'
+    },
+    experts: [
+      {
+        id: 'expert1',
+        name: 'Dr. Ahmad Wijaya',
+        position: 'Data Science Expert',
+        experience: '10+ Tahun Pengalaman',
+        rating: 4.8,
+        reviewCount: 156,
+        description: 'Expert dalam machine learning dan data science dengan pengalaman 10+ tahun di berbagai industri.',
+        image: 'https://picsum.photos/seed/ahmad/200/200.jpg'
+      },
+      {
+        id: 'expert2',
+        name: 'Sarah Putri',
+        position: 'Business Intelligence Specialist',
+        experience: '8+ Tahun Pengalaman',
+        rating: 4.9,
+        reviewCount: 203,
+        description: 'Spesialis dalam business intelligence dan data visualization dengan track record yang sangat baik.',
+        image: 'https://picsum.photos/seed/sarah/200/200.jpg'
+      },
+      {
+        id: 'expert3',
+        name: 'Budi Santoso',
+        position: 'Machine Learning Engineer',
+        experience: '7+ Tahun Pengalaman',
+        rating: 4.7,
+        reviewCount: 142,
+        description: 'Expert dalam machine learning dan artificial intelligence dengan fokus pada implementasi bisnis.',
+        image: 'https://picsum.photos/seed/budi/200/200.jpg'
+      }
+    ],
+    portfolio: [
+      {
+        id: 'portfolio1',
+        title: 'Retail Analytics Dashboard',
+        description: 'Dashboard real-time untuk monitoring sales dan inventory',
+        category: 'Dashboard',
+        tags: ['React', 'Node.js', 'MongoDB'],
+        image: 'https://picsum.photos/seed/retail/400/300.jpg',
+        client: 'PT. Retail Maju'
+      },
+      {
+        id: 'portfolio2',
+        title: 'Sales Prediction Model',
+        description: 'Machine learning model untuk forecasting sales',
+        category: 'Machine Learning',
+        tags: ['Python', 'TensorFlow', 'Scikit-learn'],
+        image: 'https://picsum.photos/seed/sales/400/300.jpg',
+        client: 'PT. Sales Global'
+      },
+      {
+        id: 'portfolio3',
+        title: 'Customer Segmentation',
+        description: 'Analisis clustering untuk customer behavior',
+        category: 'Data Analysis',
+        tags: ['Python', 'Pandas', 'Tableau'],
+        image: 'https://picsum.photos/seed/customer/400/300.jpg',
+        client: 'PT. Customer First'
+      }
+    ],
+    academy: [
+      {
+        id: 'academy1',
+        title: 'Data Analyst Fundamentals',
+        description: 'Dasar-dasar analisis data dengan tools modern',
+        duration: '3 bulan',
+        level: 'Pemula',
+        schedule: 'Full Time',
+        format: 'Online',
+        rating: 4.8,
+        students: 2500,
+        image: 'https://picsum.photos/seed/academy1/400/300.jpg'
+      },
+      {
+        id: 'academy2',
+        title: 'Advanced SQL & Visualization',
+        description: 'Query kompleks dan visualisasi data yang efektif',
+        duration: '2 bulan',
+        level: 'Menengah',
+        schedule: 'Full Time',
+        format: 'Online',
+        rating: 4.9,
+        students: 1800,
+        image: 'https://picsum.photos/seed/academy2/400/300.jpg'
+      },
+      {
+        id: 'academy3',
+        title: 'Machine Learning Basics',
+        description: 'Pengenalan machine learning dan implementasi',
+        duration: '4 bulan',
+        level: 'Menengah',
+        schedule: 'Full Time',
+        format: 'Online',
+        rating: 4.7,
+        students: 1200,
+        image: 'https://picsum.photos/seed/academy3/400/300.jpg'
+      }
+    ]
+  };
+  
+  res.json(mockData);
+});
+
+// Add Firebase initialization script
+app.get('/firebase-config.js', (req, res) => {
+  const firebaseConfig = `
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      authDomain: "company-profile-grow-synergy.firebaseapp.com",
+      projectId: "company-profile-grow-synergy",
+      storageBucket: "company-profile-grow-synergy.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abcdef123456789"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const analytics = firebase.analytics();
+    
+    // Export for use in other scripts
+    window.firebase = firebase;
+    window.db = db;
+    window.analytics = analytics;
+  `;
+  
+  res.setHeader('Content-Type', 'application/javascript');
+  res.send(firebaseConfig);
+});
+
 // About route
 app.get('/about', (req, res) => {
   res.send(`
