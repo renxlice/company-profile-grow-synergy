@@ -373,6 +373,8 @@
                 
                 if (allExperts.length > 0) {
                     console.log('First expert data:', allExperts[0]);
+                    console.log('First expert category:', allExperts[0].category);
+                    console.log('All expert categories:', allExperts.map(e => ({ name: e.name, category: e.category })));
                 }
                 
                 // If no data from Firestore, use mock data
@@ -724,8 +726,9 @@
 
         // Create expert card HTML
         function createExpertCard(expert) {
+            console.log('Creating card for expert:', expert.name, 'Category:', expert.category);
             const div = document.createElement('div');
-            div.className = 'expert-card rounded-lg shadow-lg p-6 hover:shadow-xl transition cursor-pointer';
+            div.className = 'expert-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer';
             
             // Add click event to show modal
             div.addEventListener('click', function() {
@@ -751,7 +754,7 @@
             const expertOrganization = expert.organization || 'Founder Grow Synergy';
             
             div.innerHTML = 
-                '<div class="relative bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer">' +
+                '<div class="relative rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer" style="background-color: #225273;">' +
                     '<div class="aspect-w-16 aspect-h-9 bg-gray-200">' +
                         '<img src="' + expertImage + '" alt="' + expertName + '" class="w-full h-48 object-cover">' +
                     '</div>' +
@@ -759,18 +762,18 @@
                         '<span class="bg-green-600 text-white px-2 py-1 rounded text-sm font-semibold">' + expertRole + '</span>' +
                     '</div>' +
                     '<div class="absolute top-2 left-2">' +
-                        '<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">' + expertCategory + '</span>' +
+                        '<span class="bg-yellow-400 text-gray-800 text-xs px-2 py-1 rounded-full font-semibold">' + expertCategory + '</span>' +
                     '</div>' +
                     '<div class="p-4">' +
-                        '<h3 class="text-lg font-semibold mb-2">' + expertName + '</h3>' +
-                        '<p class="text-gray-600 text-sm mb-2">' + expertOrganization + '</p>' +
+                        '<h3 class="text-lg font-semibold mb-2 text-white">' + expertName + '</h3>' +
+                        '<p class="text-gray-300 text-sm mb-2">' + expertOrganization + '</p>' +
                         '<div class="flex items-center justify-between mb-3">' +
                             '<div class="flex items-center">' +
                                 generateStars(expertRating) +
                             '</div>' +
-                            '<span class="text-sm text-gray-500">' + expertRating + '</span>' +
+                            '<span class="text-sm text-gray-300">' + expertRating + '</span>' +
                         '</div>' +
-                        '<p class="text-gray-600 text-sm line-clamp-3">' + expertDescription + '</p>' +
+                        '<p class="text-gray-300 text-sm line-clamp-3">' + expertDescription + '</p>' +
                     '</div>' +
                 '</div>';
             
