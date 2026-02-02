@@ -1273,69 +1273,6 @@ app.get('/api/firebase/data', (req, res) => {
   res.json(mockData);
 });
 
-// Synergy Experts route
-app.get('/synergy-experts', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Synergy Experts - GROW SYNERGY INDONESIA</title>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    </head>
-    <body>
-      <div class="min-h-screen bg-gray-50">
-        <nav class="bg-white shadow">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-              <div class="flex items-center">
-                <h1 class="text-xl font-bold text-blue-600">GROW SYNERGY</h1>
-              </div>
-              <div class="flex items-center space-x-4">
-                <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
-                <a href="/admin/login" class="bg-blue-600 text-white px-4 py-2 rounded">Admin</a>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <div class="max-w-7xl mx-auto px-4 py-12">
-          <h1 class="text-3xl font-bold mb-6">Synergy Experts</h1>
-          <p class="text-gray-600">Tim ahli data analitik dengan pengalaman profesional di berbagai industri.</p>
-          <div class="mt-8 grid md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <span class="text-blue-600 font-bold text-xl">AW</span>
-              </div>
-              <h3 class="text-xl font-semibold mb-2">Dr. Ahmad Wijaya</h3>
-              <p class="text-gray-600">Data Science Expert</p>
-              <p class="text-sm text-gray-500 mt-2">10+ tahun pengalaman</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <span class="text-blue-600 font-bold text-xl">SP</span>
-              </div>
-              <h3 class="text-xl font-semibold mb-2">Sarah Putri</h3>
-              <p class="text-gray-600">Business Intelligence Specialist</p>
-              <p class="text-sm text-gray-500 mt-2">8+ tahun pengalaman</p>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                <span class="text-blue-600 font-bold text-xl">BS</span>
-              </div>
-              <h3 class="text-xl font-semibold mb-2">Budi Santoso</h3>
-              <p class="text-gray-600">Machine Learning Engineer</p>
-              <p class="text-sm text-gray-500 mt-2">7+ tahun pengalaman</p>
-            </div>
-          </div>
-          <a href="/" class="text-blue-600 hover:underline mt-8 inline-block">← Kembali ke Home</a>
-        </div>
-      </div>
-    </body>
-    </html>
-  `);
-});
-
 // Synergy Portfolio route
 app.get('/synergy-portfolio', (req, res) => {
   res.send(`
