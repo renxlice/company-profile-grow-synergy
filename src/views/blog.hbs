@@ -175,49 +175,8 @@
         <section class="py-16">
             <div class="container mx-auto px-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
-                    {{#each blogs}}
-                    <article class="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer" data-category="{{category}}" onclick="window.location.href='/blog/{{slug}}'">
-                        <div class="relative">
-                            {{#if @first}}
-                            <div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                                Featured
-                            </div>
-                            {{/if}}
-                            <img src="{{image}}" alt="{{title}}" class="w-full h-48 object-cover">
-                        </div>
-                        <div class="p-6">
-                            <div class="flex items-center text-sm text-gray-500 mb-2">
-                                <i class="fas fa-calendar mr-2"></i>
-                                <span>{{date}}</span>
-                                <span class="mx-2">•</span>
-                                <i class="fas fa-clock mr-1"></i>
-                                <span>{{readTime}} min read</span>
-                            </div>
-                            <h2 class="text-xl font-bold mb-3 text-gray-800">
-                                {{title}}
-                            </h2>
-                            <p class="text-gray-600 mb-4">
-                                {{description}}
-                            </p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <span class="text-sm text-gray-700">{{author}}</span>
-                                </div>
-                                <span class="text-orange-500 font-semibold text-sm">
-                                    Klik untuk detail →
-                                </span>
-                            </div>
-                        </div>
-                    </article>
-                    {{/each}}
+                    <!-- Blog posts will be loaded here dynamically -->
                 </div>
-                
-                {{#unless blogs.length}}
-                <div class="text-center py-12">
-                    <i class="fas fa-blog text-gray-400 text-4xl mb-4"></i>
-                    <p class="text-gray-500">No blog articles found</p>
-                </div>
-                {{/unless}}
 
                 <!-- Load More Button -->
                 <div class="text-center mt-12">
@@ -388,6 +347,83 @@
     </footer>
 
     <!-- JavaScript -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    {{> firebase-config}}
+    <script>
+        // Initialize Firestore explicitly if not available
+        if (!window.db) {
+            window.db = firebase.firestore();
+        }
+        
+        // Load blog data from API
+        async function loadBlogData() {
+            try {
+                console.log(' Loading blog data from API...');
+                const response = await fetch('/api/firebase/data');
+                const data = await response.json();
+                console.log(' Blog data loaded:', data.blogs);
+                
+                // Update blog section
+                if (data.blogs && data.blogs.length > 0) {
+                    const blogGrid = document.getElementById('blogGrid');
+                    if (blogGrid) {
+                        blogGrid.innerHTML = '';
+                        data.blogs.forEach(post => {
+                            const postCard = createBlogCard(post);
+                            blogGrid.appendChild(postCard);
+                        });
+                    }
+                }
+                
+                console.log(' Blog page updated with Firestore data!');
+            } catch (error) {
+                console.error(' Error loading blog data:', error);
+            }
+        }
+        
+        function createBlogCard(post) {
+            const card = document.createElement('article');
+            card.className = 'bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer';
+            card.onclick = () => window.location.href = `/blog/${post.slug}`;
+            card.innerHTML = `
+                <div class="relative">
+                    ${post.id === 'blog1' ? '<div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Featured</div>' : ''}
+                    <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <i class="fas fa-calendar mr-2"></i>
+                        <span>${post.date}</span>
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-clock mr-1"></i>
+                        <span>${post.readTime} min read</span>
+                    </div>
+                    <h2 class="text-xl font-bold mb-3 text-gray-800">
+                        ${post.title}
+                    </h2>
+                    <p class="text-gray-600 mb-4">
+                        ${post.excerpt}
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-700">${post.author}</span>
+                        </div>
+                        <span class="text-orange-500 font-semibold text-sm">
+                            Klik untuk detail →
+                        </span>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBlogData();
+        });
+    </script>
+    
     <script src="/js/main.js"></script>
     
     <!-- Blog-specific functionality -->
