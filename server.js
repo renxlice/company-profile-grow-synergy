@@ -511,6 +511,8 @@ app.get('/admin/dashboard', (req, res) => {
   // Fetch data from Firestore
   const fetchData = async () => {
     try {
+      console.log('🔍 Starting to fetch data from Firestore...');
+      
       const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot] = await Promise.all([
         db.collection('experts').get(),
         db.collection('portfolios').get(),
@@ -526,6 +528,18 @@ app.get('/admin/dashboard', (req, res) => {
       const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const heroSections = heroSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      console.log('📊 Firestore Data Summary:');
+      console.log(`  - Experts: ${experts.length} documents`);
+      console.log(`  - Portfolios: ${portfolios.length} documents`);
+      console.log(`  - Academies: ${academies.length} documents`);
+      console.log(`  - Blogs: ${blogs.length} documents`);
+      console.log(`  - Testimonials: ${testimonials.length} documents`);
+      console.log(`  - Hero Sections: ${heroSections.length} documents`);
+
+      if (experts.length > 0) {
+        console.log('👤 Sample Expert:', experts[0]);
+      }
 
       res.render('admin/dashboard', {
         title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
