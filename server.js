@@ -603,6 +603,198 @@ app.get('/admin/logout', (req, res) => {
   });
 });
 
+// Debug route for Firestore connection
+app.get('/admin/debug-firestore', async (req, res) => {
+  try {
+    const debugInfo = {
+      firebaseInitialized: !!admin.apps.length,
+      collections: {},
+      errors: []
+    };
+
+    // Test connection to each collection
+    const collections = ['experts', 'portfolios', 'academies', 'blogs', 'testimonials', 'heroSection'];
+    
+    for (const collectionName of collections) {
+      try {
+        const snapshot = await db.collection(collectionName).get();
+        debugInfo.collections[collectionName] = {
+          documentCount: snapshot.docs.length,
+          sampleData: snapshot.docs.length > 0 ? {
+            id: snapshot.docs[0].id,
+            data: snapshot.docs[0].data()
+          } : null
+        };
+      } catch (error) {
+        debugInfo.collections[collectionName] = {
+          error: error.message
+        };
+        debugInfo.errors.push(`${collectionName}: ${error.message}`);
+      }
+    }
+
+    res.json({
+      success: true,
+      debug: debugInfo,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Seed data route for Firestore
+app.get('/admin/seed-firestore', async (req, res) => {
+  try {
+    const sampleData = {
+      experts: [
+        {
+          name: 'Dr. Ahmad Wijaya, M.Sc.',
+          title: 'Data Science Expert & Founder',
+          category: 'Data Science',
+          experience: '10+ tahun',
+          rating: '4.9',
+          reviewCount: '156',
+          image: '/images/experts/ahmad-wijaya.jpg',
+          description: 'Expert dengan 10+ tahun pengalaman di bidang data science dan machine learning.'
+        },
+        {
+          name: 'Sarah Putri, S.Kom., M.T.',
+          title: 'Business Intelligence Specialist',
+          category: 'Business Intelligence',
+          experience: '8+ tahun',
+          rating: '4.8',
+          reviewCount: '124',
+          image: '/images/experts/sarah-putri.jpg',
+          description: 'Spesialis dalam business intelligence dan data visualization.'
+        }
+      ],
+      portfolios: [
+        {
+          title: 'Retail Analytics Dashboard',
+          category: 'Dashboard',
+          client: 'PT. Retail Maju Indonesia',
+          description: 'Dashboard real-time untuk monitoring sales dan inventory.',
+          image: '/images/portfolios/retail-dashboard.jpg',
+          impact: 'Meningkatkan efisiensi monitoring 40%'
+        },
+        {
+          title: 'Customer Segmentation Analysis',
+          category: 'Analytics',
+          client: 'PT. E-Commerce Indonesia',
+          description: 'Analisis segmentasi customer menggunakan machine learning.',
+          image: '/images/portfolios/customer-segmentation.jpg',
+          impact: 'Meningkatkan konversi 25%'
+        }
+      ],
+      academies: [
+        {
+          title: 'Data Analyst Fundamentals',
+          level: 'Pemula',
+          duration: '3 bulan',
+          price: 'Rp 5.000.000',
+          rating: '4.8',
+          students: 150,
+          description: 'Kursus dasar-dasar analisis data dengan tools modern.',
+          image: '/images/academies/data-analyst.jpg'
+        },
+        {
+          title: 'Business Intelligence Professional',
+          level: 'Menengah',
+          duration: '4 bulan',
+          price: 'Rp 8.000.000',
+          rating: '4.9',
+          students: 89,
+          description: 'Pelajari business intelligence dari dasar hingga expert level.',
+          image: '/images/academies/bi-professional.jpg'
+        }
+      ],
+      blogs: [
+        {
+          title: 'Panduan Lengkap Data Analitik untuk Pemula',
+          category: 'tutorial',
+          author: 'Dr. Ahmad Wijaya',
+          date: '2024-01-15',
+          readTime: '10',
+          description: 'Panduan lengkap untuk memulai karir di bidang data analitik.',
+          image: '/images/blogs/data-analitik-pemula.jpg',
+          content: 'Data analitik adalah proses menginspeksi, membersihkan, dan memodelkan data...'
+        },
+        {
+          title: 'Tips Karir Data Scientist di Indonesia',
+          category: 'career',
+          author: 'Sarah Putri',
+          date: '2024-01-20',
+          readTime: '8',
+          description: 'Tips dan trik untuk sukses berkarir sebagai data scientist.',
+          image: '/images/blogs/career-data-scientist.jpg',
+          content: 'Karir data scientist di Indonesia semakin menjanjikan...'
+        }
+      ],
+      testimonials: [
+        {
+          name: 'Andi Pratama',
+          position: 'Data Analyst',
+          company: 'Tech Company Indonesia',
+          rating: '5',
+          testimonial: 'Excellent training program! Sangat membantu karir saya.',
+          image: '/images/testimonials/andi-pratama.jpg'
+        },
+        {
+          name: 'Siti Nurhaliza',
+          position: 'Business Intelligence Manager',
+          company: 'Retail Corp',
+          rating: '5',
+          testimonial: 'Very practical and useful. Highly recommended!',
+          image: '/images/testimonials/siti-nurhaliza.jpg'
+        }
+      ],
+      heroSection: [
+        {
+          title: 'Transformasi Karir dengan Data Analitik',
+          subtitle: 'GROW SYNERGY INDONESIA',
+          description: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
+          backgroundImage: '/images/hero1.jpg',
+          buttonText1: 'Mulai Belajar',
+          buttonText2: 'Konsultasi Gratis'
+        }
+      ]
+    };
+
+    const results = {};
+    
+    for (const [collection, data] of Object.entries(sampleData)) {
+      if (Array.isArray(data)) {
+        results[collection] = [];
+        for (const item of data) {
+          const docRef = await db.collection(collection).add(item);
+          results[collection].push({ id: docRef.id, ...item });
+        }
+      } else {
+        const docRef = await db.collection(collection).add(data);
+        results[collection] = { id: docRef.id, ...data };
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Sample data successfully added to Firestore',
+      results: results,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // Admin API Routes
 app.get('/api/admin/maintenance/status', (req, res) => {
   res.json({
