@@ -30,22 +30,27 @@ export class AppController {
 
   @Get()
   async getHome(@Res() res: Response) {
-    const seoData = this.seoService.getHomeData();
-    const structuredDataJson = JSON.stringify(seoData.structuredData);
-    
-    return res.render('index', {
-      ...seoData,
-      structuredDataJson,
-      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
-      // Firebase config from environment variables
-      firebaseApiKey: process.env.FIREBASE_API_KEY || '',
-      firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
-      firebaseProjectId: process.env.FIREBASE_PROJECT_ID || '',
-      firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET || '',
-      firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
-      firebaseAppId: process.env.FIREBASE_APP_ID || '',
-      firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID || ''
-    });
+    try {
+      const seoData = this.seoService.getHomeData();
+      const structuredDataJson = JSON.stringify(seoData.structuredData);
+      
+      return res.render('index', {
+        ...seoData,
+        structuredDataJson,
+        googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID,
+        // Firebase config from environment variables
+        firebaseApiKey: process.env.FIREBASE_API_KEY || '',
+        firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN || '',
+        firebaseProjectId: process.env.FIREBASE_PROJECT_ID || '',
+        firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET || '',
+        firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || '',
+        firebaseAppId: process.env.FIREBASE_APP_ID || '',
+        firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID || ''
+      });
+    } catch (error) {
+      console.error('Error rendering home page:', error);
+      res.status(500).send('Internal Server Error');
+    }
   }
 
   @Get('api/hero-section')
