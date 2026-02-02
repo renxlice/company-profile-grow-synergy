@@ -77,15 +77,50 @@ function getIndexHbsContent() {
       content = content.replace(/updateAcademySection\);/g, '// Dynamic content disabled in static mode');
       content = content.replace(/updateBlogSection\);/g, '// Dynamic content disabled in static mode');
       
-      // Fix image paths
-      content = content.replace(/src="\/images\/hero-background\.jpg"/g, 'src="/images/hero-background.jpg"');
-      content = content.replace(/src="\/images\/.*?"/g, (match) => {
-        const filename = match.split('/').pop();
-        return `src="/images/${filename}"`;
-      });
+      // Fix image paths - keep existing images, add missing ones with placeholders
+      content = content.replace(/src="\/images\/asdatin\.png"/g, 'src="/images/asdatin.png"');
+      content = content.replace(/src="\/images\/ideaslab\.png"/g, 'src="/images/ideaslab.png"');
+      content = content.replace(/src="\/images\/kompis\.jpg"/g, 'src="/images/kompis.jpg"');
+      content = content.replace(/src="\/images\/lambang_kota_tangerang_selatan\.png"/g, 'src="/images/lambang_kota_tangerang_selatan.png"');
+      content = content.replace(/src="\/images\/sinarmas\.jpg"/g, 'src="/images/sinarmas.jpg"');
+      content = content.replace(/src="\/images\/lembaga_sertifikasi_ti_bd\.png"/g, 'src="/images/lembaga_sertifikasi_ti_bd.png"');
       
-      // Remove API calls
-      content = content.replace(/fetch\('.*?\/api\/analytics\/track.*?\);/g, '// Analytics disabled in static mode');
+      // Fix hero background image
+      content = content.replace(/src="\/images\/hero-background\.jpg"/g, 'src="/images/hero-background.jpg"');
+      
+      // Remove problematic background image reference
+      content = content.replace(/this\.backgroundImage/g, '// Background image disabled in static mode');
+      
+      // Re-enable Firebase for production mode
+      if (process.env.NODE_ENV === 'production') {
+        // Keep Firebase references for production
+        content = content.replace(/\/\/ Firebase disabled in static mode/g, 'firebase');
+        content = content.replace(/\/\/ Firestore disabled in static mode/g, 'firestore');
+        content = content.replace(/\/\/ Analytics disabled in static mode/g, 'analytics');
+        content = content.replace(/\/\/ Database disabled in static mode/g, 'db');
+        
+        // Re-enable Firebase SDK
+        content = content.replace(/<script src="https:\/\/www\.gstatic\.com\/firebasejs\/9\.6\.1\/firebase-app-compat\.js"><\/script>/g, '<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"><\/script>');
+        content = content.replace(/<script src="https:\/\/www\.gstatic\.com\/firebasejs\/9\.6\.1\/firebase-firestore-compat\.js"><\/script>/g, '<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"><\/script>');
+        content = content.replace(/<script src="https:\/\/www\.gstatic\.com\/firebasejs\/9\.6\.1\/firebase-analytics-compat\.js"><\/script>/g, '<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"><\/script>');
+        
+        // Re-enable dynamic content loading
+        content = content.replace(/\/\/ Dynamic content disabled in static mode/g, 'loadDynamicContent');
+        content = content.replace(/updateHeroSection\(\);/g, 'updateHeroSection();');
+        content = content.replace(/updateAboutSection\);/g, 'updateAboutSection();');
+        content = content.replace(/updateExpertsSection\);/g, 'updateExpertsSection();');
+        content = content.replace(/updatePortfolioSection\);/g, 'updatePortfolioSection();');
+        content = content.replace(/updateAcademySection\);/g, 'updateAcademySection();');
+        content = content.replace(/updateBlogSection\);/g, 'updateBlogSection();');
+        content = content.replace(/updateTestimonialsSection\);/g, 'updateTestimonialsSection();');
+        
+        // Re-enable event listeners
+        content = content.replace(/\/\/ Event listeners disabled in static mode/g, 'document.addEventListener');
+        content = content.replace(/\/\/ Event listeners disabled in static mode/g, 'window.addEventListener');
+      } else {
+        // Keep Firebase disabled for development
+        console.log('🔥 Firebase disabled in development mode');
+      }
       
       return content;
     } else {
