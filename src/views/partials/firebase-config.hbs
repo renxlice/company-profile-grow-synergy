@@ -55,7 +55,8 @@
                     update: async () => {},
                     delete: async () => {}
                 }),
-                limit: () => ({ get: async () => ({ docs: [] }) }) // Add limit method
+                limit: () => ({ get: async () => ({ docs: [] }) }), // Add limit method
+                orderBy: () => ({ get: async () => ({ docs: [] }) }) // Add orderBy method
             }),
         };
         window.db = db;

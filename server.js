@@ -64,7 +64,15 @@ app.get('/', (req, res) => {
         "name": "GROW SYNERGY INDONESIA",
         "url": "https://grow-synergy-indonesia.com"
       }
-    })
+    }),
+    // Firebase configuration
+    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+    firebaseAuthDomain: "grow-synergy-indonesia.firebaseapp.com",
+    firebaseProjectId: "grow-synergy-indonesia",
+    firebaseStorageBucket: "grow-synergy-indonesia.appspot.com",
+    firebaseMessagingSenderId: "584312572709",
+    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+    firebaseMeasurementId: "G-PKLP3Y3F4F"
   });
 });
 
