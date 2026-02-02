@@ -462,6 +462,17 @@ app.get('/admin/dashboard', (req, res) => {
   });
 });
 
+app.get('/admin/logout', (req, res) => {
+  // Destroy session
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+    }
+    // Redirect to login page
+    res.redirect('/admin/login');
+  });
+});
+
 // API Routes
 app.get('/api/hero-section', (req, res) => {
   console.log('🔥 Hero section API request received');
