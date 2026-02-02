@@ -1,76 +1,24 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const exphbs = require('express-handlebars');
 
 const app = express();
+
+// Handlebars setup
+app.engine('hbs', exphbs.engine({
+  extname: '.hbs',
+  defaultLayout: false,
+  layoutsDir: path.join(__dirname, 'src/views')
+}));
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'src', 'views'));
 
 // Serve static files
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Test route
-app.get('/test', (req, res) => {
-  res.json({ 
-    message: 'Express server working perfectly!', 
-    env: process.env.NODE_ENV || 'development',
-    time: new Date().toISOString()
-  });
-});
-
-// Favicon
-app.get('/favicon.ico', (req, res) => {
-  const faviconPath = path.join(__dirname, 'public', 'images', 'logo_pt.png');
-  res.sendFile(faviconPath, (err) => {
-    if (err) res.status(404).send('Favicon not found');
-  });
-});
-
-// Home route - serve index.hbs with proper Handlebars rendering
-app.get('/', (req, res) => {
-  res.render('index', {
-    title: 'GROW SYNERGY INDONESIA - Platform Data Analitik Terbaik',
-    description: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
-    keywords: 'data analitik, platform pembelajaran, kursus data science, bootcamp data analyst',
-    author: 'GROW SYNERGY INDONESIA',
-    robots: 'index, follow',
-    googlebot: 'index, follow',
-    ogTitle: 'GROW SYNERGY INDONESIA - Platform Data Analitik Terbaik',
-    ogDescription: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
-    ogImage: 'https://grow-synergy-indonesia.com/images/og-image.jpg',
-    ogUrl: 'https://grow-synergy-indonesia.com',
-    ogType: 'website',
-    ogSiteName: 'GROW SYNERGY INDONESIA',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'GROW SYNERGY INDONESIA - Platform Data Analitik Terbaik',
-    twitterDescription: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
-    twitterImage: 'https://grow-synergy-indonesia.com/images/twitter-image.jpg',
-    canonical: 'https://grow-synergy-indonesia.com',
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
-    structuredDataJson: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
-      "name": "GROW SYNERGY INDONESIA",
-      "description": "Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.",
-      "url": "https://grow-synergy-indonesia.com",
-      "provider": {
-        "@type": "Organization",
-        "name": "GROW SYNERGY INDONESIA",
-        "url": "https://grow-synergy-indonesia.com"
-      }
-    })
-  });
-});
-
-// Handlebars setup
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'src', 'views'));
 
 // Middleware
 app.use(express.json());
