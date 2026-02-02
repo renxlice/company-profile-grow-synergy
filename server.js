@@ -570,12 +570,13 @@ app.get('/admin/dashboard', (req, res) => {
           heroSections
         },
         stats: {
-          totalExperts: experts.length,
-          totalPortfolios: portfolios.length,
-          totalAcademies: academies.length,
-          totalBlogs: blogs.length,
-          totalTestimonials: testimonials.length,
-          totalHeroSections: heroSections.length
+          experts: experts.length,
+          portfolios: portfolios.length,
+          academies: academies.length,
+          blogs: blogs.length,
+          testimonials: testimonials.length,
+          heroSections: heroSections.length,
+          aboutSections: 0 // Default untuk about sections
         }
       });
     } catch (error) {
@@ -593,12 +594,13 @@ app.get('/admin/dashboard', (req, res) => {
           heroSections: []
         },
         stats: {
-          totalExperts: 0,
-          totalPortfolios: 0,
-          totalAcademies: 0,
-          totalBlogs: 0,
-          totalTestimonials: 0,
-          totalHeroSections: 0
+          experts: 0,
+          portfolios: 0,
+          academies: 0,
+          blogs: 0,
+          testimonials: 0,
+          heroSections: 0,
+          aboutSections: 0
         },
         error: 'Failed to load data from Firestore'
       });
