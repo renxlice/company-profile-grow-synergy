@@ -24,32 +24,52 @@ app.use(session({
 
 // Initialize Firebase Admin SDK
 let db;
+let firebaseInitError = null;
+
 try {
   // Try environment variables first (recommended for hosting)
   if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-      })
-    });
-    db = admin.firestore();
-    console.log('🔥 Firebase Admin SDK initialized successfully from environment variables');
+    try {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+        })
+      });
+      db = admin.firestore();
+      console.log('🔥 Firebase Admin SDK initialized successfully from environment variables');
+    } catch (envError) {
+      firebaseInitError = `Environment variables error: ${envError.message}`;
+      console.error('❌ Firebase Admin SDK environment variables error:', envError);
+      throw envError;
+    }
   } 
   // Fallback to service account file
   else {
     const serviceAccountPath = './company-profile-grow-synergy-firebase-adminsdk.json';
     
+    console.log('🔍 Checking service account file:', serviceAccountPath);
+    console.log('🔍 File exists:', fs.existsSync(serviceAccountPath));
+    
     if (fs.existsSync(serviceAccountPath)) {
-      const serviceAccount = require(serviceAccountPath);
-      admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        projectId: 'company-profile-grow-synergy'
-      });
-      db = admin.firestore();
-      console.log('🔥 Firebase Admin SDK initialized successfully from service account file');
+      try {
+        const serviceAccount = require(serviceAccountPath);
+        console.log('📄 Service account file loaded, keys:', Object.keys(serviceAccount));
+        
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+          projectId: 'company-profile-grow-synergy'
+        });
+        db = admin.firestore();
+        console.log('🔥 Firebase Admin SDK initialized successfully from service account file');
+      } catch (fileError) {
+        firebaseInitError = `Service account file error: ${fileError.message}`;
+        console.error('❌ Firebase Admin SDK service account file error:', fileError);
+        throw fileError;
+      }
     } else {
+      firebaseInitError = 'No service account file found';
       console.warn('⚠️ Firebase Admin SDK: No environment variables or service account file found. Using mock mode.');
       console.warn('Expected file:', serviceAccountPath);
       console.warn('Required environment variables: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY');
@@ -68,7 +88,8 @@ try {
     }
   }
 } catch (error) {
-  console.error('❌ Firebase Admin SDK initialization failed:', error.message);
+  firebaseInitError = `Initialization error: ${error.message}`;
+  console.error('❌ Firebase Admin SDK initialization failed:', error);
   console.warn('⚠️ Using mock mode for development');
   // Create mock db for development
   db = {
@@ -711,7 +732,9 @@ app.get('/admin/debug-template', async (req, res) => {
       },
       firebaseStatus: {
         initialized: !!admin.apps.length,
-        dbAvailable: !!db
+        dbAvailable: !!db,
+        isMock: !!(db && db.collection && typeof db.collection === 'function'),
+        initError: firebaseInitError
       }
     };
     
