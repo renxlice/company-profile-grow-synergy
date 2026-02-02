@@ -945,32 +945,22 @@
                 try {
                     const testDoc = await db.collection('heroSection').limit(1).get();
                     console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
-                } catch (testError) {
-                    console.log('DEBUG: Firebase test connection failed:', testError);
-                    return;
-                }
                 
-                // Try to load from Firebase with timeout
+                // Try to load from API with timeout
                 const loadWithTimeout = async () => {
                     const timeout = new Promise((_, reject) => 
                         setTimeout(() => reject(new Error('Loading timeout')), 5000)
                     );
                     
-                    const firebaseLoad = Promise.all([
-                        db.collection('heroSection').get(),
-                        db.collection('aboutSection').get(),
-                        db.collection('experts').get(),
-                        db.collection('portfolios').get(),
-                        db.collection('academies').get()
-                    ]);
+                    const apiLoad = loadFromAPI();
                     
-                    return Promise.race([firebaseLoad, timeout]);
+                    return Promise.race([apiLoad, timeout]);
                 };
                 
                 let results;
                 try {
                     results = await loadWithTimeout();
-                    console.log('DEBUG: Firebase results received successfully');
+                    console.log('DEBUG: API results received successfully');
                 } catch (error) {
                     console.log('DEBUG: Firebase loading failed:', error.message);
                     console.log('DEBUG: Using mock data fallback');
@@ -1111,50 +1101,64 @@
                 console.log('DEBUG: Hero section docs:', results[0]?.docs?.length);
                 console.log('DEBUG: About section docs:', results[1]?.docs?.length);
                 
+                // Process API data for different sections
+                const heroData = results.hero ? [results.hero] : [];
+                const aboutData = results.about ? [results.about] : [];
+                const expertsData = results.experts ? results.experts : [];
+                const portfoliosData = results.portfolios ? results.portfolios : [];
+                const academiesData = results.academies ? results.academies : [];
+                
+                console.log('DEBUG: Hero data length:', heroData.length);
+                console.log('DEBUG: About data length:', aboutData.length);
+                console.log('DEBUG: Experts data length:', expertsData.length);
+                console.log('DEBUG: Portfolios data length:', portfoliosData.length);
+                console.log('DEBUG: Academies data length:', academiesData.length);
+                
                 // Check if results are valid (has real data)
-                const hasHeroData = results[0].docs && results[0].docs.length > 0;
-                const hasAboutData = results[1].docs && results[1].docs.length > 0;
+                const hasHeroData = heroData.length > 0;
+                const hasAboutData = aboutData.length > 0;
                 const hasAnyData = hasHeroData || hasAboutData;
                 
                 console.log('DEBUG: Data availability - Hero:', hasHeroData, 'About:', hasAboutData, 'Any:', hasAnyData);
                 
                 if (!hasAnyData) {
-                    console.log('No data available in Firestore');
+                    console.log('No data available from API');
                     return;
                 }
                 
                 // Update Hero Section
                 if (hasHeroData) {
-                    const heroSections = results[0].docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    updateHeroSection(heroSections);
+                    updateHeroSection(heroData);
                 }
                 
                 // Update About Section
                 if (hasAboutData) {
-                    const aboutSections = results[1].docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    console.log('DEBUG: About sections from Firestore:', aboutSections);
-                    console.log('DEBUG: First about section data:', aboutSections[0]);
-                    updateAboutSection(aboutSections);
+                    console.log('DEBUG: About sections from API:', aboutData);
+                    console.log('DEBUG: First about section data:', aboutData[0]);
+                    updateAboutSection(aboutData);
                 }
                 
                 // Update Experts Section (show only first 3)
-                const experts = results[2].docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateExpertsSection(experts);
+                if (expertsData.length > 0) {
+                    updateExpertsSection(expertsData);
+                }
                 
                 // Update Portfolio Section (show only first 3)
-                const portfolios = results[3].docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log('DEBUG: Portfolios from Firebase:', portfolios);
-                try {
-                    updatePortfolioSection(portfolios);
-                } catch (portfolioError) {
-                    console.log('DEBUG: Portfolio update error:', portfolioError);
+                if (portfoliosData.length > 0) {
+                    console.log('DEBUG: Portfolios from API:', portfoliosData);
+                    try {
+                        updatePortfolioSection(portfoliosData);
+                    } catch (portfolioError) {
+                        console.log('DEBUG: Portfolio update error:', portfolioError);
+                    }
                 }
                 
                 // Update Academy Section (show only first 3)
-                const academies = results[4].docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateAcademySection(academies);
+                if (academiesData.length > 0) {
+                    updateAcademySection(academiesData);
+                }
                 
-                console.log('Dynamic content loaded successfully from Firebase');
+                console.log('✅ Dynamic content loaded successfully from API');
             } catch (error) {
                 console.log('Error loading dynamic content:', error);
                 console.log('DEBUG: Error that occurred:', error);
