@@ -354,56 +354,8 @@
     <!-- JavaScript -->
     <script src="/js/main.js"></script>
     {{> firebase-config}}
+    
     <script>
-        // Load hero section data from API
-        async function loadHeroSection() {
-            try {
-                console.log('Loading hero section background...');
-                console.log('DEBUG: Firebase db available:', !!window.db);
-                
-                // Test connection first
-                const testDoc = await window.db.collection('heroSection').limit(1).get();
-                console.log('DEBUG: Firebase test connection successful, docs:', testDoc.docs.length);
-                
-                // Get hero section data
-                const heroSnapshot = await window.db.collection('heroSection').get();
-                const heroSections = heroSnapshot.docs.map(doc => doc.data());
-                
-                console.log('Hero sections data:', heroSections);
-                console.log('Hero sections length:', heroSections.length);
-                
-                if (heroSections.length > 0) {
-                    const hero = heroSections[0];
-                    const backgroundImage = document.getElementById('hero-background-image');
-                    const heroTitle = document.getElementById('hero-title');
-                    const heroSubtitle = document.getElementById('hero-subtitle');
-                    const heroDescription = document.getElementById('hero-description');
-                    
-                    console.log('Background div found:', backgroundImage);
-                    
-                    // Update background image
-                    if (hero.backgroundImage && backgroundImage) {
-                        console.log('Setting background from Firebase:', hero.backgroundImage);
-                        backgroundImage.style.backgroundImage = `url('${hero.backgroundImage}')`;
-                        console.log('Final background style:', backgroundImage.style.backgroundImage);
-                    }
-                    
-                    // Update hero text content
-                    if (hero.title && heroTitle) {
-                        heroTitle.textContent = hero.title;
-                    }
-                    if (hero.subtitle && heroSubtitle) {
-                        heroSubtitle.textContent = hero.subtitle;
-                    }
-                    if (hero.description && heroDescription) {
-                        heroDescription.textContent = hero.description;
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading hero section:', error);
-            }
-        }
-        
         // Auto-refresh hero section every 5 seconds
         function startAutoRefresh() {
             setInterval(() => {
@@ -1340,7 +1292,7 @@
                 const heroSectionsSnapshot = await db.collection('heroSection').get();
                 const heroSections = [];
                 
-                heroSectionsSnapshot.forEach(doc => {
+                heroSectionsSnapshot.docs.forEach(doc => {
                     const data = doc.data();
                     if (data.backgroundImage) {
                         heroSections.push({
@@ -1388,9 +1340,6 @@
             }
         }
     </script>
-    
-    <!-- Firebase Config -->
-    {{> firebase-config}}
     
     <!-- WhatsApp Floating Button -->
     {{> whatsapp-button}}
