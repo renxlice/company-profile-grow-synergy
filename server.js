@@ -621,6 +621,72 @@ app.get('/blog/:slug', async (req, res) => {
   }
 });
 
+// Debug Admin Dashboard (No Auth Required for Testing)
+app.get('/admin/dashboard-debug', async (req, res) => {
+  console.log('🔍 DEBUG: Accessing admin dashboard without auth...');
+  
+  try {
+    console.log('🔍 Starting to fetch data from Firestore...');
+    
+    const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot, aboutSnapshot] = await Promise.all([
+      db.collection('experts').get().catch(() => ({ docs: [] })),
+      db.collection('portfolios').get().catch(() => ({ docs: [] })),
+      db.collection('academies').get().catch(() => ({ docs: [] })),
+      db.collection('blogs').get().catch(() => ({ docs: [] })),
+      db.collection('testimonials').get().catch(() => ({ docs: [] })),
+      db.collection('heroSection').get().catch(() => ({ docs: [] })),
+      db.collection('aboutSection').get().catch(() => ({ docs: [] }))
+    ]);
+
+    const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const portfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const academies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const heroSections = heroSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const aboutSections = aboutSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    console.log('📊 Firestore Data Summary:');
+    console.log(`  - Experts: ${experts.length} documents`);
+    console.log(`  - Portfolios: ${portfolios.length} documents`);
+    console.log(`  - Academies: ${academies.length} documents`);
+    console.log(`  - Blogs: ${blogs.length} documents`);
+    console.log(`  - Testimonials: ${testimonials.length} documents`);
+    console.log(`  - Hero Sections: ${heroSections.length} documents`);
+
+    // Return JSON data for testing
+    res.json({
+      success: true,
+      message: 'Admin dashboard data retrieved successfully',
+      data: {
+        experts,
+        portfolios,
+        academies,
+        blogs,
+        testimonials,
+        heroSections,
+        aboutSections,
+        stats: {
+          experts: experts.length,
+          portfolios: portfolios.length,
+          academies: academies.length,
+          blogs: blogs.length,
+          testimonials: testimonials.length,
+          heroSections: heroSections.length,
+          aboutSections: aboutSections.length
+        }
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Admin dashboard route (moved after adminAuth routes)
 
 app.get('/admin/dashboard', (req, res) => {
@@ -1087,6 +1153,176 @@ app.get('/admin/seed-firestore', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Seed Data API Endpoint
+app.post('/api/admin/seed-data', async (req, res) => {
+  try {
+    console.log('🌱 Starting to seed Firestore data...');
+    
+    const seedData = {
+      experts: [
+        {
+          name: "Dr. Ahmad Wijaya",
+          position: "Senior Data Scientist",
+          experience: "10+ years in data analytics and machine learning",
+          description: "Expert in predictive modeling and business intelligence",
+          rating: 4.9,
+          reviewCount: 127,
+          image: "/images/experts/ahmad.jpg",
+          createdAt: new Date(),
+          isActive: true
+        },
+        {
+          name: "Sarah Putri",
+          position: "Data Analytics Lead",
+          experience: "8+ years in data visualization and analytics",
+          description: "Specialist in creating actionable insights from complex data",
+          rating: 4.8,
+          reviewCount: 95,
+          image: "/images/experts/sarah.jpg",
+          createdAt: new Date(),
+          isActive: true
+        }
+      ],
+      portfolios: [
+        {
+          title: "E-commerce Sales Dashboard",
+          client: "PT. Retail Maju",
+          description: "Real-time sales analytics dashboard with predictive insights",
+          image: "/images/portfolios/ecommerce.jpg",
+          technologies: ["Python", "TensorFlow", "Tableau"],
+          completionDate: new Date(),
+          featured: true
+        },
+        {
+          title: "Customer Segmentation Model",
+          client: "PT. Bank Digital",
+          description: "ML-based customer segmentation for targeted marketing",
+          image: "/images/portfolios/banking.jpg",
+          technologies: ["R", "K-means", "Power BI"],
+          completionDate: new Date(),
+          featured: true
+        }
+      ],
+      academies: [
+        {
+          title: "Data Science Fundamentals",
+          description: "Comprehensive introduction to data science concepts",
+          duration: "8 weeks",
+          level: "Beginner",
+          price: 5000000,
+          image: "/images/academies/datascience.jpg",
+          instructor: "Dr. Ahmad Wijaya",
+          startDate: new Date(),
+          isActive: true
+        },
+        {
+          title: "Advanced Machine Learning",
+          description: "Deep dive into ML algorithms and neural networks",
+          duration: "12 weeks",
+          level: "Advanced",
+          price: 8000000,
+          image: "/images/academies/ml.jpg",
+          instructor: "Sarah Putri",
+          startDate: new Date(),
+          isActive: true
+        }
+      ],
+      blogs: [
+        {
+          title: "Getting Started with Data Analytics",
+          slug: "getting-started-data-analytics",
+          excerpt: "Learn the fundamentals of data analytics and how to start your journey",
+          content: "Data analytics is the process of examining data sets to draw conclusions...",
+          author: "Dr. Ahmad Wijaya",
+          tags: ["data analytics", "beginner", "tutorial"],
+          image: "/images/blogs/analytics.jpg",
+          published: true,
+          createdAt: new Date()
+        }
+      ],
+      testimonials: [
+        {
+          name: "Budi Santoso",
+          position: "CEO at PT. Tech Indonesia",
+          rating: 5,
+          message: "Excellent training program! Our team's data skills improved significantly.",
+          image: "/images/testimonials/budi.jpg",
+          status: "approved",
+          createdAt: new Date()
+        }
+      ]
+    };
+
+    const results = {};
+    
+    for (const [collectionName, documents] of Object.entries(seedData)) {
+      console.log(`📝 Seeding ${collectionName}...`);
+      const batch = db.batch();
+      
+      for (const doc of documents) {
+        const docRef = db.collection(collectionName).doc();
+        batch.set(docRef, doc);
+      }
+      
+      await batch.commit();
+      results[collectionName] = documents.length;
+      console.log(`✅ Seeded ${documents.length} documents to ${collectionName}`);
+    }
+    
+    res.json({
+      success: true,
+      message: 'Sample data seeded successfully',
+      results: results,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error seeding data:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Check Seeded Data Endpoint
+app.get('/api/admin/check-data', async (req, res) => {
+  try {
+    console.log('🔍 Checking seeded data...');
+    
+    const collections = ['experts', 'portfolios', 'academies', 'blogs', 'testimonials'];
+    const results = {};
+    
+    for (const collectionName of collections) {
+      const snapshot = await db.collection(collectionName).get();
+      results[collectionName] = {
+        count: snapshot.size,
+        data: snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }))
+      };
+      console.log(`📊 ${collectionName}: ${snapshot.size} documents`);
+    }
+    
+    res.json({
+      success: true,
+      message: 'Data retrieved successfully',
+      results: results,
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('❌ Error checking data:', error);
     res.status(500).json({
       success: false,
       error: error.message,
