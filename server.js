@@ -35,13 +35,20 @@ try {
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
           privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-        })
+        }),
+        projectId: process.env.FIREBASE_PROJECT_ID
       });
       db = admin.firestore();
       console.log('🔥 Firebase Admin SDK initialized successfully from environment variables');
+      console.log(`📊 Project ID: ${process.env.FIREBASE_PROJECT_ID}`);
+      console.log(`📧 Client Email: ${process.env.FIREBASE_CLIENT_EMAIL}`);
     } catch (envError) {
       firebaseInitError = `Environment variables error: ${envError.message}`;
       console.error('❌ Firebase Admin SDK environment variables error:', envError);
+      console.error('🔍 Environment variables check:');
+      console.error(`  - FIREBASE_PROJECT_ID: ${process.env.FIREBASE_PROJECT_ID ? 'SET' : 'MISSING'}`);
+      console.error(`  - FIREBASE_CLIENT_EMAIL: ${process.env.FIREBASE_CLIENT_EMAIL ? 'SET' : 'MISSING'}`);
+      console.error(`  - FIREBASE_PRIVATE_KEY: ${process.env.FIREBASE_PRIVATE_KEY ? 'SET (length: ' + process.env.FIREBASE_PRIVATE_KEY.length + ')' : 'MISSING'}`);
       throw envError;
     }
   } 
