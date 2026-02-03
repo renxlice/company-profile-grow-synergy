@@ -258,20 +258,20 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.get('/', (req, res) => {
   res.render('index', {
-    title: 'GROW SYNERGY INDONESIA - Platform Data Analitik Terbaik',
+    title: 'Pelatihan Data Analitik Terbaik Indonesia - Platform Data Analitik Terbaik',
     description: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
     keywords: 'data analitik, platform pembelajaran, kursus data science, bootcamp data analyst',
-    author: 'GROW SYNERGY INDONESIA',
+    author: 'Pelatihan Data Analitik Terbaik Indonesia',
     robots: 'index, follow',
     googlebot: 'index, follow',
-    ogTitle: 'GROW SYNERGY INDONESIA - Platform Data Analitik Terbaik',
+    ogTitle: 'Pelatihan Data Analitik Terbaik Indonesia - Platform Data Analitik Terbaik',
     ogDescription: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
     ogImage: 'https://grow-synergy-indonesia.com/images/og-image.jpg',
     ogUrl: 'https://grow-synergy-indonesia.com',
     ogType: 'website',
-    ogSiteName: 'GROW SYNERGY INDONESIA',
+    ogSiteName: 'Pelatihan Data Analitik Terbaik Indonesia',
     twitterCard: 'summary_large_image',
-    twitterTitle: 'GROW SYNERGY INDONESIA - Platform Data Analitik Terbaik',
+    twitterTitle: 'Pelatihan Data Analitik Terbaik Indonesia - Platform Data Analitik Terbaik',
     twitterDescription: 'Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.',
     twitterImage: 'https://grow-synergy-indonesia.com/images/twitter-image.jpg',
     canonical: 'https://grow-synergy-indonesia.com',
@@ -279,12 +279,12 @@ app.get('/', (req, res) => {
     structuredDataJson: JSON.stringify({
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
-      "name": "GROW SYNERGY INDONESIA",
+      "name": "Pelatihan Data Analitik Terbaik Indonesia",
       "description": "Platform pembelajaran data analitik terbaik di Indonesia dengan instruktur profesional dan sertifikat bersertifikat.",
       "url": "https://grow-synergy-indonesia.com",
       "provider": {
         "@type": "Organization",
-        "name": "GROW SYNERGY INDONESIA",
+        "name": "Pelatihan Data Analitik Terbaik Indonesia",
         "url": "https://grow-synergy-indonesia.com"
       }
     }),
@@ -332,7 +332,7 @@ app.get('/synergy-experts', (req, res) => {
       "url": "https://grow-synergy-indonesia.com/synergy-experts",
       "provider": {
         "@type": "Organization",
-        "name": "GROW SYNERGY INDONESIA",
+        "name": "Pelatihan Data Analitik Terbaik Indonesia",
         "url": "https://grow-synergy-indonesia.com"
       }
     }),
@@ -375,7 +375,7 @@ app.get('/synergy-portfolio', (req, res) => {
       "url": "https://grow-synergy-indonesia.com/synergy-portfolio",
       "provider": {
         "@type": "Organization",
-        "name": "GROW SYNERGY INDONESIA",
+        "name": "Pelatihan Data Analitik Terbaik Indonesia",
         "url": "https://grow-synergy-indonesia.com"
       }
     }),
@@ -418,7 +418,7 @@ app.get('/synergy-academy', (req, res) => {
       "url": "https://grow-synergy-indonesia.com/synergy-academy",
       "provider": {
         "@type": "Organization",
-        "name": "GROW SYNERGY INDONESIA",
+        "name": "Pelatihan Data Analitik Terbaik Indonesia",
         "url": "https://grow-synergy-indonesia.com"
       }
     }),
