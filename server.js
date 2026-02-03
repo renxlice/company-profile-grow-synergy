@@ -1328,7 +1328,9 @@ app.post('/admin/experts-form', (req, res) => {
   }
   
   const expertData = req.body;
-  console.log('Creating expert:', expertData);
+  console.log('📝 Creating expert with data:', expertData);
+  console.log('📝 Request body keys:', Object.keys(req.body));
+  console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
   
   db.collection('experts').add(expertData)
     .then(docRef => {
@@ -1556,7 +1558,9 @@ app.post('/admin/portfolios-form', (req, res) => {
   }
   
   const portfolioData = req.body;
-  console.log('Creating portfolio:', portfolioData);
+  console.log('📝 Creating portfolio with data:', portfolioData);
+  console.log('📝 Request body keys:', Object.keys(req.body));
+  console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
   
   db.collection('portfolios').add(portfolioData)
     .then(docRef => {
