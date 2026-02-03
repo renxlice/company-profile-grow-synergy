@@ -39,56 +39,58 @@ const createRateLimiter = (type) => {
     return rateLimit(configs[type] || configs.admin);
 };
 
-const validateInput = (req, res, next) => {
-    try {
-        // Basic input validation and sanitization
-        if (req.body) {
-            Object.keys(req.body).forEach(key => {
-                if (typeof req.body[key] === 'string') {
-                    // Remove potential XSS and injection patterns
-                    let value = req.body[key];
-                    
-                    // Trim whitespace
-                    value = value.trim();
-                    
-                    // Remove null bytes
-                    value = value.replace(/\0/g, '');
-                    
-                    // Limit length to prevent buffer overflow
-                    if (value.length > 2000) {
-                        return res.status(400).json({ 
-                            error: 'Input too long' 
-                        });
-                    }
-                    
-                    // Basic XSS pattern detection
-                    const xssPatterns = [
-                        /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-                        /javascript:/gi,
-                        /on\w+\s*=/gi,
-                        /<iframe/gi,
-                        /<object/gi,
-                        /<embed/gi
-                    ];
-                    
-                    for (const pattern of xssPatterns) {
-                        if (pattern.test(value)) {
-                            console.warn('XSS pattern detected:', { key, value: value.substring(0, 100), ip: req.ip });
+const validateInput = (config = {}) => {
+    return (req, res, next) => {
+        try {
+            // Basic input validation and sanitization
+            if (req.body) {
+                Object.keys(req.body).forEach(key => {
+                    if (typeof req.body[key] === 'string') {
+                        // Remove potential XSS and injection patterns
+                        let value = req.body[key];
+                        
+                        // Trim whitespace
+                        value = value.trim();
+                        
+                        // Remove null bytes
+                        value = value.replace(/\0/g, '');
+                        
+                        // Limit length to prevent buffer overflow
+                        if (value.length > 2000) {
                             return res.status(400).json({ 
-                                error: 'Invalid input detected' 
+                                error: 'Input too long' 
                             });
                         }
+                        
+                        // Basic XSS pattern detection
+                        const xssPatterns = [
+                            /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+                            /javascript:/gi,
+                            /on\w+\s*=/gi,
+                            /<iframe/gi,
+                            /<object/gi,
+                            /<embed/gi
+                        ];
+                        
+                        for (const pattern of xssPatterns) {
+                            if (pattern.test(value)) {
+                                console.warn('XSS pattern detected:', { key, value: value.substring(0, 100), ip: req.ip });
+                                return res.status(400).json({ 
+                                    error: 'Invalid input detected' 
+                                });
+                            }
+                        }
+                        
+                        req.body[key] = value;
                     }
-                    
-                    req.body[key] = value;
-                }
-            });
+                });
+            }
+            next();
+        } catch (error) {
+            console.error('Input validation error:', error);
+            res.status(500).json({ error: 'Validation error' });
         }
-        next();
-    } catch (error) {
-        console.error('Input validation error:', error);
-        res.status(500).json({ error: 'Validation error' });
-    }
+    };
 };
 
 const secureFileUpload = (req, res, next) => {

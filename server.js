@@ -9,6 +9,8 @@ const session = require('express-session');
 const admin = require('firebase-admin');
 const multer = require('multer');
 const adminAuthRoutes = require('./src/routes/adminAuth');
+const adminRoutes = require('./src/routes/adminRoutes');
+const { maintenanceMiddleware } = require('./src/middleware/maintenance');
 
 const app = express();
 
@@ -248,8 +250,14 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Use maintenance middleware after static files but before routes
+app.use(maintenanceMiddleware);
+
 // Admin authentication routes
 app.use('/admin', adminAuthRoutes);
+
+// Admin API routes
+app.use('/api/admin', adminRoutes);
 
 // Favicon route
 app.get('/favicon.ico', (req, res) => {
@@ -1102,11 +1110,12 @@ app.get('/admin/seed-firestore', async (req, res) => {
   }
 });
 
-// Admin API Routes
+// Admin API Routes - Maintenance Status
 app.get('/api/admin/maintenance/status', (req, res) => {
+  const { isMaintenanceMode } = require('./src/middleware/maintenance');
   res.json({
-    enabled: false,
-    message: 'System is operating normally'
+    enabled: isMaintenanceMode(),
+    message: isMaintenanceMode() ? 'System is under maintenance' : 'System is operating normally'
   });
 });
 
