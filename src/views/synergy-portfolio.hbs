@@ -1172,7 +1172,7 @@
                 
                 // Special handling for "All" filter - reload data to ensure all cards are shown
                 if (filter === 'all') {
-                    loadPortfolioData();
+                    loadPortfolios();
                     return;
                 }
                 
@@ -1218,7 +1218,7 @@
             });
             
             // Reload portfolio data to restore original grid
-            loadPortfolioData();
+            loadPortfolios();
         }
     </script>
     
