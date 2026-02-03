@@ -8,6 +8,7 @@ const exphbs = require('express-handlebars');
 const session = require('express-session');
 const admin = require('firebase-admin');
 const multer = require('multer');
+const adminAuthRoutes = require('./src/routes/adminAuth');
 
 const app = express();
 
@@ -243,6 +244,13 @@ app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Body parser middleware (moved before adminAuth routes)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Admin authentication routes
+app.use('/admin', adminAuthRoutes);
+
 // Favicon route
 app.get('/favicon.ico', (req, res) => {
   const faviconPath = path.join(__dirname, 'public', 'images', 'logo_pt.png');
@@ -250,10 +258,6 @@ app.get('/favicon.ico', (req, res) => {
     if (err) res.status(404).send('Favicon not found');
   });
 });
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', (req, res) => {
@@ -624,40 +628,7 @@ app.get('/blog/:slug', async (req, res) => {
   }
 });
 
-// Admin Login Routes
-app.get('/admin/login', (req, res) => {
-  res.render('admin/login', {
-    title: 'Admin Login - GROW SYNERGY INDONESIA',
-    error: null
-  });
-});
-
-app.post('/admin/login', (req, res) => {
-  const { username, password } = req.body;
-  
-  // Simple authentication (in production, use proper hashing and database)
-  const validCredentials = {
-    'admin@growsynergy.com': 'admin123',
-    'admin@grow-synergy.com': 'Mieayam1',
-    'grow.synergy.id@gmail.com': 'admin123'
-  };
-  
-  if (validCredentials[username] && validCredentials[username] === password) {
-    // Set session (in production, use proper session management)
-    req.session = req.session || {};
-    req.session.isAuthenticated = true;
-    req.session.user = username;
-    
-    // Redirect to dashboard
-    res.redirect('/admin/dashboard');
-  } else {
-    // Show error
-    res.render('admin/login', {
-      title: 'Admin Login - GROW SYNERGY INDONESIA',
-      error: 'Email atau password salah. Silakan coba lagi.'
-    });
-  }
-});
+// Admin dashboard route (moved after adminAuth routes)
 
 app.get('/admin/dashboard', (req, res) => {
   // Check if authenticated (in production, use proper middleware)
@@ -671,13 +642,13 @@ app.get('/admin/dashboard', (req, res) => {
       console.log('🔍 Starting to fetch data from Firestore...');
       
       const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot, aboutSnapshot] = await Promise.all([
-        db.collection('experts').get(),
-        db.collection('portfolios').get(),
-        db.collection('academies').get(),
-        db.collection('blogs').get(),
-        db.collection('testimonials').get(),
-        db.collection('heroSection').get(),
-        db.collection('aboutSection').get()
+        db.collection('experts').get().catch(() => ({ docs: [] })),
+        db.collection('portfolios').get().catch(() => ({ docs: [] })),
+        db.collection('academies').get().catch(() => ({ docs: [] })),
+        db.collection('blogs').get().catch(() => ({ docs: [] })),
+        db.collection('testimonials').get().catch(() => ({ docs: [] })),
+        db.collection('heroSection').get().catch(() => ({ docs: [] })),
+        db.collection('aboutSection').get().catch(() => ({ docs: [] }))
       ]);
 
       const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
