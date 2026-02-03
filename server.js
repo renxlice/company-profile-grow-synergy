@@ -1,3 +1,6 @@
+// Load environment variables first
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -778,15 +781,60 @@ app.get('/admin/debug-env', (req, res) => {
     NODE_ENV: process.env.NODE_ENV || 'development'
   };
 
-  const serviceAccountExists = fs.existsSync('./company-profile-grow-synergy-firebase-adminsdk.json');
+  res.json(envStatus);
+});
 
-  res.json({
-    success: true,
-    environment: envStatus,
-    serviceAccountFile: serviceAccountExists ? '✅ Found' : '❌ Missing',
-    recommendation: !process.env.FIREBASE_PROJECT_ID ? 'Set environment variables in hosting panel' : 'Firebase should work with environment variables',
-    timestamp: new Date().toISOString()
-  });
+// Public debug route to test Firebase connection
+app.get('/debug-firebase', async (req, res) => {
+  try {
+    console.log('🔍 Public debug: Testing Firebase connection...');
+    
+    const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot] = await Promise.all([
+      db.collection('experts').limit(3).get(),
+      db.collection('portfolios').limit(3).get(),
+      db.collection('academies').limit(3).get()
+    ]);
+
+    const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const portfolios = portfoliosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const academies = academiesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    res.json({
+      success: true,
+      message: 'Firebase connection test successful',
+      timestamp: new Date().toISOString(),
+      firebaseStatus: {
+        initialized: !!admin.apps.length,
+        dbAvailable: !!db,
+        isMock: !!(db && db.collection && typeof db.collection === 'function')
+      },
+      data: {
+        experts: {
+          count: experts.length,
+          sample: experts.length > 0 ? experts[0] : null
+        },
+        portfolios: {
+          count: portfolios.length,
+          sample: portfolios.length > 0 ? portfolios[0] : null
+        },
+        academies: {
+          count: academies.length,
+          sample: academies.length > 0 ? academies[0] : null
+        }
+      }
+    });
+  } catch (error) {
+    console.error('❌ Public debug error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString(),
+      firebaseStatus: {
+        initialized: !!admin.apps.length,
+        dbAvailable: !!db
+      }
+    });
+  }
 });
 
 // Debug route for Firestore connection
