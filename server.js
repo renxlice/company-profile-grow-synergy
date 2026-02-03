@@ -503,43 +503,88 @@ app.get('/blog/:slug', async (req, res) => {
   try {
     console.log(`🔍 Looking for blog with slug: ${slug}`);
     
+    // Validate slug parameter
+    if (!slug || slug.trim() === '') {
+      console.log(`❌ Invalid slug parameter: ${slug}`);
+      return res.status(404).render('404', {
+        title: 'Blog Not Found',
+        message: 'Invalid blog URL'
+      });
+    }
+    
     // Fetch blog from Firestore by slug
     const blogsSnapshot = await db.collection('blogs')
-      .where('slug', '==', slug)
+      .where('slug', '==', slug.trim())
       .limit(1)
       .get();
     
     if (blogsSnapshot.empty) {
       console.log(`❌ Blog not found with slug: ${slug}`);
-      // Try to find by ID as fallback
-      const blogByIdSnapshot = await db.collection('blogs').doc(slug).get();
-      if (!blogByIdSnapshot.exists) {
-        return res.status(404).render('404', {
-          title: 'Blog Not Found',
-          message: `Blog dengan slug "${slug}" tidak ditemukan`
+      
+      // Try to find by ID as fallback (in case slug is actually an ID)
+      try {
+        const blogByIdSnapshot = await db.collection('blogs').doc(slug).get();
+        if (!blogByIdSnapshot.exists) {
+          console.log(`❌ Blog not found by ID either: ${slug}`);
+          
+          // List all available blogs for debugging
+          const allBlogsSnapshot = await db.collection('blogs').limit(5).get();
+          const availableBlogs = allBlogsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            slug: doc.data().slug,
+            title: doc.data().title
+          }));
+          
+          console.log('📋 Available blogs (first 5):', availableBlogs);
+          
+          return res.status(404).render('404', {
+            title: 'Blog Not Found',
+            message: `Blog dengan slug "${slug}" tidak ditemukan. Available blogs: ${availableBlogs.map(b => b.slug).join(', ') || 'None'}`
+          });
+        }
+        var blog = { id: blogByIdSnapshot.id, ...blogByIdSnapshot.data() };
+        console.log(`✅ Blog found by ID fallback: ${blog.title}`);
+      } catch (idError) {
+        console.error(`❌ Error checking blog by ID: ${idError}`);
+        return res.status(500).render('500', {
+          title: 'Server Error',
+          message: 'Terjadi kesalahan saat mencari blog. Silakan coba lagi.'
         });
       }
-      var blog = { id: blogByIdSnapshot.id, ...blogByIdSnapshot.data() };
     } else {
       var blog = { id: blogsSnapshot.docs[0].id, ...blogsSnapshot.docs[0].data() };
+      console.log(`✅ Blog found by slug: ${blog.title}`);
     }
     
-    console.log(`✅ Blog found: ${blog.title}`);
+    // Validate blog data
+    if (!blog.title) {
+      console.log(`❌ Blog missing title: ${JSON.stringify(blog)}`);
+      return res.status(500).render('500', {
+        title: 'Server Error',
+        message: 'Blog data is incomplete. Please contact administrator.'
+      });
+    }
     
     // Fetch related blogs (same category, exclude current blog)
-    const relatedBlogsSnapshot = await db.collection('blogs')
-      .where('category', '==', blog.category || 'Tutorial')
-      .where('slug', '!=', slug)
-      .limit(3)
-      .get();
+    try {
+      const relatedBlogsSnapshot = await db.collection('blogs')
+        .where('category', '==', blog.category || 'Tutorial')
+        .where('slug', '!=', slug)
+        .limit(3)
+        .get();
+      
+      const relatedBlogs = relatedBlogsSnapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      }));
+      
+      console.log(`📊 Found ${relatedBlogs.length} related blogs`);
+    } catch (relatedError) {
+      console.error('⚠️ Error fetching related blogs:', relatedError);
+      var relatedBlogs = [];
+    }
     
-    const relatedBlogs = relatedBlogsSnapshot.docs.map(doc => ({ 
-      id: doc.id, 
-      ...doc.data() 
-    }));
-    
-    console.log(`📊 Found ${relatedBlogs.length} related blogs`);
-    
+    // Render blog detail page
     res.render('blog-detail', {
       title: blog.title + ' - GROW SYNERGY INDONESIA',
       description: blog.excerpt || blog.description || blog.title,
@@ -569,9 +614,12 @@ app.get('/blog/:slug', async (req, res) => {
     
   } catch (error) {
     console.error('❌ Error loading blog detail:', error);
+    console.error('❌ Error stack:', error.stack);
+    
     res.status(500).render('500', {
       title: 'Server Error',
-      message: 'Terjadi kesalahan saat memuat blog. Silakan coba lagi.'
+      message: 'Terjadi kesalahan saat memuat blog. Silakan coba lagi.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

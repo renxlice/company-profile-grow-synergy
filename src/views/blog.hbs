@@ -388,7 +388,16 @@
         function createBlogCard(post) {
             const card = document.createElement('article');
             card.className = 'bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer';
-            card.onclick = () => window.location.href = `/blog/${post.slug}`;
+            
+            // Use slug if available, otherwise use ID as fallback
+            const blogSlug = post.slug || post.id;
+            console.log('Creating card for blog:', post.title, 'slug:', blogSlug);
+            
+            card.onclick = () => {
+                console.log('Navigating to:', `/blog/${blogSlug}`);
+                window.location.href = `/blog/${blogSlug}`;
+            };
+            
             card.innerHTML = `
                 <div class="relative">
                     ${post.id === 'blog1' ? '<div class="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Featured</div>' : ''}
@@ -397,20 +406,20 @@
                 <div class="p-6">
                     <div class="flex items-center text-sm text-gray-500 mb-2">
                         <i class="fas fa-calendar mr-2"></i>
-                        <span>${post.date}</span>
+                        <span>${post.date || post.publishedDate || 'No date'}</span>
                         <span class="mx-2">•</span>
                         <i class="fas fa-clock mr-1"></i>
-                        <span>${post.readTime} min read</span>
+                        <span>${post.readTime || '5'} min read</span>
                     </div>
                     <h2 class="text-xl font-bold mb-3 text-gray-800">
                         ${post.title}
                     </h2>
                     <p class="text-gray-600 mb-4">
-                        ${post.excerpt}
+                        ${post.excerpt || post.description || 'No description available'}
                     </p>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <span class="text-sm text-gray-700">${post.author}</span>
+                            <span class="text-sm text-gray-700">${post.author || 'Anonymous'}</span>
                         </div>
                         <span class="text-orange-500 font-semibold text-sm">
                             Klik untuk detail →
@@ -418,6 +427,7 @@
                     </div>
                 </div>
             `;
+            
             return card;
         }
         
