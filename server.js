@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use('/uploads', express.static('public/uploads'));
 
-// File upload middleware
+// File upload middleware with Base64 encoding for production
 const upload = multer({
   dest: 'public/uploads/',
   limits: {
@@ -33,6 +33,33 @@ const upload = multer({
     }
   }
 });
+
+// Convert uploaded file to Base64 for persistent storage
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
+    }
+    
+    const fs = require('fs');
+    fs.readFile(file.path, (err, data) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      
+      const base64 = `data:${file.mimetype};base64,${data.toString('base64')}`;
+      
+      // Clean up temp file
+      fs.unlink(file.path, (unlinkErr) => {
+        if (unlinkErr) console.error('Error cleaning up temp file:', unlinkErr);
+      });
+      
+      resolve(base64);
+    });
+  });
+};
 
 // Ensure uploads directories exist for backward compatibility
 const oldUploadsDir = path.join(__dirname, 'uploads');
@@ -1356,31 +1383,30 @@ app.get('/admin/about-section-form', (req, res) => {
 });
 
 // Experts CRUD Routes
-app.post('/admin/experts-form', upload.single('image'), (req, res) => {
+app.post('/admin/experts-form', upload.single('image'), async (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
-  const expertData = req.body;
-  console.log('📝 Creating expert with data:', expertData);
-  console.log('📝 Request body keys:', Object.keys(req.body));
-  console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
-  
-  // Handle image upload
-  if (req.file) {
-    expertData.image = `/uploads/${req.file.filename}`;
-    console.log('📝 Image uploaded:', req.file.filename);
+  try {
+    const expertData = req.body;
+    console.log('📝 Creating expert with data:', expertData);
+    
+    // Convert image to Base64 for persistent storage
+    if (req.file) {
+      const base64Image = await convertToBase64(req.file);
+      expertData.image = base64Image;
+      console.log('📝 Image converted to Base64');
+    }
+    
+    const docRef = await db.collection('experts').add(expertData);
+    console.log('✅ Expert created with ID:', docRef.id);
+    
+    res.redirect('/admin/experts');
+  } catch (error) {
+    console.error('❌ Error creating expert:', error);
+    res.status(500).send('Error creating expert');
   }
-  
-  db.collection('experts').add(expertData)
-    .then(docRef => {
-      console.log('Expert created with ID:', docRef.id);
-      res.redirect('/admin/experts');
-    })
-    .catch(error => {
-      console.error('Error creating expert:', error);
-      res.status(500).send('Error creating expert');
-    });
 });
 
 app.get('/admin/experts/edit/:id', (req, res) => {
