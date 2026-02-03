@@ -55,15 +55,33 @@ try {
       throw envError;
     }
   } 
-  // Production fallback: hardcoded credentials (only for Hostinger deployment)
+  // Production fallback: try service account file first (easiest for Hostinger)
   else if (process.env.NODE_ENV === 'production') {
-    console.log('🏭 Production mode: Using hardcoded Firebase credentials');
-    try {
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId: "company-profile-grow-synergy",
-          clientEmail: "firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com",
-          privateKey: `-----BEGIN PRIVATE KEY-----
+    console.log('🏭 Production mode: Trying service account file');
+    const serviceAccountPath = path.join(__dirname, 'config', 'firebase-service-account.json');
+    
+    if (fs.existsSync(serviceAccountPath)) {
+      try {
+        const serviceAccount = require(serviceAccountPath);
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+          projectId: 'company-profile-grow-synergy'
+        });
+        db = admin.firestore();
+        console.log('🔥 Firebase Admin SDK initialized successfully from config/service-account.json');
+      } catch (fileError) {
+        firebaseInitError = `Service account file error: ${fileError.message}`;
+        console.error('❌ Firebase Admin SDK service account file error:', fileError);
+        throw fileError;
+      }
+    } else {
+      console.log('⚠️ Service account file not found at config/firebase-service-account.json, trying hardcoded credentials');
+      try {
+        admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId: "company-profile-grow-synergy",
+            clientEmail: "firebase-adminsdk-fbsvc@company-profile-grow-synergy.iam.gserviceaccount.com",
+            privateKey: `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQChvzANtK317wFA
 QAT8w1linwKx+T2b2Syug/G/8Zaw/osfAHJhanGuaqA/9NZMdCsQ19bOsyq0/Moq
 hHe7Ma4um/JptIBFtWOfkTvEtYDzYRxKPhiOMWVRDTNbkmSD7wWlB4o+kOnNYifD
@@ -91,18 +109,18 @@ neU46DosygQnN2XSirEBkFC+l3I7g1j3emA3RUYidmaODsCSYP5DOtSI0yYlQPe09
 94OsnInN6KKxHIrH95haq4SUXCDcplAhKQAQ98ujUU0ewdELM2Cd40DZWorJMZy+
 alIgNfNHfcvffHxnUQr6oz8=
 -----END PRIVATE KEY-----`
-        }),
-        projectId: "company-profile-grow-synergy"
-      });
-      db = admin.firestore();
-      console.log('🔥 Firebase Admin SDK initialized successfully with production fallback');
-    } catch (fallbackError) {
-      firebaseInitError = `Production fallback error: ${fallbackError.message}`;
-      console.error('❌ Firebase Admin SDK production fallback error:', fallbackError);
-      throw fallbackError;
+          }),
+          projectId: "company-profile-grow-synergy"
+        });
+        db = admin.firestore();
+        console.log('🔥 Firebase Admin SDK initialized successfully with hardcoded credentials');
+      } catch (fallbackError) {
+        firebaseInitError = `Production fallback error: ${fallbackError.message}`;
+        console.error('❌ Firebase Admin SDK production fallback error:', fallbackError);
+        throw fallbackError;
+      }
     }
-  } 
-  // Fallback to service account file
+  }// Fallback to service account file
   else {
     const serviceAccountPath = path.join(__dirname, 'company-profile-grow-synergy-firebase-adminsdk.json');
     
