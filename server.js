@@ -1321,6 +1321,89 @@ app.get('/admin/about-section-form', (req, res) => {
   });
 });
 
+// Experts CRUD Routes
+app.post('/admin/experts-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const expertData = req.body;
+  console.log('Creating expert:', expertData);
+  
+  db.collection('experts').add(expertData)
+    .then(docRef => {
+      console.log('Expert created with ID:', docRef.id);
+      res.redirect('/admin/experts');
+    })
+    .catch(error => {
+      console.error('Error creating expert:', error);
+      res.status(500).send('Error creating expert');
+    });
+});
+
+app.get('/admin/experts/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const expertId = req.params.id;
+  
+  db.collection('experts').doc(expertId).get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.redirect('/admin/experts');
+      }
+      
+      res.render('admin/experts-edit', {
+        title: 'Edit Expert - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        expert: { id: doc.id, ...doc.data() }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching expert:', error);
+      res.redirect('/admin/experts');
+    });
+});
+
+app.post('/admin/experts/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const expertId = req.params.id;
+  const expertData = req.body;
+  
+  db.collection('experts').doc(expertId).update(expertData)
+    .then(() => {
+      console.log('Expert updated:', expertId);
+      res.redirect('/admin/experts');
+    })
+    .catch(error => {
+      console.error('Error updating expert:', error);
+      res.status(500).send('Error updating expert');
+    });
+});
+
+app.delete('/admin/experts/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const expertId = req.params.id;
+  
+  db.collection('experts').doc(expertId).delete()
+    .then(() => {
+      console.log('Expert deleted:', expertId);
+      res.json({ success: true });
+    })
+    .catch(error => {
+      console.error('Error deleting expert:', error);
+      res.status(500).json({ error: 'Error deleting expert' });
+    });
+});
+
 app.get('/admin/about-section-edit', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
@@ -1466,11 +1549,388 @@ app.get('/admin/about-section/create', (req, res) => {
   res.redirect('/admin/about-section-form');
 });
 
+// Portfolios CRUD Routes
+app.post('/admin/portfolios-form', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const portfolioData = req.body;
+  console.log('Creating portfolio:', portfolioData);
+  
+  db.collection('portfolios').add(portfolioData)
+    .then(docRef => {
+      console.log('Portfolio created with ID:', docRef.id);
+      res.redirect('/admin/portfolios');
+    })
+    .catch(error => {
+      console.error('Error creating portfolio:', error);
+      res.status(500).send('Error creating portfolio');
+    });
+});
+
+app.get('/admin/portfolios/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const portfolioId = req.params.id;
+  
+  db.collection('portfolios').doc(portfolioId).get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.redirect('/admin/portfolios');
+      }
+      
+      res.render('admin/portfolios-edit', {
+        title: 'Edit Portfolio - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        portfolio: { id: doc.id, ...doc.data() }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching portfolio:', error);
+      res.redirect('/admin/portfolios');
+    });
+});
+
+app.post('/admin/portfolios/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const portfolioId = req.params.id;
+  const portfolioData = req.body;
+  
+  db.collection('portfolios').doc(portfolioId).update(portfolioData)
+    .then(() => {
+      console.log('Portfolio updated:', portfolioId);
+      res.redirect('/admin/portfolios');
+    })
+    .catch(error => {
+      console.error('Error updating portfolio:', error);
+      res.status(500).send('Error updating portfolio');
+    });
+});
+
+app.delete('/admin/portfolios/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const portfolioId = req.params.id;
+  
+  db.collection('portfolios').doc(portfolioId).delete()
+    .then(() => {
+      console.log('Portfolio deleted:', portfolioId);
+      res.json({ success: true });
+    })
+    .catch(error => {
+      console.error('Error deleting portfolio:', error);
+      res.status(500).json({ error: 'Error deleting portfolio' });
+    });
+});
+
 app.get('/admin/testimonials/create', (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   res.redirect('/admin/testimonials-form');
+});
+
+// Academies CRUD Routes
+app.post('/admin/academies-form-fixed', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const academyData = req.body;
+  console.log('Creating academy:', academyData);
+  
+  db.collection('academies').add(academyData)
+    .then(docRef => {
+      console.log('Academy created with ID:', docRef.id);
+      res.redirect('/admin/academies');
+    })
+    .catch(error => {
+      console.error('Error creating academy:', error);
+      res.status(500).send('Error creating academy');
+    });
+});
+
+app.get('/admin/academies/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const academyId = req.params.id;
+  
+  db.collection('academies').doc(academyId).get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.redirect('/admin/academies');
+      }
+      
+      res.render('admin/academies-edit', {
+        title: 'Edit Academy - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        academy: { id: doc.id, ...doc.data() }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching academy:', error);
+      res.redirect('/admin/academies');
+    });
+});
+
+app.post('/admin/academies/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const academyId = req.params.id;
+  const academyData = req.body;
+  
+  db.collection('academies').doc(academyId).update(academyData)
+    .then(() => {
+      console.log('Academy updated:', academyId);
+      res.redirect('/admin/academies');
+    })
+    .catch(error => {
+      console.error('Error updating academy:', error);
+      res.status(500).send('Error updating academy');
+    });
+});
+
+app.delete('/admin/academies/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const academyId = req.params.id;
+  
+  db.collection('academies').doc(academyId).delete()
+    .then(() => {
+      console.log('Academy deleted:', academyId);
+      res.json({ success: true });
+    })
+    .catch(error => {
+      console.error('Error deleting academy:', error);
+      res.status(500).json({ error: 'Error deleting academy' });
+    });
+});
+
+// Hero Section CRUD Routes
+app.get('/admin/hero-section/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const heroId = req.params.id;
+  
+  db.collection('heroSection').doc(heroId).get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.redirect('/admin/hero-section');
+      }
+      
+      res.render('admin/hero-section-edit', {
+        title: 'Edit Hero Section - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        heroSection: { id: doc.id, ...doc.data() }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching hero section:', error);
+      res.redirect('/admin/hero-section');
+    });
+});
+
+app.post('/admin/hero-section/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const heroId = req.params.id;
+  const heroData = req.body;
+  
+  db.collection('heroSection').doc(heroId).update(heroData)
+    .then(() => {
+      console.log('Hero section updated:', heroId);
+      res.redirect('/admin/hero-section');
+    })
+    .catch(error => {
+      console.error('Error updating hero section:', error);
+      res.status(500).send('Error updating hero section');
+    });
+});
+
+app.delete('/admin/hero-section/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const heroId = req.params.id;
+  
+  db.collection('heroSection').doc(heroId).delete()
+    .then(() => {
+      console.log('Hero section deleted:', heroId);
+      res.json({ success: true });
+    })
+    .catch(error => {
+      console.error('Error deleting hero section:', error);
+      res.status(500).json({ error: 'Error deleting hero section' });
+    });
+});
+
+// About Section CRUD Routes
+app.get('/admin/about-section/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const aboutId = req.params.id;
+  
+  db.collection('aboutSection').doc(aboutId).get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.redirect('/admin/about-section');
+      }
+      
+      res.render('admin/about-section-edit', {
+        title: 'Edit About Section - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        aboutSection: { id: doc.id, ...doc.data() }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching about section:', error);
+      res.redirect('/admin/about-section');
+    });
+});
+
+app.post('/admin/about-section/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const aboutId = req.params.id;
+  const aboutData = req.body;
+  
+  db.collection('aboutSection').doc(aboutId).update(aboutData)
+    .then(() => {
+      console.log('About section updated:', aboutId);
+      res.redirect('/admin/about-section');
+    })
+    .catch(error => {
+      console.error('Error updating about section:', error);
+      res.status(500).send('Error updating about section');
+    });
+});
+
+app.delete('/admin/about-section/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const aboutId = req.params.id;
+  
+  db.collection('aboutSection').doc(aboutId).delete()
+    .then(() => {
+      console.log('About section deleted:', aboutId);
+      res.json({ success: true });
+    })
+    .catch(error => {
+      console.error('Error deleting about section:', error);
+      res.status(500).json({ error: 'Error deleting about section' });
+    });
+});
+
+// Blogs CRUD Routes
+app.post('/admin/blogs/create', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const blogData = req.body;
+  console.log('Creating blog:', blogData);
+  
+  db.collection('blogs').add(blogData)
+    .then(docRef => {
+      console.log('Blog created with ID:', docRef.id);
+      res.redirect('/admin/blogs');
+    })
+    .catch(error => {
+      console.error('Error creating blog:', error);
+      res.status(500).send('Error creating blog');
+    });
+});
+
+app.get('/admin/blogs/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const blogId = req.params.id;
+  
+  db.collection('blogs').doc(blogId).get()
+    .then(doc => {
+      if (!doc.exists) {
+        return res.redirect('/admin/blogs');
+      }
+      
+      res.render('admin/blogs-edit', {
+        title: 'Edit Blog - Admin Dashboard',
+        user: req.session.user,
+        username: req.session.user,
+        blog: { id: doc.id, ...doc.data() }
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching blog:', error);
+      res.redirect('/admin/blogs');
+    });
+});
+
+app.post('/admin/blogs/edit/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.redirect('/admin/login');
+  }
+  
+  const blogId = req.params.id;
+  const blogData = req.body;
+  
+  db.collection('blogs').doc(blogId).update(blogData)
+    .then(() => {
+      console.log('Blog updated:', blogId);
+      res.redirect('/admin/blogs');
+    })
+    .catch(error => {
+      console.error('Error updating blog:', error);
+      res.status(500).send('Error updating blog');
+    });
+});
+
+app.delete('/admin/blogs/:id', (req, res) => {
+  if (!req.session || !req.session.isAuthenticated) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  
+  const blogId = req.params.id;
+  
+  db.collection('blogs').doc(blogId).delete()
+    .then(() => {
+      console.log('Blog deleted:', blogId);
+      res.json({ success: true });
+    })
+    .catch(error => {
+      console.error('Error deleting blog:', error);
+      res.status(500).json({ error: 'Error deleting blog' });
+    });
 });
 
 // API Routes
