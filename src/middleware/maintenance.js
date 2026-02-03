@@ -18,6 +18,8 @@ const isMaintenanceMode = () => {
 
 // Middleware to check maintenance mode
 const maintenanceMiddleware = (req, res, next) => {
+    console.log(`Maintenance middleware: checking ${req.path}, maintenanceMode=${maintenanceMode}`);
+    
     // Skip maintenance check for admin routes, login page, maintenance page, API routes, and static assets
     if (req.path.startsWith('/admin') || 
         req.path === '/maintenance' || 
@@ -32,17 +34,8 @@ const maintenanceMiddleware = (req, res, next) => {
         req.path.includes('.well-known') || // Chrome devtools and other well-known paths
         req.path.includes('robots.txt') ||
         req.path.includes('sitemap.xml')) {
+        console.log(`Maintenance middleware: skipping ${req.path} (admin/static asset)`);
         return next();
-    }
-    
-    // Special handling for index.html - check if this is an admin request
-    if (req.path === '/' || req.path === '/index.html') {
-        // Check if user has admin session cookie
-        const sessionCookie = req.headers.cookie?.match(/connect\.sid=([^;]+)/);
-        if (sessionCookie) {
-            console.log(`Maintenance middleware: potential admin request to ${req.path}, skipping`);
-            return next();
-        }
     }
     
     // If maintenance mode is active, show maintenance page
@@ -75,6 +68,7 @@ const maintenanceMiddleware = (req, res, next) => {
         }
     }
     
+    console.log(`Maintenance middleware: allowing ${req.path} (maintenance mode off)`);
     next();
 };
 
