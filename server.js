@@ -16,11 +16,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static files
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('public/uploads'));
 
 // File upload middleware
 const upload = multer({
-  dest: 'uploads/',
+  dest: 'public/uploads/',
   limits: {
     fileSize: 10 * 1024 * 1024 // 10MB limit
   },
@@ -32,6 +32,15 @@ const upload = multer({
     }
   }
 });
+
+// Ensure uploads directory exists
+const fs = require('fs');
+const path = require('path');
+const uploadsDir = path.join(__dirname, 'public/uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('📁 Created uploads directory:', uploadsDir);
+}
 
 // Session middleware
 app.use(session({
