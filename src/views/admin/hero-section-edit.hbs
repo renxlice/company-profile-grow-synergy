@@ -13,8 +13,8 @@
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <i class="fas fa-info-circle text-green-600 text-2xl mr-3"></i>
-                    <h1 class="text-xl font-semibold text-gray-800">Edit Tentang Kami</h1>
+                    <i class="fas fa-image text-blue-600 text-2xl mr-3"></i>
+                    <h1 class="text-xl font-semibold text-gray-800">Edit Hero Section</h1>
                 </div>
                 <div class="flex items-center space-x-4">
                     <span class="text-gray-600">Welcome, {{username}}</span>
@@ -44,7 +44,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/admin/about-section" class="flex items-center p-2 bg-green-100 text-green-700 rounded-md">
+                        <a href="/admin/about-section" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
                             <i class="fas fa-info-circle w-5"></i>
                             <span class="ml-3">Tentang Kami</span>
                         </a>
@@ -52,25 +52,31 @@
                     <li>
                         <a href="/admin/experts" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
                             <i class="fas fa-users w-5"></i>
-                            <span class="ml-3">Synergy Experts</span>
+                            <span class="ml-3">Experts</span>
                         </a>
                     </li>
                     <li>
                         <a href="/admin/portfolios" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
                             <i class="fas fa-briefcase w-5"></i>
-                            <span class="ml-3">Synergy Portfolio</span>
+                            <span class="ml-3">Portfolios</span>
                         </a>
                     </li>
                     <li>
                         <a href="/admin/academies" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
                             <i class="fas fa-graduation-cap w-5"></i>
-                            <span class="ml-3">Synergy Academy</span>
+                            <span class="ml-3">Academies</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/admin/blogs" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
+                            <i class="fas fa-blog w-5"></i>
+                            <span class="ml-3">Blogs</span>
                         </a>
                     </li>
                     <li>
                         <a href="/admin/testimonials" class="flex items-center p-2 text-gray-700 rounded-md hover:bg-gray-100">
-                            <i class="fas fa-comments w-5"></i>
-                            <span class="ml-3">Testimoni</span>
+                            <i class="fas fa-quote-left w-5"></i>
+                            <span class="ml-3">Testimonials</span>
                         </a>
                     </li>
                 </ul>
@@ -82,13 +88,13 @@
             <div class="max-w-4xl mx-auto">
                 <!-- Page Header -->
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">Edit Tentang Kami</h2>
-                    <p class="text-gray-600">Kelola informasi tentang perusahaan</p>
+                    <h2 class="text-2xl font-bold text-gray-800">Edit Hero Section</h2>
+                    <p class="text-gray-600">Kelola tampilan hero section</p>
                 </div>
 
                 <!-- Form -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <form action="/admin/about-section/edit/{{aboutSection.id}}" method="POST" enctype="multipart/form-data">
+                    <form action="/admin/hero-section/edit/{{heroSection.id}}" method="POST" enctype="multipart/form-data">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Title -->
                             <div class="col-span-2">
@@ -100,9 +106,25 @@
                                     id="title" 
                                     name="title" 
                                     required
-                                    value="{{aboutSection.title}}"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                    placeholder="Masukkan judul tentang kami"
+                                    value="{{heroSection.title}}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Masukkan judul hero section"
+                                >
+                            </div>
+
+                            <!-- Subtitle -->
+                            <div class="col-span-2">
+                                <label for="subtitle" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Subtitle <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="subtitle" 
+                                    name="subtitle" 
+                                    required
+                                    value="{{heroSection.subtitle}}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Masukkan subtitle hero section"
                                 >
                             </div>
 
@@ -115,36 +137,36 @@
                                     id="description" 
                                     name="description" 
                                     required
-                                    rows="6"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                    placeholder="Tuliskan deskripsi lengkap tentang perusahaan"
-                                >{{aboutSection.description}}</textarea>
+                                    rows="4"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="Tuliskan deskripsi lengkap hero section"
+                                >{{heroSection.description}}</textarea>
                             </div>
 
-                            <!-- Image -->
+                            <!-- Background Image -->
                             <div class="col-span-2">
-                                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">
-                                    Gambar <span class="text-red-500">*</span>
+                                <label for="backgroundImage" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Gambar Background <span class="text-red-500">*</span>
                                 </label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                                     <div class="space-y-1 text-center">
-                                        {{#if aboutSection.image}}
+                                        {{#if heroSection.backgroundImage}}
                                         <div class="mb-4">
-                                            <img src="{{aboutSection.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
-                                            <p class="text-sm text-gray-500 mt-2">Gambar saat ini</p>
+                                            <img src="{{heroSection.backgroundImage}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
+                                            <p class="text-sm text-gray-500 mt-2">Gambar background saat ini</p>
                                         </div>
                                         {{/if}}
                                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4 4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <div class="flex text-sm text-gray-600">
-                                            <label for="image" class="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-green-500">
+                                            <label for="backgroundImage" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                                                 <span>Upload file</span>
-                                                <input id="image" name="image" type="file" class="sr-only" accept="image/*">
+                                                <input id="backgroundImage" name="backgroundImage" type="file" class="sr-only" accept="image/*">
                                             </label>
                                             <p class="pl-1">atau drag and drop</p>
                                         </div>
-                                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
+                                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                     </div>
                                 </div>
                             </div>
@@ -158,9 +180,9 @@
                                     type="text" 
                                     id="buttonText1" 
                                     name="buttonText1" 
-                                    value="{{aboutSection.buttonText1}}"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                    placeholder="e.g., Pelajari Lebih Lanjut"
+                                    value="{{heroSection.buttonText1}}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="e.g., Mulai Belajar"
                                 >
                             </div>
 
@@ -173,20 +195,20 @@
                                     type="text" 
                                     id="buttonText2" 
                                     name="buttonText2" 
-                                    value="{{aboutSection.buttonText2}}"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                                    placeholder="e.g., Hubungi Kami"
+                                    value="{{heroSection.buttonText2}}"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="e.g., Konsultasi Gratis"
                                 >
                             </div>
                         </div>
 
                         <!-- Form Actions -->
                         <div class="mt-6 flex justify-end space-x-3">
-                            <a href="/admin/about-section" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                            <a href="/admin/hero-section" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
                                 Batal
                             </a>
-                            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition">
-                                <i class="fas fa-save mr-2"></i>Update
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                                <i class="fas fa-save mr-2"></i>Update Hero Section
                             </button>
                         </div>
                     </form>

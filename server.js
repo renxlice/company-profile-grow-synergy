@@ -1675,13 +1675,21 @@ app.get('/admin/testimonials/create', (req, res) => {
 });
 
 // Academies CRUD Routes
-app.post('/admin/academies-form-fixed', (req, res) => {
+app.post('/admin/academies-form-fixed', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const academyData = req.body;
-  console.log('Creating academy:', academyData);
+  console.log('📝 Creating academy with data:', academyData);
+  console.log('📝 Request body keys:', Object.keys(req.body));
+  console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
+  
+  // Handle image upload
+  if (req.file) {
+    academyData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 Image uploaded:', req.file.filename);
+  }
   
   db.collection('academies').add(academyData)
     .then(docRef => {
@@ -1886,13 +1894,21 @@ app.delete('/admin/about-section/:id', (req, res) => {
 });
 
 // Blogs CRUD Routes
-app.post('/admin/blogs/create', (req, res) => {
+app.post('/admin/blogs/create', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const blogData = req.body;
-  console.log('Creating blog:', blogData);
+  console.log('📝 Creating blog with data:', blogData);
+  console.log('📝 Request body keys:', Object.keys(req.body));
+  console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
+  
+  // Handle image upload
+  if (req.file) {
+    blogData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 Image uploaded:', req.file.filename);
+  }
   
   db.collection('blogs').add(blogData)
     .then(docRef => {
