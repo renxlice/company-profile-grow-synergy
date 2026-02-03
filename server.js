@@ -15,7 +15,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files
+// Static files - Support both old and new upload paths for backward compatibility
+app.use('/uploads', express.static('uploads'));
 app.use('/uploads', express.static('public/uploads'));
 
 // File upload middleware
@@ -33,11 +34,18 @@ const upload = multer({
   }
 });
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'public/uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-  console.log('📁 Created uploads directory:', uploadsDir);
+// Ensure uploads directories exist for backward compatibility
+const oldUploadsDir = path.join(__dirname, 'uploads');
+const newUploadsDir = path.join(__dirname, 'public/uploads');
+
+if (!fs.existsSync(oldUploadsDir)) {
+  fs.mkdirSync(oldUploadsDir, { recursive: true });
+  console.log('📁 Created old uploads directory:', oldUploadsDir);
+}
+
+if (!fs.existsSync(newUploadsDir)) {
+  fs.mkdirSync(newUploadsDir, { recursive: true });
+  console.log('📁 Created new uploads directory:', newUploadsDir);
 }
 
 // Session middleware
