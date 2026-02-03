@@ -131,14 +131,8 @@
     <!-- Main Content -->
     <main>
 
-<div class="hero-section">
-    {{#if heroSections}}
-        {{#each heroSections}}
-        <div class="background-image" style="background-image: url('{{this.backgroundImage}}');"></div>
-        {{/each}}
-    {{else}}
-        <div class="background-image" style="background-image: url('/images/hero-background.jpg');"></div>
-    {{/if}}
+<div class="hero-section" id="hero-section">
+    <div class="background-image" id="hero-background-image" style="background-image: url('/images/hero-background.jpg');"></div>
     <div class="hero-content">
         <h2 class="text-3xl md:text-4xl font-light mb-4">Pelatihan Data Analitik Terbaik Di Indonesia</h2>
         <h1 class="text-4xl md:text-6xl font-bold mb-8">Blog Data Analitik</h1>
@@ -689,8 +683,60 @@
             filterPosts('all', '');
         }
         
+        // Load hero section from Firebase
+        async function loadHeroSection() {
+            console.log('DEBUG: Starting loadHeroSection for blog page...');
+            try {
+                // Use window.db from firebase-config partial
+                const db = window.db;
+                if (!db) {
+                    throw new Error('Firestore not available');
+                }
+                
+                console.log('DEBUG: Fetching hero section from Firestore...');
+                const heroSectionsSnapshot = await db.collection('heroSection').get();
+                const heroSections = [];
+                
+                heroSectionsSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    if (data.backgroundImage) {
+                        heroSections.push({
+                            id: doc.id,
+                            backgroundImage: data.backgroundImage,
+                            title: data.title,
+                            subtitle: data.subtitle,
+                            description: data.description
+                        });
+                    }
+                });
+                
+                console.log('DEBUG: Hero sections data:', heroSections);
+                console.log('DEBUG: Hero sections length:', heroSections.length);
+                
+                if (heroSections.length > 0) {
+                    const hero = heroSections[0]; // Use first hero section
+                    const backgroundImage = document.getElementById('hero-background-image');
+                    console.log('DEBUG: Elements found:', {
+                        backgroundImage: !!backgroundImage
+                    });
+                    
+                    if (backgroundImage && hero.backgroundImage) {
+                        backgroundImage.style.backgroundImage = `url('${hero.backgroundImage}')`;
+                        console.log('DEBUG: Hero background updated:', hero.backgroundImage);
+                    }
+                } else {
+                    console.log('DEBUG: No hero sections found in Firestore');
+                    // Keep fallback background
+                }
+            } catch (error) {
+                console.error('DEBUG: Error loading hero section:', error);
+                // Keep fallback background
+            }
+        }
+        
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadHeroSection();
             loadBlogData();
         });
     </script>
