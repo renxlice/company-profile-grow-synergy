@@ -18,12 +18,6 @@ const isMaintenanceMode = () => {
 
 // Middleware to check maintenance mode
 const maintenanceMiddleware = (req, res, next) => {
-    // In development mode, allow maintenance toggle but don't show maintenance page
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`Development mode: maintenance toggle allowed, but page not shown for ${req.path}`);
-        return next();
-    }
-    
     // Skip maintenance check for admin routes, login page, maintenance page, API routes, and static assets
     if (req.path.startsWith('/admin') || 
         req.path === '/maintenance' || 
@@ -51,9 +45,9 @@ const maintenanceMiddleware = (req, res, next) => {
         }
     }
     
-    // If maintenance mode is active (only in production), show maintenance page
+    // If maintenance mode is active, show maintenance page
     if (maintenanceMode) {
-        console.log(`Production maintenance middleware: showing maintenance page for ${req.path}`);
+        console.log(`Maintenance middleware: showing maintenance page for ${req.path} (${process.env.NODE_ENV || 'development'} mode)`);
         const fs = require('fs');
         const path = require('path');
         
