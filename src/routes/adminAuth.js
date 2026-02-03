@@ -286,34 +286,80 @@ router.post('/login', loginLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        // Simple fallback admin for testing
-        const fallbackAdmins = {
-            'admin@growsynergy.com': {
-                password: '$2a$12$ZFPVlGwEbqaUNnEBOp09.uIKIddAqS9KCxwYqzmEMgAp76yAzgLdW', // Admin@2024!
-                name: 'Administrator',
-                role: 'super_admin',
-                isActive: true,
-                id: 'fallback-admin-id'
-            },
-            'admin@grow-synergy.com': {
-                password: '$2a$12$7WjBY78nkkNl1HKT4/bV1ezC3byexlSMVw0bVwoJ4/G2hEJlV4HEy', // Mieayam1
-                name: 'Administrator',
-                role: 'super_admin',
-                isActive: true,
-                id: 'fallback-admin-id-2'
-            }
-        };
+        let adminData = null;
+        let adminDoc = null;
         
-        // Store fallback admins globally for password updates
-        if (!global.fallbackAdmins) {
-            global.fallbackAdmins = fallbackAdmins;
+        // Try to find admin in Firestore first
+        try {
+            const adminSnapshot = await admin.firestore()
+                .collection('admins')
+                .where('email', '==', email)
+                .limit(1)
+                .get();
+            
+            if (!adminSnapshot.empty) {
+                adminDoc = adminSnapshot.docs[0];
+                adminData = adminDoc.data();
+                console.log('🔍 Found admin in Firestore:', email);
+            }
+        } catch (firebaseError) {
+            console.log('Firebase error:', firebaseError.message);
         }
         
-        let adminData = global.fallbackAdmins[email];
-        let adminDoc = { id: adminData?.id };
-        
-        console.log('🔍 Login attempt for:', email);
-        console.log('🔍 Found admin data:', !!adminData);
+        // If not found in Firestore, create the admin account
+        if (!adminData) {
+            console.log('🔍 Admin not found, creating account for:', email);
+            
+            // Create admin account for admin@grow-synergy.com
+            if (email === 'admin@grow-synergy.com') {
+                const hashedPassword = await bcrypt.hash('Mieayam1', 12);
+                
+                const newAdminData = {
+                    email: email,
+                    password: hashedPassword,
+                    name: 'Administrator',
+                    role: 'super_admin',
+                    isActive: true,
+                    createdAt: admin.firestore.FieldValue.serverTimestamp()
+                };
+                
+                try {
+                    const adminRef = await admin.firestore()
+                        .collection('admins')
+                        .add(newAdminData);
+                    
+                    adminDoc = { id: adminRef.id };
+                    adminData = newAdminData;
+                    console.log('✅ Created admin account in Firestore:', email);
+                } catch (createError) {
+                    console.log('Failed to create admin:', createError.message);
+                    
+                    // Fallback to in-memory if Firebase fails
+                    adminData = {
+                        email: email,
+                        password: '$2a$12$7WjBY78nkkNl1HKT4/bV1ezC3byexlSMVw0bVwoJ4/G2hEJlV4HEy',
+                        name: 'Administrator',
+                        role: 'super_admin',
+                        isActive: true
+                    };
+                    adminDoc = { id: 'fallback-admin-id-2' };
+                }
+            } else {
+                // For other emails, try fallback
+                const fallbackAdmins = {
+                    'admin@growsynergy.com': {
+                        password: '$2a$12$ZFPVlGwEbqaUNnEBOp09.uIKIddAqS9KCxwYqzmEMgAp76yAzgLdW',
+                        name: 'Administrator',
+                        role: 'super_admin',
+                        isActive: true,
+                        id: 'fallback-admin-id'
+                    }
+                };
+                
+                adminData = fallbackAdmins[email];
+                adminDoc = { id: adminData?.id };
+            }
+        }
         
         if (!adminData) {
             return res.render('admin/login', {
@@ -324,7 +370,6 @@ router.post('/login', loginLimiter, async (req, res) => {
         
         // Verify password
         const isPasswordValid = await bcrypt.compare(password, adminData.password);
-        console.log('🔍 Password valid:', isPasswordValid);
         
         if (!isPasswordValid) {
             return res.render('admin/login', {
@@ -422,7 +467,7 @@ router.post('/test-change', (req, res) => {
     res.json({ message: 'Test route works', received: req.body });
 });
 
-// Change password - working implementation
+// Change password - Firebase implementation
 router.post('/change-password', async (req, res) => {
     try {
         // Check if authenticated via session
@@ -447,33 +492,113 @@ router.post('/change-password', async (req, res) => {
             });
         }
         
-        // Handle fallback admin
-        if (req.session.adminId === 'fallback-admin-id-2' && req.session.user === 'admin@grow-synergy.com') {
-            // Get current password hash
-            const currentHash = global.fallbackAdmins['admin@grow-synergy.com'].password;
+        // Get current admin data from Firestore
+        let adminData = null;
+        let adminDoc = null;
+        
+        try {
+            const adminSnapshot = await admin.firestore()
+                .collection('admins')
+                .doc(req.session.adminId)
+                .get();
             
-            // Verify current password
-            const isCurrentPasswordValid = await bcrypt.compare(currentPassword, currentHash);
-            
-            if (!isCurrentPasswordValid) {
-                return res.status(400).json({ 
-                    error: 'Current password is incorrect' 
-                });
+            if (adminSnapshot.exists) {
+                adminDoc = adminSnapshot;
+                adminData = adminSnapshot.data();
+                console.log('🔍 Found admin in Firestore for password change');
             }
-            
-            // Hash new password
-            const hashedNewPassword = await bcrypt.hash(newPassword, 12);
-            
-            // Update password in global storage
-            global.fallbackAdmins['admin@grow-synergy.com'].password = hashedNewPassword;
-            
-            console.log('✅ Password updated for admin@grow-synergy.com');
-            
-            return res.json({ message: 'Password changed successfully' });
+        } catch (firebaseError) {
+            console.log('Firebase error getting admin:', firebaseError.message);
         }
         
-        // For other admins or Firebase, you would implement similar logic here
-        res.json({ message: 'Password changed successfully' });
+        // If not found in Firestore, try to find by email
+        if (!adminData && req.session.user) {
+            try {
+                const adminSnapshot = await admin.firestore()
+                    .collection('admins')
+                    .where('email', '==', req.session.user)
+                    .limit(1)
+                    .get();
+                
+                if (!adminSnapshot.empty) {
+                    adminDoc = adminSnapshot.docs[0];
+                    adminData = adminDoc.data();
+                    console.log('🔍 Found admin by email in Firestore');
+                }
+            } catch (firebaseError) {
+                console.log('Firebase error finding by email:', firebaseError.message);
+            }
+        }
+        
+        // If still not found, create the admin account
+        if (!adminData && req.session.user === 'admin@grow-synergy.com') {
+            console.log('🔍 Creating admin account for password change');
+            
+            const hashedPassword = await bcrypt.hash('Mieayam1', 12);
+            
+            const newAdminData = {
+                email: req.session.user,
+                password: hashedPassword,
+                name: 'Administrator',
+                role: 'super_admin',
+                isActive: true,
+                createdAt: admin.firestore.FieldValue.serverTimestamp()
+            };
+            
+            try {
+                const adminRef = await admin.firestore()
+                    .collection('admins')
+                    .add(newAdminData);
+                
+                adminDoc = { id: adminRef.id };
+                adminData = newAdminData;
+                
+                // Update session with new admin ID
+                req.session.adminId = adminRef.id;
+                
+                console.log('✅ Created admin account in Firestore for password change');
+            } catch (createError) {
+                console.log('Failed to create admin for password change:', createError.message);
+                return res.status(500).json({ error: 'Failed to create admin account' });
+            }
+        }
+        
+        if (!adminData) {
+            return res.status(404).json({ 
+                error: 'Admin account not found' 
+            });
+        }
+        
+        // Verify current password
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, adminData.password);
+        
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({ 
+                error: 'Current password is incorrect' 
+            });
+        }
+        
+        // Hash new password
+        const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+        
+        // Update password in Firestore
+        try {
+            await admin.firestore()
+                .collection('admins')
+                .doc(adminDoc.id)
+                .update({
+                    password: hashedNewPassword,
+                    passwordChangedAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+            
+            console.log('✅ Password updated in Firestore for:', req.session.user);
+            
+            return res.json({ message: 'Password changed successfully' });
+            
+        } catch (firebaseError) {
+            console.log('Failed to update password in Firestore:', firebaseError.message);
+            return res.status(500).json({ error: 'Failed to update password' });
+        }
         
     } catch (error) {
         console.error('Change password error:', error);
