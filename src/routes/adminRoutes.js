@@ -1215,22 +1215,16 @@ router.get('/test', (req, res) => {
     res.json({ message: 'Admin routes are working', session: req.session?.isLoggedIn || false });
 });
 
-// Get maintenance mode status
+// Get maintenance mode status (public endpoint)
 router.get('/maintenance/status', async (req, res) => {
-    console.log('Maintenance status route hit - Session:', req.session?.isLoggedIn);
+    console.log('Maintenance status route hit');
     try {
-        // Check if user is logged in via session
-        if (!req.session?.isLoggedIn) {
-            console.log('Access denied - not logged in');
-            return res.status(401).json({ error: 'Access denied. Please login.' });
-        }
-        
         const status = isMaintenanceMode();
         console.log('Maintenance status:', status);
         
         res.json({
-            maintenanceMode: status,
-            message: status ? 'Maintenance mode is active' : 'Maintenance mode is inactive'
+            enabled: status,
+            message: status ? 'System is under maintenance' : 'System is operating normally'
         });
     } catch (error) {
         console.error('Get maintenance status error:', error);

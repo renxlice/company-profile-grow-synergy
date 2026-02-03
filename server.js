@@ -1110,15 +1110,6 @@ app.get('/admin/seed-firestore', async (req, res) => {
   }
 });
 
-// Admin API Routes - Maintenance Status
-app.get('/api/admin/maintenance/status', (req, res) => {
-  const { isMaintenanceMode } = require('./src/middleware/maintenance');
-  res.json({
-    enabled: isMaintenanceMode(),
-    message: isMaintenanceMode() ? 'System is under maintenance' : 'System is operating normally'
-  });
-});
-
 // Admin Page Routes
 app.get('/admin/hero-section', (req, res) => {
   // Check if authenticated
