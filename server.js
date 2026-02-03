@@ -93,22 +93,71 @@ app.use(session({
 let db;
 let firebaseInitError = null;
 
-try {
-  // Try environment variables first (recommended for hosting)
+// Try to initialize Firebase with multiple fallbacks
+async function initializeFirebase() {
+  console.log('🔥 Initializing Firebase Admin SDK...');
+  console.log(`🏭 Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Production: Try service account file first (most reliable for Hostinger)
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🏭 Production mode: Trying service account file first');
+    
+    // Try multiple paths for service account file
+    const possiblePaths = [
+      path.join(__dirname, 'config', 'firebase-service-account.json'),
+      path.join(__dirname, 'firebase-service-account.json'),
+      path.join(process.cwd(), 'config', 'firebase-service-account.json'),
+      path.join(process.cwd(), 'firebase-service-account.json')
+    ];
+    
+    for (const serviceAccountPath of possiblePaths) {
+      console.log(`🔍 Checking service account file: ${serviceAccountPath}`);
+      console.log(`📁 File exists: ${fs.existsSync(serviceAccountPath)}`);
+      
+      if (fs.existsSync(serviceAccountPath)) {
+        try {
+          const serviceAccount = require(serviceAccountPath);
+          console.log('📄 Service account file loaded successfully');
+          console.log(`📊 Project ID: ${serviceAccount.project_id}`);
+          console.log(`📧 Client Email: ${serviceAccount.client_email}`);
+          
+          admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount),
+            projectId: serviceAccount.project_id
+          });
+          
+          db = admin.firestore();
+          console.log('🔥 Firebase Admin SDK initialized successfully from service account file');
+          return true;
+        } catch (fileError) {
+          firebaseInitError = `Service account file error: ${fileError.message}`;
+          console.error(`❌ Error loading ${serviceAccountPath}:`, fileError);
+          continue; // Try next path
+        }
+      }
+    }
+    
+    console.log('⚠️ Service account file not found in any location, trying environment variables...');
+  }
+  
+  // Development or fallback: Try environment variables
   if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY) {
     try {
+      console.log('� Using environment variables for Firebase initialization');
+      console.log(`📊 Project ID: ${process.env.FIREBASE_PROJECT_ID}`);
+      console.log(`� Client Email: ${process.env.FIREBASE_CLIENT_EMAIL}`);
+      
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId: process.env.FIREBASE_PROJECT_ID,
           clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
           privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-        }),
-        projectId: process.env.FIREBASE_PROJECT_ID
+        })
       });
+      
       db = admin.firestore();
       console.log('🔥 Firebase Admin SDK initialized successfully from environment variables');
-      console.log(`📊 Project ID: ${process.env.FIREBASE_PROJECT_ID}`);
-      console.log(`📧 Client Email: ${process.env.FIREBASE_CLIENT_EMAIL}`);
+      return true;
     } catch (envError) {
       firebaseInitError = `Environment variables error: ${envError.message}`;
       console.error('❌ Firebase Admin SDK environment variables error:', envError);
@@ -116,87 +165,21 @@ try {
       console.error(`  - FIREBASE_PROJECT_ID: ${process.env.FIREBASE_PROJECT_ID ? 'SET' : 'MISSING'}`);
       console.error(`  - FIREBASE_CLIENT_EMAIL: ${process.env.FIREBASE_CLIENT_EMAIL ? 'SET' : 'MISSING'}`);
       console.error(`  - FIREBASE_PRIVATE_KEY: ${process.env.FIREBASE_PRIVATE_KEY ? 'SET (length: ' + process.env.FIREBASE_PRIVATE_KEY.length + ')' : 'MISSING'}`);
-      throw envError;
-    }
-  } 
-  // Production fallback: try service account file first (easiest for Hostinger)
-  else if (process.env.NODE_ENV === 'production') {
-    console.log('🏭 Production mode: Trying service account file');
-    const serviceAccountPath = path.join(__dirname, 'config', 'firebase-service-account.json');
-    
-    if (fs.existsSync(serviceAccountPath)) {
-      try {
-        const serviceAccount = require(serviceAccountPath);
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
-          projectId: 'company-profile-grow-synergy'
-        });
-        db = admin.firestore();
-        console.log('🔥 Firebase Admin SDK initialized successfully from config/service-account.json');
-      } catch (fileError) {
-        firebaseInitError = `Service account file error: ${fileError.message}`;
-        console.error('❌ Firebase Admin SDK service account file error:', fileError);
-        throw fileError;
-      }
-    } else {
-      console.log('⚠️ Service account file not found at config/firebase-service-account.json, please use environment variables or service account file');
-      throw new Error('Firebase credentials not found');
-    }
-  }// Fallback to service account file
-  else {
-    const serviceAccountPath = path.join(__dirname, 'company-profile-grow-synergy-firebase-adminsdk.json');
-    
-    console.log('🔍 Current directory (__dirname):', __dirname);
-    console.log('🔍 Checking service account file:', serviceAccountPath);
-    console.log('🔍 File exists:', fs.existsSync(serviceAccountPath));
-    
-    // List all files in current directory for debugging
-    try {
-      const files = fs.readdirSync(__dirname);
-      console.log('📁 Files in directory:', files.filter(f => f.includes('firebase')));
-    } catch (err) {
-      console.log('❌ Cannot read directory:', err.message);
-    }
-    
-    if (fs.existsSync(serviceAccountPath)) {
-      try {
-        const serviceAccount = require(serviceAccountPath);
-        console.log('📄 Service account file loaded, keys:', Object.keys(serviceAccount));
-        
-        admin.initializeApp({
-          credential: admin.credential.cert(serviceAccount),
-          projectId: 'company-profile-grow-synergy'
-        });
-        db = admin.firestore();
-        console.log('🔥 Firebase Admin SDK initialized successfully from service account file');
-      } catch (fileError) {
-        firebaseInitError = `Service account file error: ${fileError.message}`;
-        console.error('❌ Firebase Admin SDK service account file error:', fileError);
-        throw fileError;
-      }
-    } else {
-      firebaseInitError = 'No service account file found';
-      console.warn('⚠️ Firebase Admin SDK: No environment variables or service account file found. Using mock mode.');
-      console.warn('Expected file:', serviceAccountPath);
-      console.warn('Required environment variables: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY');
-      // Create mock db for development
-      db = {
-        collection: () => ({
-          get: async () => ({ docs: [] }),
-          add: async () => ({ get: async () => ({ id: 'mock-id', data: () => ({}) }) }),
-          doc: () => ({
-            get: async () => ({ exists: false, id: 'mock-id', data: () => ({}) }),
-            update: async () => {},
-            delete: async () => {}
-          }),
-        }),
-      };
     }
   }
+  
+  // If all methods fail, throw error
+  console.error('❌ All Firebase initialization methods failed');
+  throw new Error(firebaseInitError || 'Firebase credentials not found');
+}
+
+// Initialize Firebase
+try {
+  initializeFirebase();
 } catch (error) {
-  firebaseInitError = `Initialization error: ${error.message}`;
-  console.error('❌ Firebase Admin SDK initialization failed:', error);
-  console.warn('⚠️ Using mock mode for development');
+  firebaseInitError = error.message;
+  console.error('❌ Firebase initialization failed:', error.message);
+  console.log('⚠️ Application will run in mock mode without Firebase connection');
   // Create mock db for development
   db = {
     collection: () => ({
