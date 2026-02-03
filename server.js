@@ -7,12 +7,31 @@ const fs = require('fs');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const admin = require('firebase-admin');
+const multer = require('multer');
 
 const app = express();
 
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Static files
+app.use('/uploads', express.static('uploads'));
+
+// File upload middleware
+const upload = multer({
+  dest: 'uploads/',
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
 
 // Session middleware
 app.use(session({
@@ -1322,7 +1341,7 @@ app.get('/admin/about-section-form', (req, res) => {
 });
 
 // Experts CRUD Routes
-app.post('/admin/experts-form', (req, res) => {
+app.post('/admin/experts-form', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
@@ -1331,6 +1350,12 @@ app.post('/admin/experts-form', (req, res) => {
   console.log('📝 Creating expert with data:', expertData);
   console.log('📝 Request body keys:', Object.keys(req.body));
   console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
+  
+  // Handle image upload
+  if (req.file) {
+    expertData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 Image uploaded:', req.file.filename);
+  }
   
   db.collection('experts').add(expertData)
     .then(docRef => {
@@ -1552,7 +1577,7 @@ app.get('/admin/about-section/create', (req, res) => {
 });
 
 // Portfolios CRUD Routes
-app.post('/admin/portfolios-form', (req, res) => {
+app.post('/admin/portfolios-form', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
@@ -1561,6 +1586,12 @@ app.post('/admin/portfolios-form', (req, res) => {
   console.log('📝 Creating portfolio with data:', portfolioData);
   console.log('📝 Request body keys:', Object.keys(req.body));
   console.log('📝 Form data received:', JSON.stringify(req.body, null, 2));
+  
+  // Handle image upload
+  if (req.file) {
+    portfolioData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 Image uploaded:', req.file.filename);
+  }
   
   db.collection('portfolios').add(portfolioData)
     .then(docRef => {
