@@ -558,7 +558,7 @@
                 const title = (post.title || '').toLowerCase();
                 const description = (post.excerpt || post.description || '').toLowerCase();
                 const author = (post.author || '').toLowerCase();
-                const tags = (post.tags || []).join(' ').toLowerCase();
+                const tags = Array.isArray(post.tags) ? post.tags.join(' ').toLowerCase() : '';
                 
                 const matchesCategory = category === 'all' || post.category === category;
                 const matchesSearch = title.includes(searchTerm) || 
