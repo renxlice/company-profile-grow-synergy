@@ -56,7 +56,8 @@
                 /using deprecated parameters/i,
                 /feature_collector\.js/i,
                 /404.*not found/i,
-                /GET.*\/uploads\/.*404/i,
+                /GET.*\/uploads\/[a-f0-9]+.*404/i,
+                /GET.*uploads.*404/i,
                 /Image.*404.*not found/i,
                 /favicon\.ico.*404/i,
                 /net::ERR_FILE_NOT_FOUND/i,
@@ -66,7 +67,9 @@
                 /ResizeObserver loop limit exceeded/i,
                 /Script error/i,
                 /Uncaught SyntaxError/i,
-                /Unexpected token/i
+                /Unexpected token/i,
+                /growsynergyid\.com\/uploads\/.*404/i,
+                /\/uploads\/[a-f0-9]{32,}.*404/i
             ];
             
             // Check if message should be suppressed
@@ -118,12 +121,16 @@
         // Suppress error events for non-critical errors
         window.addEventListener('error', function(event) {
             const message = event.message || '';
+            const url = event.filename || event.target?.src || '';
             
             // Suppress common non-critical errors
             if (message.includes('404') || 
                 message.includes('not found') ||
                 message.includes('feature_collector') ||
-                message.includes('deprecated')) {
+                message.includes('deprecated') ||
+                url.includes('/uploads/') ||
+                url.includes('growsynergyid.com/uploads/') ||
+                (event.target && event.target.tagName === 'IMG' && event.target.src && event.target.src.includes('/uploads/'))) {
                 event.preventDefault();
                 event.stopPropagation();
                 return false;
