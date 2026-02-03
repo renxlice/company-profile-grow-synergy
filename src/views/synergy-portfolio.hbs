@@ -1192,18 +1192,27 @@
         
         // Function to reset filter to all
         function resetFilterToAll() {
-            // Show message for "All" category
-            const portfolioGrid = document.getElementById('portfolioGrid');
-            portfolioGrid.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <div class="text-6xl mb-4">🔍</div>
-                    <h3 class="text-xl font-semibold mb-2 text-gray-800">Tidak ada portfolio ditemukan</h3>
-                    <p class="text-gray-600 mb-4">Tidak ada portfolio dengan kategori "All"</p>
-                    <button onclick="loadPortfolios()" class="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">
-                        <i class="fas fa-refresh mr-1"></i>Refresh Portfolio
-                    </button>
-                </div>
-            `;
+            // Reset all filter buttons to make "All" active
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white');
+                b.classList.add('bg-gray-200', 'text-gray-700');
+            });
+            
+            // Make "All" button active
+            const allBtn = document.querySelector('[data-filter="all"]');
+            if (allBtn) {
+                allBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                allBtn.classList.add('bg-blue-600', 'text-white');
+            }
+            
+            // Show all portfolio cards
+            const portfolioCards = document.querySelectorAll('.portfolio-card');
+            portfolioCards.forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            // Reload portfolio data to restore original grid
+            loadPortfolioData();
         }
     </script>
     
