@@ -1974,13 +1974,25 @@ app.get('/admin/blogs/edit/:id', (req, res) => {
     });
 });
 
-app.post('/admin/blogs/edit/:id', (req, res) => {
+app.post('/admin/blogs/edit/:id', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const blogId = req.params.id;
   const blogData = req.body;
+  
+  console.log('📝 Updating blog:', blogId);
+  console.log('📝 Blog data:', blogData);
+  
+  // Handle image upload
+  if (req.file) {
+    blogData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 New image uploaded:', req.file.filename);
+  }
+  
+  // Handle checkbox
+  blogData.featured = req.body.featured === 'true';
   
   db.collection('blogs').doc(blogId).update(blogData)
     .then(() => {
