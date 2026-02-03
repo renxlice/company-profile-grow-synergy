@@ -1394,13 +1394,22 @@ app.get('/admin/experts/edit/:id', (req, res) => {
     });
 });
 
-app.post('/admin/experts/edit/:id', (req, res) => {
+app.post('/admin/experts/edit/:id', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const expertId = req.params.id;
   const expertData = req.body;
+  
+  console.log('📝 Updating expert:', expertId);
+  console.log('📝 Expert data:', expertData);
+  
+  // Handle image upload
+  if (req.file) {
+    expertData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 New image uploaded:', req.file.filename);
+  }
   
   db.collection('experts').doc(expertId).update(expertData)
     .then(() => {
@@ -1630,13 +1639,22 @@ app.get('/admin/portfolios/edit/:id', (req, res) => {
     });
 });
 
-app.post('/admin/portfolios/edit/:id', (req, res) => {
+app.post('/admin/portfolios/edit/:id', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const portfolioId = req.params.id;
   const portfolioData = req.body;
+  
+  console.log('📝 Updating portfolio:', portfolioId);
+  console.log('📝 Portfolio data:', portfolioData);
+  
+  // Handle image upload
+  if (req.file) {
+    portfolioData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 New image uploaded:', req.file.filename);
+  }
   
   db.collection('portfolios').doc(portfolioId).update(portfolioData)
     .then(() => {
@@ -1728,13 +1746,22 @@ app.get('/admin/academies/edit/:id', (req, res) => {
     });
 });
 
-app.post('/admin/academies/edit/:id', (req, res) => {
+app.post('/admin/academies/edit/:id', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const academyId = req.params.id;
   const academyData = req.body;
+  
+  console.log('📝 Updating academy:', academyId);
+  console.log('📝 Academy data:', academyData);
+  
+  // Handle image upload
+  if (req.file) {
+    academyData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 New image uploaded:', req.file.filename);
+  }
   
   db.collection('academies').doc(academyId).update(academyData)
     .then(() => {

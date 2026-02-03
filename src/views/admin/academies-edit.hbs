@@ -94,10 +94,10 @@
 
                 <!-- Form -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <form action="{{action}}" method="POST" enctype="multipart/form-data">
+                    <form action="/admin/academies/edit/{{academy.id}}" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="PUT">
-                        {{#if item.image}}
-                        <input type="hidden" name="existingImage" value="{{item.image}}">
+                        {{#if academy.image}}
+                        <input type="hidden" name="existingImage" value="{{academy.image}}">
                         {{/if}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Title -->
@@ -110,7 +110,7 @@
                                     id="title" 
                                     name="title" 
                                     required
-                                    value="{{#if item}}{{item.title}}{{/if}}"
+                                    value="{{academy.title}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="Masukkan judul kursus"
                                 >
@@ -126,7 +126,7 @@
                                     id="author" 
                                     name="author" 
                                     required
-                                    value="{{#if item}}{{item.author}}{{/if}}"
+                                    value="{{academy.author}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="Masukkan nama instruktur"
                                 >
@@ -145,7 +145,7 @@
                                     min="0"
                                     max="5"
                                     step="0.1"
-                                    value="{{#if item}}{{item.rating}}{{/if}}"
+                                    value="{{academy.rating}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="e.g., 4.8"
                                 >
@@ -162,7 +162,7 @@
                                     name="price" 
                                     min="0"
                                     step="10000"
-                                    value="{{#if item}}{{item.price}}{{/if}}"
+                                    value="{{academy.price}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="e.g., 2500000"
                                 >
@@ -179,7 +179,7 @@
                                     id="studentCount" 
                                     name="studentCount" 
                                     min="0"
-                                    value="{{#if item}}{{item.students}}{{/if}}"
+                                    value="{{academy.students}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="e.g., 1234"
                                 >
@@ -195,7 +195,7 @@
                                     id="duration" 
                                     name="duration" 
                                     required
-                                    value="{{#if item}}{{item.duration}}{{/if}}"
+                                    value="{{academy.duration}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="e.g., 12 minggu"
                                 >
@@ -210,7 +210,7 @@
                                     type="text" 
                                     id="certification" 
                                     name="certification" 
-                                    value="{{#if item}}{{item.certification}}{{/if}}"
+                                    value="{{academy.certification}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="e.g., Sertifikat Kompetensi"
                                 >
@@ -228,10 +228,10 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 >
                                     <option value="Select Level">Select Level</option>
-                                    <option value="Beginner" {{#if item.level}}{{#if (eq item.level "Beginner")}}selected{{/if}}{{/if}}>Beginner</option>
-                                    <option value="Intermediate" {{#if item.level}}{{#if (eq item.level "Intermediate")}}selected{{/if}}{{/if}}>Intermediate</option>
-                                    <option value="Advanced" {{#if item.level}}{{#if (eq item.level "Advanced")}}selected{{/if}}{{/if}}>Advanced</option>
-                                    <option value="All Levels" {{#if item.level}}{{#if (eq item.level "All Levels")}}selected{{/if}}{{/if}}>All Levels</option>
+                                    <option value="Beginner" {{#if (eq academy.level "Beginner")}}selected{{/if}}>Beginner</option>
+                                    <option value="Intermediate" {{#if (eq academy.level "Intermediate")}}selected{{/if}}>Intermediate</option>
+                                    <option value="Advanced" {{#if (eq academy.level "Advanced")}}selected{{/if}}>Advanced</option>
+                                    <option value="All Levels" {{#if (eq academy.level "All Levels")}}selected{{/if}}>All Levels</option>
                                 </select>
                             </div>
 
@@ -247,10 +247,10 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 >
                                     <option value="Select Schedule">Select Schedule</option>
-                                    <option value="Full Time" {{#if item.schedule}}{{#if (eq item.schedule "Full Time")}}selected{{/if}}{{/if}}>Full Time</option>
-                                    <option value="Part Time" {{#if item.schedule}}{{#if (eq item.schedule "Part Time")}}selected{{/if}}{{/if}}>Part Time</option>
-                                    <option value="Weekend" {{#if item.schedule}}{{#if (eq item.schedule "Weekend")}}selected{{/if}}{{/if}}>Weekend</option>
-                                    <option value="Flexible" {{#if item.schedule}}{{#if (eq item.schedule "Flexible")}}selected{{/if}}{{/if}}>Flexible</option>
+                                    <option value="Full Time" {{#if (eq academy.schedule "Full Time")}}selected{{/if}}>Full Time</option>
+                                    <option value="Part Time" {{#if (eq academy.schedule "Part Time")}}selected{{/if}}>Part Time</option>
+                                    <option value="Weekend" {{#if (eq academy.schedule "Weekend")}}selected{{/if}}>Weekend</option>
+                                    <option value="Flexible" {{#if (eq academy.schedule "Flexible")}}selected{{/if}}>Flexible</option>
                                 </select>
                             </div>
 
@@ -266,9 +266,9 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 >
                                     <option value="Select Mode">Select Mode</option>
-                                    <option value="Online" {{#if item.mode}}{{#if (eq item.mode "Online")}}selected{{/if}}{{/if}}>Online</option>
-                                    <option value="Offline" {{#if item.mode}}{{#if (eq item.mode "Offline")}}selected{{/if}}{{/if}}>Offline</option>
-                                    <option value="Hybrid" {{#if item.mode}}{{#if (eq item.mode "Hybrid")}}selected{{/if}}{{/if}}>Hybrid</option>
+                                    <option value="Online" {{#if (eq academy.mode "Online")}}selected{{/if}}>Online</option>
+                                    <option value="Offline" {{#if (eq academy.mode "Offline")}}selected{{/if}}>Offline</option>
+                                    <option value="Hybrid" {{#if (eq academy.mode "Hybrid")}}selected{{/if}}>Hybrid</option>
                                 </select>
                             </div>
 
@@ -284,7 +284,7 @@
                                     rows="4"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                     placeholder="Tuliskan deskripsi lengkap kursus"
-                                >{{#if item}}{{item.description}}{{/if}}</textarea>
+                                >{{academy.description}}</textarea>
                             </div>
 
                             <!-- Image -->
@@ -294,9 +294,9 @@
                                 </label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                                     <div class="space-y-1 text-center">
-                                        {{#if item.image}}
+                                        {{#if academy.image}}
                                         <div class="mb-4">
-                                            <img src="{{item.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
+                                            <img src="{{academy.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
                                             <p class="text-sm text-gray-500 mt-2">Gambar kursus saat ini</p>
                                         </div>
                                         {{/if}}
