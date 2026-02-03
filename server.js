@@ -497,129 +497,83 @@ app.get('/about', (req, res) => {
 });
 
 // Blog detail route
-app.get('/blog/:slug', (req, res) => {
+app.get('/blog/:slug', async (req, res) => {
   const { slug } = req.params;
   
-  // Mock blog data - in real implementation, this would come from database
-  const blogPosts = {
-    'panduan-lengkap-data-analitik-pemula': {
-      id: 'panduan-lengkap-data-analitik-pemula',
-      title: 'Panduan Lengkap Data Analitik untuk Pemula',
-      slug: 'panduan-lengkap-data-analitik-pemula',
-      description: 'Panduan lengkap untuk memulai karir di bidang data analitik dengan langkah-langkah praktis dan tools yang harus dikuasai.',
-      content: `
-        <h2>Apa itu Data Analitik?</h2>
-        <p>Data analitik adalah proses memeriksa, membersihkan, mengubah, dan memodelkan data untuk menemukan informasi yang berguna, menyimpulkan kesimpulan, dan mendukung pengambilan keputusan.</p>
-        
-        <h2>Langkah 1: Pahami Dasar-Dasar Statistik</h2>
-        <p>Sebelum terjun ke data analitik, penting untuk memahami konsep dasar statistik seperti mean, median, modus, standar deviasi, dan konsep probabilitas.</p>
-        
-        <h2>Langkah 2: Kuasai Tools Dasar</h2>
-        <p>Beberapa tools yang harus dikuasai:</p>
-        <ul>
-          <li><strong>Excel/Google Sheets:</strong> Untuk data cleaning dan analisis dasar</li>
-          <li><strong>SQL:</strong> Untuk mengambil dan memanipulasi data dari database</li>
-          <li><strong>Python:</strong> Untuk analisis data yang lebih kompleks</li>
-          <li><strong>Tableau/Power BI:</strong> Untuk data visualization</li>
-        </ul>
-        
-        <h2>Langkah 3: Praktik dengan Proyek Real</h2>
-        <p>Teori saja tidak cukup. Mulailah dengan proyek-proyek sederhana seperti analisis penjualan toko online atau prediksi churn customer.</p>
-        
-        <h2>Langkah 4: Terus Belajar dan Berkembang</h2>
-        <p>Data analitik adalah bidang yang terus berkembang. Ikuti tren terbaru, belajar machine learning, dan jangan pernah berhenti belajar.</p>
-      `,
-      author: 'Tim GROW SYNERGY INDONESIA',
-      date: '15 Januari 2024',
-      readTime: '8',
-      category: 'Tutorial',
-      image: 'https://picsum.photos/seed/data-analytics-guide/1200/600.jpg',
-      tags: ['data analitik', 'pemula', 'tutorial', 'python', 'sql']
-    },
-    'tips-karir-data-scientist-indonesia': {
-      id: 'tips-karir-data-scientist-indonesia',
-      title: 'Tips Karir Data Scientist di Indonesia',
-      slug: 'tips-karir-data-scientist-indonesia',
-      description: 'Tips dan strategi untuk sukses berkarir sebagai data scientist di Indonesia, dari pendidikan hingga networking.',
-      content: `
-        <h2>Pendidikan yang Tepat</h2>
-        <p>Data scientist membutuhkan kombinasi keahlian teknis dan bisnis. Pendidikan yang relevan meliputi:</p>
-        <ul>
-          <li>S1 Teknik Informatika, Matematika, atau Statistika</li>
-          <li>S2 Data Science atau bidang terkait</li>
-          <li>Sertifikasi profesional dari platform terkemuka</li>
-        </ul>
-        
-        <h2>Skills yang Harus Dikuasai</h2>
-        <p>Beberapa skills krusial untuk data scientist:</p>
-        <ul>
-          <li><strong>Programming:</strong> Python, R, SQL</li>
-          <li><strong>Machine Learning:</strong> Scikit-learn, TensorFlow, PyTorch</li>
-          <li><strong>Data Visualization:</strong> Tableau, Power BI, Matplotlib</li>
-          <li><strong>Business Acumen:</strong> Memahami bisnis dan domain knowledge</li>
-        </ul>
-        
-        <h2>Networking dan Komunitas</h2>
-        <p>Bergabung dengan komunitas data scientist Indonesia sangat penting:</p>
-        <ul>
-          <li>Ikuti meetup dan conference</li>
-          <li>Bergabung di grup WhatsApp dan Telegram</li>
-          <li>Aktif di LinkedIn dan GitHub</li>
-        </ul>
-      `,
-      author: 'Sarah Putri, S.Kom., M.T.',
-      date: '20 Januari 2024',
-      readTime: '6',
-      category: 'Karir',
-      image: 'https://picsum.photos/seed/data-scientist-career/1200/600.jpg',
-      tags: ['karir', 'data scientist', 'networking', 'indonesia']
+  try {
+    console.log(`🔍 Looking for blog with slug: ${slug}`);
+    
+    // Fetch blog from Firestore by slug
+    const blogsSnapshot = await db.collection('blogs')
+      .where('slug', '==', slug)
+      .limit(1)
+      .get();
+    
+    if (blogsSnapshot.empty) {
+      console.log(`❌ Blog not found with slug: ${slug}`);
+      // Try to find by ID as fallback
+      const blogByIdSnapshot = await db.collection('blogs').doc(slug).get();
+      if (!blogByIdSnapshot.exists) {
+        return res.status(404).render('404', {
+          title: 'Blog Not Found',
+          message: `Blog dengan slug "${slug}" tidak ditemukan`
+        });
+      }
+      var blog = { id: blogByIdSnapshot.id, ...blogByIdSnapshot.data() };
+    } else {
+      var blog = { id: blogsSnapshot.docs[0].id, ...blogsSnapshot.docs[0].data() };
     }
-  };
-  
-  const blog = blogPosts[slug];
-  
-  if (!blog) {
-    return res.status(404).render('404', {
-      title: 'Blog Post Not Found',
-      message: 'Maaf, artikel yang Anda cari tidak ditemukan.'
+    
+    console.log(`✅ Blog found: ${blog.title}`);
+    
+    // Fetch related blogs (same category, exclude current blog)
+    const relatedBlogsSnapshot = await db.collection('blogs')
+      .where('category', '==', blog.category || 'Tutorial')
+      .where('slug', '!=', slug)
+      .limit(3)
+      .get();
+    
+    const relatedBlogs = relatedBlogsSnapshot.docs.map(doc => ({ 
+      id: doc.id, 
+      ...doc.data() 
+    }));
+    
+    console.log(`📊 Found ${relatedBlogs.length} related blogs`);
+    
+    res.render('blog-detail', {
+      title: blog.title + ' - GROW SYNERGY INDONESIA',
+      description: blog.excerpt || blog.description || blog.title,
+      ogTitle: blog.title,
+      ogDescription: blog.excerpt || blog.description || blog.title,
+      ogImage: blog.image || 'https://picsum.photos/seed/blog-' + blog.id + '/1200/600.jpg',
+      ogUrl: `https://growsynergyid.com/blog/${slug}`,
+      ogType: 'article',
+      ogSiteName: 'GROW SYNERGY INDONESIA',
+      twitterCard: 'summary_large_image',
+      twitterTitle: blog.title,
+      twitterDescription: blog.excerpt || blog.description || blog.title,
+      twitterImage: blog.image || 'https://picsum.photos/seed/blog-' + blog.id + '/1200/600.jpg',
+      canonical: `https://growsynergyid.com/blog/${slug}`,
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+      blog: blog,
+      relatedBlogs: relatedBlogs,
+      // Firebase configuration
+      firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+      firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+      firebaseProjectId: "company-profile-grow-synergy",
+      firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+      firebaseMessagingSenderId: "584312572709",
+      firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+      firebaseMeasurementId: "G-PKLP3Y3F4F"
+    });
+    
+  } catch (error) {
+    console.error('❌ Error loading blog detail:', error);
+    res.status(500).render('500', {
+      title: 'Server Error',
+      message: 'Terjadi kesalahan saat memuat blog. Silakan coba lagi.'
     });
   }
-  
-  // Get related blogs (exclude current blog)
-  const relatedBlogs = Object.values(blogPosts)
-    .filter(post => post.id !== blog.id)
-    .slice(0, 3);
-  
-  res.render('blog-detail', {
-    title: `${blog.title} - Blog GROW SYNERGY INDONESIA`,
-    description: blog.description,
-    keywords: blog.tags.join(', '),
-    author: 'GROW SYNERGY INDONESIA',
-    robots: 'index, follow',
-    googlebot: 'index, follow',
-    ogTitle: blog.title,
-    ogDescription: blog.description,
-    ogImage: blog.image,
-    ogUrl: `https://grow-synergy-indonesia.com/blog/${slug}`,
-    ogType: 'article',
-    ogSiteName: 'GROW SYNERGY INDONESIA',
-    twitterCard: 'summary_large_image',
-    twitterTitle: blog.title,
-    twitterDescription: blog.description,
-    twitterImage: blog.image,
-    canonical: `https://grow-synergy-indonesia.com/blog/${slug}`,
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
-    blog: blog,
-    relatedBlogs: relatedBlogs,
-    // Firebase configuration
-    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
-    firebaseProjectId: "company-profile-grow-synergy",
-    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
-    firebaseMessagingSenderId: "584312572709",
-    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
-    firebaseMeasurementId: "G-PKLP3Y3F4F"
-  });
 });
 
 // Admin Login Routes
