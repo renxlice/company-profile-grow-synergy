@@ -1170,6 +1170,12 @@
                     }
                 });
                 
+                // Special handling for "All" filter - reload data to ensure all cards are shown
+                if (filter === 'all') {
+                    loadPortfolioData();
+                    return;
+                }
+                
                 // Check if any cards are visible
                 const visibleCards = document.querySelectorAll('.portfolio-card:not([style*="display: none"])');
                 const portfolioGrid = document.getElementById('portfolioGrid');
