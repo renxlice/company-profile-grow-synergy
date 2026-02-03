@@ -282,18 +282,25 @@ router.get('/login', (req, res) => {
 });
 
 // Admin login route dengan security
-router.post('/login', loginLimiter, validateAndSanitizeInput, async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
         
         // Simple fallback admin for testing
         const fallbackAdmins = {
             'admin@growsynergy.com': {
-                password: '$2a$12$ZFPVlGwEbqaUNnEBOp09.uIKIddAqS9KCxwYqzmEMgAp76yAzgLdW', // Admin@2024!
+                password: '$2a$12$ZFPVlGwEbqaUNnEBOp09.uIKIddAqS9KCxwYqzmEMgAp76yAzgLdW', 
                 name: 'Administrator',
                 role: 'super_admin',
                 isActive: true,
                 id: 'fallback-admin-id'
+            },
+            'admin@grow-synergy.com': {
+                password: '$2a$12$7WjBY78nkkNl1HKT4/bV1ezC3byexlSMVw0bVwoJ4/G2hEJlV4HEy', 
+                name: 'Administrator',
+                role: 'super_admin',
+                isActive: true,
+                id: 'fallback-admin-id-2'
             }
         };
         
@@ -399,7 +406,7 @@ router.post('/create-admin', adminLimiter, verifyAdminToken, validateAndSanitize
 });
 
 // Change password
-router.post('/change-password', adminLimiter, validateAndSanitizeInput, async (req, res) => {
+router.post('/change-password', adminLimiter, async (req, res) => {
     try {
         // Check if authenticated via session
         if (!req.session || !req.session.isAuthenticated) {
@@ -409,6 +416,19 @@ router.post('/change-password', adminLimiter, validateAndSanitizeInput, async (r
         }
         
         const { currentPassword, newPassword } = req.body;
+        
+        // Basic validation
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ 
+                error: 'Current password and new password are required' 
+            });
+        }
+        
+        if (newPassword.length < 6) {
+            return res.status(400).json({ 
+                error: 'New password must be at least 6 characters long' 
+            });
+        }
         
         // Get current admin data using session adminId
         let adminData = null;
@@ -427,11 +447,18 @@ router.post('/change-password', adminLimiter, validateAndSanitizeInput, async (r
         }
         
         // Fallback admin for testing
-        if (!adminData && req.session.adminId === 'fallback-admin-id') {
-            adminData = {
-                password: '$2a$12$ZFPVlGwEbqaUNnEBOp09.uIKIddAqS9KCxwYqzmEMgAp76yAzgLdW', // Admin@2024!
-                email: 'admin@growsynergy.com'
-            };
+        if (!adminData && (req.session.adminId === 'fallback-admin-id' || req.session.adminId === 'fallback-admin-id-2')) {
+            if (req.session.adminId === 'fallback-admin-id') {
+                adminData = {
+                    password: '$2a$12$ZFPVlGwEbqaUNnEBOp09.uIKIddAqS9KCxwYqzmEMgAp76yAzgLdW', // Admin@2024!
+                    email: 'admin@growsynergy.com'
+                };
+            } else if (req.session.adminId === 'fallback-admin-id-2') {
+                adminData = {
+                    password: '$2a$12$7WjBY78nkkNl1HKT4/bV1ezC3byexlSMVw0bVwoJ4/G2hEJlV4HEy', // Mieayam1
+                    email: 'admin@grow-synergy.com'
+                };
+            }
         }
         
         if (!adminData) {
