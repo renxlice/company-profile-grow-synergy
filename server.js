@@ -607,13 +607,14 @@ app.get('/admin/dashboard', (req, res) => {
     try {
       console.log('🔍 Starting to fetch data from Firestore...');
       
-      const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot] = await Promise.all([
+      const [expertsSnapshot, portfoliosSnapshot, academiesSnapshot, blogsSnapshot, testimonialsSnapshot, heroSnapshot, aboutSnapshot] = await Promise.all([
         db.collection('experts').get(),
         db.collection('portfolios').get(),
         db.collection('academies').get(),
         db.collection('blogs').get(),
         db.collection('testimonials').get(),
-        db.collection('heroSection').get()
+        db.collection('heroSection').get(),
+        db.collection('aboutSection').get()
       ]);
 
       const experts = expertsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -622,6 +623,7 @@ app.get('/admin/dashboard', (req, res) => {
       const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const testimonials = testimonialsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const heroSections = heroSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const aboutSections = aboutSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
       console.log('📊 Firestore Data Summary:');
       console.log(`  - Experts: ${experts.length} documents`);
@@ -630,6 +632,7 @@ app.get('/admin/dashboard', (req, res) => {
       console.log(`  - Blogs: ${blogs.length} documents`);
       console.log(`  - Testimonials: ${testimonials.length} documents`);
       console.log(`  - Hero Sections: ${heroSections.length} documents`);
+      console.log(`  - About Sections: ${aboutSections.length} documents`);
 
       if (experts.length > 0) {
         console.log('👤 Sample Expert:', experts[0]);
@@ -663,6 +666,7 @@ app.get('/admin/dashboard', (req, res) => {
         blogs,
         testimonials,
         heroSections,
+        aboutSections,
         stats: {
           experts: experts.length,
           portfolios: portfolios.length,
@@ -670,7 +674,7 @@ app.get('/admin/dashboard', (req, res) => {
           blogs: blogs.length,
           testimonials: testimonials.length,
           heroSections: heroSections.length,
-          aboutSections: 0 // Default untuk about sections
+          aboutSections: aboutSections.length
         }
       });
     } catch (error) {
@@ -685,6 +689,7 @@ app.get('/admin/dashboard', (req, res) => {
         blogs: [],
         testimonials: [],
         heroSections: [],
+        aboutSections: [],
         stats: {
           experts: 0,
           portfolios: 0,
