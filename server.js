@@ -1819,13 +1819,22 @@ app.get('/admin/hero-section/edit/:id', (req, res) => {
     });
 });
 
-app.post('/admin/hero-section/edit/:id', (req, res) => {
+app.post('/admin/hero-section/edit/:id', upload.single('backgroundImage'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const heroId = req.params.id;
   const heroData = req.body;
+  
+  console.log('📝 Updating hero section:', heroId);
+  console.log('📝 Hero data:', heroData);
+  
+  // Handle image upload
+  if (req.file) {
+    heroData.backgroundImage = `/uploads/${req.file.filename}`;
+    console.log('📝 New image uploaded:', req.file.filename);
+  }
   
   db.collection('heroSection').doc(heroId).update(heroData)
     .then(() => {
@@ -1883,13 +1892,22 @@ app.get('/admin/about-section/edit/:id', (req, res) => {
     });
 });
 
-app.post('/admin/about-section/edit/:id', (req, res) => {
+app.post('/admin/about-section/edit/:id', upload.single('image'), (req, res) => {
   if (!req.session || !req.session.isAuthenticated) {
     return res.redirect('/admin/login');
   }
   
   const aboutId = req.params.id;
   const aboutData = req.body;
+  
+  console.log('📝 Updating about section:', aboutId);
+  console.log('📝 About data:', aboutData);
+  
+  // Handle image upload
+  if (req.file) {
+    aboutData.image = `/uploads/${req.file.filename}`;
+    console.log('📝 New image uploaded:', req.file.filename);
+  }
   
   db.collection('aboutSection').doc(aboutId).update(aboutData)
     .then(() => {

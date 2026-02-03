@@ -213,7 +213,7 @@
 
         document.getElementById('confirmDelete').addEventListener('click', function() {
             if (deleteId) {
-                fetch(`/admin/blogs/delete/${deleteId}`, {
+                fetch(`/admin/blogs/${deleteId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
