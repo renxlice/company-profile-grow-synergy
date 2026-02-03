@@ -800,4 +800,63 @@ router.post('/log-security-event', adminLimiter, verifyAdminToken, async (req, r
     }
 });
 
+// Cleanup duplicate admin accounts
+router.post('/cleanup-admin', async (req, res) => {
+    try {
+        console.log('🧹 Cleaning up duplicate admin accounts...');
+        
+        // Find all admin accounts with email admin@grow-synergy.com
+        const adminSnapshot = await admin.firestore()
+            .collection('admins')
+            .where('email', '==', 'admin@grow-synergy.com')
+            .get();
+        
+        console.log(`Found ${adminSnapshot.size} admin accounts for admin@grow-synergy.com`);
+        
+        if (adminSnapshot.empty) {
+            return res.json({ message: 'No admin accounts found' });
+        }
+        
+        // Delete all existing accounts
+        const batch = admin.firestore().batch();
+        adminSnapshot.docs.forEach(doc => {
+            console.log(`🗑️ Deleting account: ${doc.id}`);
+            batch.delete(doc.ref);
+        });
+        
+        await batch.commit();
+        console.log('✅ All existing admin accounts deleted');
+        
+        // Create new clean account with default password
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = await bcrypt.hash('Mieayam1', 12);
+        
+        const newAdminData = {
+            email: 'admin@grow-synergy.com',
+            password: hashedPassword,
+            name: 'Administrator',
+            role: 'super_admin',
+            isActive: true,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            version: 'clean-v1'
+        };
+        
+        const adminRef = await admin.firestore()
+            .collection('admins')
+            .add(newAdminData);
+        
+        console.log('✅ Created new clean admin account:', adminRef.id);
+        
+        res.json({ 
+            message: 'Admin accounts cleaned up successfully',
+            newAdminId: adminRef.id,
+            defaultPassword: 'Mieayam1'
+        });
+        
+    } catch (error) {
+        console.error('❌ Error cleaning up admin accounts:', error);
+        res.status(500).json({ error: 'Failed to cleanup admin accounts' });
+    }
+});
+
 module.exports = router;
