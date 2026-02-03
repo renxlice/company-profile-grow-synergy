@@ -94,7 +94,7 @@
 
                 <!-- Form -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <form action="{{action}}" method="POST" enctype="multipart/form-data">
+                    <form action="/admin/portfolios/edit/{{portfolio.id}}" method="POST" enctype="multipart/form-data">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Title -->
                             <div class="col-span-2">
@@ -106,7 +106,7 @@
                                     id="title" 
                                     name="title" 
                                     required
-                                    value="{{#if item}}{{item.title}}{{/if}}"
+                                    value="{{portfolio.title}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                     placeholder="Masukkan judul proyek"
                                 >
@@ -124,11 +124,11 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                 >
                                     <option value="">Pilih kategori</option>
-                                    <option value="Data Visualization" {{#if item.category}}{{#if (eq item.category "Data Visualization")}}selected{{/if}}{{/if}}>Data Visualization</option>
-                                    <option value="Machine Learning" {{#if item.category}}{{#if (eq item.category "Machine Learning")}}selected{{/if}}{{/if}}>Machine Learning</option>
-                                    <option value="Web Development" {{#if item.category}}{{#if (eq item.category "Web Development")}}selected{{/if}}{{/if}}>Web Development</option>
-                                    <option value="Mobile App" {{#if item.category}}{{#if (eq item.category "Mobile App")}}selected{{/if}}{{/if}}>Mobile App</option>
-                                    <option value="Data Analysis" {{#if item.category}}{{#if (eq item.category "Data Analysis")}}selected{{/if}}{{/if}}>Data Analysis</option>
+                                    <option value="Data Visualization" {{#if (eq portfolio.category "Data Visualization")}}selected{{/if}}>Data Visualization</option>
+                                    <option value="Machine Learning" {{#if (eq portfolio.category "Machine Learning")}}selected{{/if}}>Machine Learning</option>
+                                    <option value="Web Development" {{#if (eq portfolio.category "Web Development")}}selected{{/if}}>Web Development</option>
+                                    <option value="Mobile App" {{#if (eq portfolio.category "Mobile App")}}selected{{/if}}>Mobile App</option>
+                                    <option value="Data Analysis" {{#if (eq portfolio.category "Data Analysis")}}selected{{/if}}>Data Analysis</option>
                                 </select>
                             </div>
 
@@ -142,7 +142,7 @@
                                     id="technologies" 
                                     name="technologies" 
                                     required
-                                    value="{{#if item}}{{item.technologies}}{{/if}}"
+                                    value="{{portfolio.technologies}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                     placeholder="e.g., React, D3.js, Python, PostgreSQL"
                                 >
@@ -160,7 +160,7 @@
                                     rows="4"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                     placeholder="Tuliskan deskripsi lengkap proyek"
-                                >{{#if item}}{{item.description}}{{/if}}</textarea>
+                                >{{portfolio.description}}</textarea>
                             </div>
 
                             <!-- Image -->
@@ -170,9 +170,9 @@
                                 </label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                                     <div class="space-y-1 text-center">
-                                        {{#if item.image}}
+                                        {{#if portfolio.image}}
                                         <div class="mb-4">
-                                            <img src="{{item.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
+                                            <img src="{{portfolio.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
                                             <p class="text-sm text-gray-500 mt-2">Gambar proyek saat ini</p>
                                         </div>
                                         {{/if}}
@@ -200,7 +200,7 @@
                                     type="url" 
                                     id="liveDemoUrl" 
                                     name="liveDemoUrl" 
-                                    value="{{#if item}}{{item.liveDemoUrl}}{{/if}}"
+                                    value="{{portfolio.liveDemoUrl}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                     placeholder="https://example.com/demo"
                                 >
@@ -215,7 +215,7 @@
                                     type="url" 
                                     id="codeUrl" 
                                     name="codeUrl" 
-                                    value="{{#if item}}{{item.codeUrl}}{{/if}}"
+                                    value="{{portfolio.codeUrl}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                                     placeholder="https://github.com/example/project"
                                 >

@@ -94,7 +94,7 @@
 
                 <!-- Form -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <form action="{{action}}" method="POST" enctype="multipart/form-data">
+                    <form action="/admin/experts/edit/{{expert.id}}" method="POST" enctype="multipart/form-data">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Name -->
                             <div class="col-span-2">
@@ -106,7 +106,7 @@
                                     id="name" 
                                     name="name" 
                                     required
-                                    value="{{#if item}}{{item.name}}{{/if}}"
+                                    value="{{expert.name}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                     placeholder="Masukkan nama lengkap mentor"
                                 >
@@ -122,7 +122,7 @@
                                     id="position" 
                                     name="position" 
                                     required
-                                    value="{{#if item}}{{item.position}}{{/if}}"
+                                    value="{{expert.position}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                     placeholder="e.g., Senior Data Scientist"
                                 >
@@ -138,7 +138,7 @@
                                     id="experience" 
                                     name="experience" 
                                     required
-                                    value="{{#if item}}{{item.experience}}{{/if}}"
+                                    value="{{expert.experience}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                     placeholder="e.g., 10+ tahun pengalaman"
                                 >
@@ -157,7 +157,7 @@
                                     min="0"
                                     max="5"
                                     step="0.1"
-                                    value="{{#if item}}{{item.rating}}{{/if}}"
+                                    value="{{expert.rating}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                     placeholder="e.g., 4.8"
                                 >
@@ -173,7 +173,7 @@
                                     id="reviewCount" 
                                     name="reviewCount" 
                                     min="0"
-                                    value="{{#if item}}{{item.reviewCount}}{{/if}}"
+                                    value="{{expert.reviewCount}}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                     placeholder="e.g., 156"
                                 >
@@ -191,11 +191,11 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                 >
                                     <option value="">Pilih Kategori</option>
-                                    <option value="Data Science" {{#if item}}{{#if (eq item.category "Data Science")}}selected{{/if}}{{/if}}>Data Science</option>
-                                    <option value="Web Development" {{#if item}}{{#if (eq item.category "Web Development")}}selected{{/if}}{{/if}}>Web Development</option>
-                                    <option value="UI/UX Design" {{#if item}}{{#if (eq item.category "UI/UX Design")}}selected{{/if}}{{/if}}>UI/UX Design</option>
-                                    <option value="Mobile Development" {{#if item}}{{#if (eq item.category "Mobile Development")}}selected{{/if}}{{/if}}>Mobile Development</option>
-                                    <option value="Business Intelligence" {{#if item}}{{#if (eq item.category "Business Intelligence")}}selected{{/if}}{{/if}}>Business Intelligence</option>
+                                    <option value="Data Science" {{#if (eq expert.category "Data Science")}}selected{{/if}}>Data Science</option>
+                                    <option value="Web Development" {{#if (eq expert.category "Web Development")}}selected{{/if}}>Web Development</option>
+                                    <option value="UI/UX Design" {{#if (eq expert.category "UI/UX Design")}}selected{{/if}}>UI/UX Design</option>
+                                    <option value="Mobile Development" {{#if (eq expert.category "Mobile Development")}}selected{{/if}}>Mobile Development</option>
+                                    <option value="Business Intelligence" {{#if (eq expert.category "Business Intelligence")}}selected{{/if}}>Business Intelligence</option>
                                 </select>
                             </div>
 
@@ -211,7 +211,7 @@
                                     rows="4"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                                     placeholder="Tuliskan deskripsi lengkap mentor"
-                                >{{#if item}}{{item.description}}{{/if}}</textarea>
+                                >{{expert.description}}</textarea>
                             </div>
 
                             <!-- Image -->
@@ -221,9 +221,9 @@
                                 </label>
                                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
                                     <div class="space-y-1 text-center">
-                                        {{#if item.image}}
+                                        {{#if expert.image}}
                                         <div class="mb-4">
-                                            <img src="{{item.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
+                                            <img src="{{expert.image}}" alt="Current image" class="mx-auto h-32 w-48 object-cover rounded">
                                             <p class="text-sm text-gray-500 mt-2">Foto profil saat ini</p>
                                         </div>
                                         {{/if}}
@@ -264,7 +264,7 @@
     // Set category value if editing
     document.addEventListener('DOMContentLoaded', function() {
         const categorySelect = document.getElementById('category');
-        const itemCategory = '{{#if item}}{{item.category}}{{/if}}';
+        const itemCategory = '{{expert.category}}';
         
         if (categorySelect && itemCategory) {
             categorySelect.value = itemCategory;
