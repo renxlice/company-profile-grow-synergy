@@ -496,7 +496,7 @@
                             <i class="fas fa-arrow-right ml-1"></i>
                         </span>
                     </div>
-                    ${post.tags && post.tags.length > 0 ? `
+                    ${post.tags && Array.isArray(post.tags) && post.tags.length > 0 ? `
                         <div class="mt-4 flex flex-wrap gap-2">
                             ${post.tags.slice(0, 3).map(tag => `
                                 <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
@@ -676,6 +676,37 @@
     </script>
     
     <script src="/js/main.js"></script>
+    
+    <!-- WhatsApp Floating Button -->
+    <div class="whatsapp-float fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/6285697490726?text=Halo%20GROW%20SYNERGY%20INDONESIA%2C%20saya%20ingin%20bertanya" target="_blank" rel="noopener noreferrer" 
+           class="bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition-all duration-300 transform hover:scale-110 flex items-center justify-center"
+           title="Hubungi kami via WhatsApp">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.149-.67.149-.197 0-.397.149-.596.298-.197.149-.492.596-.765.596-.273 0-.492-.05-.67-.149-.178-.099-.492-.247-.896-.447-.403-.2-.765-.298-1.062-.298-.297 0-.765.05-1.163.149-.398.099-.896.247-1.163.596-.267.349-.596.896-.596 1.642 0 .746.149 1.412.447 2.008.298.596.765 1.412 1.412 2.457.647 1.045 1.412 1.941 2.307 2.637.896.696 1.562 1.045 2.008 1.045.447 0 .896-.149 1.263-.298.368-.149.765-.447 1.062-.746.298-.298.497-.596.497-.894 0-.298-.149-.596-.447-.894-.298-.298-.765-.867-1.412-1.412-.647-.546-1.114-.945-1.412-1.193-.298-.247-.497-.349-.67-.349-.197 0-.397.05-.596.149-.197.099-.492.596-.765.596-.273 0-.492-.05-.67-.149-.178-.099-.492-.247-.896-.447-.403-.2-.765-.298-1.062-.298-.297 0-.765.05-1.163.149-.398.099-.896.247-1.163.596-.267.349-.596.896-.596 1.642 0 .746.149 1.412.447 2.008.298.596.765 1.412 1.412 2.457.647 1.045 1.412 1.941 2.307 2.637.896.696 1.562 1.045 2.008 1.045.447 0 .896-.149 1.263-.298.368-.149.765-.447 1.062-.746.298-.298.497-.596.497-.894 0-.298-.149-.596-.447-.894z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+            </svg>
+        </a>
+    </div>
+    
+    <!-- CSS for WhatsApp Float -->
+    <style>
+        .whatsapp-float {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+            }
+        }
+    </style>
     
     <!-- CSS for line-clamp -->
     <style>
