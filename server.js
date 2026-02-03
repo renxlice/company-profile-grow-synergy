@@ -430,35 +430,78 @@ app.get('/synergy-academy', (req, res) => {
   });
 });
 
-app.get('/blog', (req, res) => {
-  res.render('blog', {
-    title: 'Blog Data Analitik | Tips, Tutorial & Insights Indonesia',
-    description: 'Blog data analitik terbaik di Indonesia. Dapatkan tips, tutorial, dan insights tentang data science.',
-    keywords: 'blog data analitik, tutorial data science, tips data analyst',
-    author: 'GROW SYNERGY INDONESIA',
-    robots: 'index, follow',
-    googlebot: 'index, follow',
-    ogTitle: 'Blog Data Analitik | Tips, Tutorial & Insights Indonesia',
-    ogDescription: 'Blog data analitik terbaik di Indonesia dengan tips, tutorial, dan insights tentang data science.',
-    ogImage: 'https://grow-synergy-indonesia.com/images/blog-og-image.jpg',
-    ogUrl: 'https://grow-synergy-indonesia.com/blog',
-    ogType: 'website',
-    ogSiteName: 'GROW SYNERGY INDONESIA',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Blog Data Analitik | Tips & Tutorial Indonesia',
-    twitterDescription: 'Blog data analitik dengan tips, tutorial, dan insights untuk karir data analyst',
-    twitterImage: 'https://grow-synergy-indonesia.com/images/blog-twitter-image.jpg',
-    canonical: 'https://grow-synergy-indonesia.com/blog',
-    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
-    // Firebase configuration
-    firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
-    firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
-    firebaseProjectId: "company-profile-grow-synergy",
-    firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
-    firebaseMessagingSenderId: "584312572709",
-    firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
-    firebaseMeasurementId: "G-PKLP3Y3F4F"
-  });
+app.get('/blog', async (req, res) => {
+  try {
+    // Fetch blogs from Firestore
+    const blogsSnapshot = await db.collection('blogs').where('published', '==', true).orderBy('createdAt', 'desc').get();
+    const blogs = blogsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    console.log(`📝 Loaded ${blogs.length} published blogs from Firestore`);
+    
+    res.render('blog', {
+      title: 'Blog Data Analitik | Tips, Tutorial & Insights Indonesia',
+      description: 'Blog data analitik terbaik di Indonesia. Dapatkan tips, tutorial, dan insights tentang data science.',
+      keywords: 'blog data analitik, tutorial data science, tips data analyst',
+      author: 'GROW SYNERGY INDONESIA',
+      robots: 'index, follow',
+      googlebot: 'index, follow',
+      ogTitle: 'Blog Data Analitik | Tips, Tutorial & Insights Indonesia',
+      ogDescription: 'Blog data analitik terbaik di Indonesia dengan tips, tutorial, dan insights tentang data science.',
+      ogImage: 'https://grow-synergy-indonesia.com/images/blog-og-image.jpg',
+      ogUrl: 'https://grow-synergy-indonesia.com/blog',
+      ogType: 'website',
+      ogSiteName: 'GROW SYNERGY INDONESIA',
+      twitterCard: 'summary_large_image',
+      twitterTitle: 'Blog Data Analitik | Tips & Tutorial Indonesia',
+      twitterDescription: 'Blog data analitik dengan tips, tutorial, dan insights untuk karir data analyst',
+      twitterImage: 'https://grow-synergy-indonesia.com/images/blog-twitter-image.jpg',
+      canonical: 'https://grow-synergy-indonesia.com/blog',
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+      // Firebase configuration
+      firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+      firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+      firebaseProjectId: "company-profile-grow-synergy",
+      firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+      firebaseMessagingSenderId: "584312572709",
+      firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+      firebaseMeasurementId: "G-PKLP3Y3F4F",
+      // Real blog data from Firestore
+      blogs: blogs
+    });
+  } catch (error) {
+    console.error('Error fetching blogs:', error);
+    // Fallback to empty array if error
+    res.render('blog', {
+      title: 'Blog Data Analitik | Tips, Tutorial & Insights Indonesia',
+      description: 'Blog data analitik terbaik di Indonesia. Dapatkan tips, tutorial, dan insights tentang data science.',
+      keywords: 'blog data analitik, tutorial data science, tips data analyst',
+      author: 'GROW SYNERGY INDONESIA',
+      robots: 'index, follow',
+      googlebot: 'index, follow',
+      ogTitle: 'Blog Data Analitik | Tips, Tutorial & Insights Indonesia',
+      ogDescription: 'Blog data analitik terbaik di Indonesia dengan tips, tutorial, dan insights tentang data science.',
+      ogImage: 'https://grow-synergy-indonesia.com/images/blog-og-image.jpg',
+      ogUrl: 'https://grow-synergy-indonesia.com/blog',
+      ogType: 'website',
+      ogSiteName: 'GROW SYNERGY INDONESIA',
+      twitterCard: 'summary_large_image',
+      twitterTitle: 'Blog Data Analitik | Tips & Tutorial Indonesia',
+      twitterDescription: 'Blog data analitik dengan tips, tutorial, dan insights untuk karir data analyst',
+      twitterImage: 'https://grow-synergy-indonesia.com/images/blog-twitter-image.jpg',
+      canonical: 'https://grow-synergy-indonesia.com/blog',
+      googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID || null,
+      // Firebase configuration
+      firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+      firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+      firebaseProjectId: "company-profile-grow-synergy",
+      firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+      firebaseMessagingSenderId: "584312572709",
+      firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+      firebaseMeasurementId: "G-PKLP3Y3F4F",
+      // Fallback empty blogs array
+      blogs: []
+    });
+  }
 });
 
 // About page route

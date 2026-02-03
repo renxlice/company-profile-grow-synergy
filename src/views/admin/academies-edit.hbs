@@ -321,14 +321,14 @@
                                     Materi Kursus (PDF) <span class="text-gray-500">Opsional</span>
                                 </label>
                                 <div class="mt-1">
-                                    {{#if item.pdf}}
+                                    {{#if academy.pdf}}
                                     <div class="mb-4">
                                         <div class="flex items-center justify-center p-3 bg-green-50 border border-green-200 rounded-md">
                                             <i class="fas fa-link text-blue-500 mr-2"></i>
                                             <div class="text-left">
                                                 <p class="text-sm font-medium text-gray-700">PDF Link saat ini:</p>
-                                                <p class="text-xs text-gray-600">{{item.pdf}}</p>
-                                                <a href="{{item.pdf}}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 underline">Buka PDF Link</a>
+                                                <p class="text-xs text-gray-600">{{academy.pdf}}</p>
+                                                <a href="{{academy.pdf}}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 underline">Buka PDF Link</a>
                                             </div>
                                         </div>
                                     </div>
@@ -340,7 +340,7 @@
                                             name="pdf" 
                                             placeholder="https://drive.google.com/file/d/..."
                                             class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                                            value="{{item.pdf}}"
+                                            value="{{academy.pdf}}"
                                         >
                                         <button type="button" onclick="clearPDF()" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-md text-sm font-medium transition">
                                             <i class="fas fa-times mr-1"></i>Clear
