@@ -616,6 +616,7 @@ router.post('/change-password', async (req, res) => {
         
         // Hash new password
         const hashedNewPassword = await bcrypt.hash(newPassword, 12);
+        console.log('🔧 New password hash:', hashedNewPassword.substring(0, 20) + '...');
         
         // Update password in Firestore
         try {
@@ -628,8 +629,21 @@ router.post('/change-password', async (req, res) => {
                 });
             
             console.log('✅ Password updated in Firestore for:', req.session.user);
+            console.log('🔧 Updated hash in Firestore:', hashedNewPassword.substring(0, 20) + '...');
             
-            return res.json({ message: 'Password changed successfully' });
+            // Clear session to force logout
+            req.session.destroy((err) => {
+                if (err) {
+                    console.log('❌ Error destroying session:', err);
+                } else {
+                    console.log('✅ Session destroyed - user logged out');
+                }
+            });
+            
+            return res.json({ 
+                message: 'Password changed successfully. Please login with your new password.',
+                logout: true 
+            });
             
         } catch (firebaseError) {
             console.log('Failed to update password in Firestore:', firebaseError.message);

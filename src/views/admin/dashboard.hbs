@@ -1577,8 +1577,8 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
-                    showNotification('Password berhasil diubah! Mengarahkan ke halaman login...', 'success');
+                if (response.ok && result.message) {
+                    showNotification(result.message + ' Mengarahkan ke halaman login...', 'success');
                     closePasswordModal();
                     
                     // Redirect to login page after 2 seconds
@@ -1586,7 +1586,7 @@
                         window.location.href = '/admin/login';
                     }, 2000);
                 } else {
-                    showNotification(result.message || 'Gagal mengubah password', 'error');
+                    showNotification(result.error || result.message || 'Gagal mengubah password', 'error');
                 }
             } catch (error) {
                 console.error('Error changing password:', error);
