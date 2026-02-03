@@ -16,7 +16,8 @@
     "start:prod": "node server.js",
     "start:silent": "node -r ./scripts/disable-console.js dist/src/main",
     "start:dev:silent": "node -r ./scripts/disable-console.js node_modules/.bin/nest start --watch",
-    "start:prod:silent": "set NODE_ENV=production && node -r ./scripts/disable-console-env.js dist/src/main",
+    "start:prod:silent": "set NODE_ENV=production && node -r ./scripts/disable-console-env.js server.js",
+    "start:prod:daemon": "bash scripts/start-prod-silent.sh",
     "start:dev:env-silent": "set NODE_ENV=silent && node -r ./scripts/disable-console-env.js npx nest start --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -35,7 +36,9 @@
     "ensure:admin": "node scripts/ensure-admin.js",
     "reset:admin": "node scripts/reset-admin-password.js",
     "check:admin": "node scripts/check-admin-password.js",
-    "predeploy": "npm run security:check"
+    "predeploy": "npm run security:check",
+    "deploy:prod": "node scripts/deploy-production.js",
+    "deploy:hostinger": "npm run deploy:prod && npm run start:prod:silent"
   },
   "repository": {
     "type": "git",

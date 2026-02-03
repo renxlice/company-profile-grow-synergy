@@ -1,6 +1,8 @@
 // Load environment variables first
 require('dotenv').config();
 
+require('./scripts/disable-console-env');
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');

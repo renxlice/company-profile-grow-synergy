@@ -1,5 +1,6 @@
 // Environment-based console control
 const originalConsole = console;
+console.original = originalConsole;
 
 // Check if console should be disabled
 const shouldDisableConsole = () => {
@@ -12,8 +13,6 @@ const disableConsole = () => {
   console.log = function() {};
   console.info = function() {};
   console.debug = function() {};
-  console.warn = function() {};
-  console.error = function() {};
   console.trace = function() {};
   console.time = function() {};
   console.timeEnd = function() {};
@@ -37,10 +36,8 @@ const restoreConsole = () => {
 // Apply console settings based on environment
 if (shouldDisableConsole()) {
   disableConsole();
-  console.original.log('Console disabled for production environment');
 } else {
   restoreConsole();
-  console.log('Console enabled for development environment');
 }
 
 // Export functions for runtime control if needed
