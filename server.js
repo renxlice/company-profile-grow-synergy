@@ -1236,7 +1236,15 @@ app.get('/admin/testimonials', (req, res) => {
         title: 'Testimonials Management - Admin Dashboard',
         user: req.session.user,
         username: req.session.user,
-        testimonials
+        testimonials,
+        // Firebase configuration
+        firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+        firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+        firebaseProjectId: "company-profile-grow-synergy",
+        firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+        firebaseMessagingSenderId: "584312572709",
+        firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+        firebaseMeasurementId: "G-PKLP3Y3F4F"
       });
     })
     .catch(error => {
@@ -1246,7 +1254,15 @@ app.get('/admin/testimonials', (req, res) => {
         user: req.session.user,
         username: req.session.user,
         testimonials: [],
-        error: 'Failed to load testimonials'
+        error: 'Failed to load testimonials',
+        // Firebase configuration
+        firebaseApiKey: "AIzaSyDZgRNKPqKqXsp8l0Gg2XFU5MZlQ8C-DfA",
+        firebaseAuthDomain: "company-profile-grow-synergy.firebaseapp.com",
+        firebaseProjectId: "company-profile-grow-synergy",
+        firebaseStorageBucket: "company-profile-grow-synergy.appspot.com",
+        firebaseMessagingSenderId: "584312572709",
+        firebaseAppId: "1:584312572709:web:1e0ad87867af7b878668cc",
+        firebaseMeasurementId: "G-PKLP3Y3F4F"
       });
     });
 });
