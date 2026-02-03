@@ -657,14 +657,12 @@ app.get('/admin/dashboard', (req, res) => {
         title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
         user: req.session.user,
         username: req.session.user,
-        data: {
-          experts,
-          portfolios,
-          academies,
-          blogs,
-          testimonials,
-          heroSections
-        },
+        experts,
+        portfolios,
+        academies,
+        blogs,
+        testimonials,
+        heroSections,
         stats: {
           experts: experts.length,
           portfolios: portfolios.length,
@@ -681,14 +679,12 @@ app.get('/admin/dashboard', (req, res) => {
         title: 'Admin Dashboard - GROW SYNERGY INDONESIA',
         user: req.session.user,
         username: req.session.user,
-        data: {
-          experts: [],
-          portfolios: [],
-          academies: [],
-          blogs: [],
-          testimonials: [],
-          heroSections: []
-        },
+        experts: [],
+        portfolios: [],
+        academies: [],
+        blogs: [],
+        testimonials: [],
+        heroSections: [],
         stats: {
           experts: 0,
           portfolios: 0,
