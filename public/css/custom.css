@@ -1604,15 +1604,15 @@ a:focus {
     }
 }
 
-/* Fix "Tentang Kami" button hover effect - only underline should be orange */
+/* Fix "Tentang Kami" button hover effect - black text permanent, orange underline on hover */
 a[href="/about"].bg-gradient-to-r {
-    color: white !important;
+    color: black !important;
     text-decoration: none !important;
     transition: all 0.3s ease !important;
 }
 
 a[href="/about"].bg-gradient-to-r:hover {
-    color: white !important;
+    color: black !important;
     text-decoration: underline !important;
     text-decoration-color: #f97316 !important;
     text-underline-offset: 4px !important;
@@ -1621,13 +1621,13 @@ a[href="/about"].bg-gradient-to-r:hover {
 
 /* Also fix mobile version */
 a[href="/about"]:not(.hidden).bg-gradient-to-r {
-    color: white !important;
+    color: black !important;
     text-decoration: none !important;
     transition: all 0.3s ease !important;
 }
 
 a[href="/about"]:not(.hidden).bg-gradient-to-r:hover {
-    color: white !important;
+    color: black !important;
     text-decoration: underline !important;
     text-decoration-color: #f97316 !important;
     text-underline-offset: 4px !important;
