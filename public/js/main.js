@@ -1,3 +1,12 @@
+// Load console control first
+// This script will disable console logs in production
+(function() {
+    const script = document.createElement('script');
+    script.src = '/js/console-control.js';
+    script.async = false;
+    document.head.appendChild(script);
+})();
+
 // Main JavaScript for Data Analytics Training Platform
 
 document.addEventListener('DOMContentLoaded', function() {
