@@ -1234,10 +1234,10 @@ router.get('/maintenance/status', async (req, res) => {
 
 // Toggle maintenance mode
 router.post('/maintenance/toggle', async (req, res) => {
-    console.log('Maintenance toggle route hit - Session:', req.session?.isLoggedIn);
+    console.log('Maintenance toggle route hit - Session:', req.session?.isAuthenticated);
     try {
         // Check if user is logged in via session
-        if (!req.session?.isLoggedIn) {
+        if (!req.session?.isAuthenticated) {
             console.log('Access denied - not logged in');
             return res.status(401).json({ error: 'Access denied. Please login.' });
         }
@@ -1257,7 +1257,7 @@ router.post('/maintenance/toggle', async (req, res) => {
         // Log maintenance mode toggle
         await logSecurityEvent('MAINTENANCE_MODE_TOGGLED', {
             enabled: enable,
-            toggledBy: req.session.adminEmail,
+            toggledBy: req.session.user,
             ip: req.ip,
             userAgent: req.get('User-Agent')
         });
