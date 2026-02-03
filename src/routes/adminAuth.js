@@ -800,7 +800,7 @@ router.post('/cleanup-admin', async (req, res) => {
         
         // Create new clean account with default password
         const bcrypt = require('bcryptjs');
-        const hashedPassword = await bcrypt.hash('Mieayam1', 12);
+        const hashedPassword = await bcrypt.hash('Matchadepan3', 12);
         
         const newAdminData = {
             email: 'admin@grow-synergy.com',
@@ -821,7 +821,7 @@ router.post('/cleanup-admin', async (req, res) => {
         res.json({ 
             message: 'Admin accounts cleaned up successfully',
             newAdminId: adminRef.id,
-            defaultPassword: 'Mieayam1'
+            defaultPassword: 'Matchadepan3'
         });
         
     } catch (error) {
