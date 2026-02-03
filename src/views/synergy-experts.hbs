@@ -753,20 +753,21 @@
 
         // Create expert card HTML
         function createExpertCard(expert) {
-            console.log('Creating card for expert:', expert.name, 'Category:', expert.category, 'Role:', expert.role);
-            const div = document.createElement('div');
-            div.className = 'expert-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer';
-            
-            // Add click event to show modal
-            div.addEventListener('click', function() {
-                showExpertModal(expert);
-            });
-            
-            // Set category for filtering
-            div.setAttribute('data-category', expert.category.toLowerCase().replace(/\s+/g, '-'));
-            
-            // Store expert data for filtering
-            div.expertData = expert;
+            try {
+                console.log('Creating card for expert:', expert.name, 'Category:', expert.category, 'Role:', expert.role);
+                const div = document.createElement('div');
+                div.className = 'expert-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer';
+                
+                // Add click event to show modal
+                div.addEventListener('click', function() {
+                    showExpertModal(expert);
+                });
+                
+                // Set category for filtering
+                div.setAttribute('data-category', (expert.category || 'General').toLowerCase().replace(/\s+/g, '-'));
+                
+                // Store expert data for filtering
+                div.expertData = expert;
             
             // Use string concatenation to avoid template literal issues
             const expertImage = expert.image || 'https://picsum.photos/seed/expert-' + expert.id + '/200/200.jpg';
@@ -825,6 +826,14 @@
             }, 100);
             
             return div;
+            } catch (error) {
+                console.error('Error creating expert card:', error);
+                // Return a fallback card
+                const fallbackDiv = document.createElement('div');
+                fallbackDiv.className = 'expert-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer';
+                fallbackDiv.innerHTML = '<div class="p-4"><p class="text-red-500">Error loading expert</p></div>';
+                return fallbackDiv;
+            }
         }
 
         // Expert Modal functionality
