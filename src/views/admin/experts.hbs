@@ -112,7 +112,7 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            {{#each items}}
+                            {{#each experts}}
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <img src="{{image}}" alt="{{name}}" class="h-12 w-12 rounded-full object-cover">
@@ -152,7 +152,7 @@
                     </table>
                     </div>
                     
-                    {{#unless items.length}}
+                    {{#unless experts.length}}
                     <div class="text-center py-8">
                         <i class="fas fa-users text-gray-400 text-4xl mb-4"></i>
                         <p class="text-gray-500">No experts found</p>

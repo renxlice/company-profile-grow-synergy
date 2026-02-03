@@ -92,7 +92,7 @@
                         <h2 class="text-2xl font-bold text-gray-800">About Section Management</h2>
                         <p class="text-gray-600">Manage main about section content</p>
                     </div>
-                    {{#unless items.length}}
+                    {{#unless aboutSections.length}}
                     <a href="/admin/about-section/create" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
                         <i class="fas fa-plus mr-2"></i>Create About Section
                     </a>
@@ -101,8 +101,8 @@
 
                 <!-- Single About Section -->
                 <div class="bg-white rounded-lg shadow overflow-hidden">
-                    {{#if items.length}}
-                        {{#each items}}
+                    {{#if aboutSections.length}}
+                        {{#each aboutSections}}
                         {{#if @first}}
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-6">

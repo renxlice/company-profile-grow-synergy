@@ -92,7 +92,7 @@
                         <h2 class="text-2xl font-bold text-gray-800">Hero Section Management</h2>
                         <p class="text-gray-600">Manage main hero section content</p>
                     </div>
-                    {{#unless items.length}}
+                    {{#unless heroSections.length}}
                     <a href="/admin/hero-section/create" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition">
                         <i class="fas fa-plus mr-2"></i>Create Hero Section
                     </a>
@@ -101,8 +101,8 @@
 
                 <!-- Single Hero Section -->
                 <div class="bg-white rounded-lg shadow overflow-hidden">
-                    {{#if items.length}}
-                        {{#each items}}
+                    {{#if heroSections.length}}
+                        {{#each heroSections}}
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-6">
                                 <div>

@@ -115,7 +115,7 @@
 
                 <!-- Articles Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="articlesGrid">
-                    {{#each items}}
+                    {{#each blogs}}
                     <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition article-card" 
                          data-title="{{title}}" 
                          data-description="{{description}}" 
@@ -156,7 +156,7 @@
                     {{/each}}
                 </div>
                 
-                {{#unless items.length}}
+                {{#unless blogs.length}}
                 <div class="text-center py-12">
                     <i class="fas fa-blog text-gray-400 text-4xl mb-4"></i>
                     <p class="text-gray-500">No blog articles found</p>
