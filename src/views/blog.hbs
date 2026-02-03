@@ -373,6 +373,15 @@
                 const data = await response.json();
                 console.log(' Blog data loaded:', data.blogs);
                 
+                // Update hero section with background image
+                if (data.heroSections && data.heroSections.length > 0) {
+                    const heroSection = document.querySelector('.hero-section .background-image');
+                    if (heroSection && data.heroSections[0].backgroundImage) {
+                        heroSection.style.backgroundImage = `url('${data.heroSections[0].backgroundImage}')`;
+                        console.log(' Hero background updated:', data.heroSections[0].backgroundImage);
+                    }
+                }
+                
                 // Update blog section
                 if (data.blogs && data.blogs.length > 0) {
                     allBlogPosts = data.blogs;
