@@ -1105,28 +1105,7 @@ app.get('/admin/seed-firestore', async (req, res) => {
           image: '/images/academies/bi-professional.jpg'
         }
       ],
-      blogs: [
-        {
-          title: 'Panduan Lengkap Data Analitik untuk Pemula',
-          category: 'tutorial',
-          author: 'Dr. Ahmad Wijaya',
-          date: '2024-01-15',
-          readTime: '10',
-          description: 'Panduan lengkap untuk memulai karir di bidang data analitik.',
-          image: '/images/blogs/data-analitik-pemula.jpg',
-          content: 'Data analitik adalah proses menginspeksi, membersihkan, dan memodelkan data...'
-        },
-        {
-          title: 'Tips Karir Data Scientist di Indonesia',
-          category: 'career',
-          author: 'Sarah Putri',
-          date: '2024-01-20',
-          readTime: '8',
-          description: 'Tips dan trik untuk sukses berkarir sebagai data scientist.',
-          image: '/images/blogs/career-data-scientist.jpg',
-          content: 'Karir data scientist di Indonesia semakin menjanjikan...'
-        }
-      ],
+      blogs: [], // No mock blog data - will be populated from admin
       testimonials: [
         {
           name: 'Andi Pratama',
@@ -1138,10 +1117,10 @@ app.get('/admin/seed-firestore', async (req, res) => {
         },
         {
           name: 'Siti Nurhaliza',
-          position: 'Business Intelligence Manager',
-          company: 'Retail Corp',
+          position: 'Business Intelligence Analyst',
+          company: 'PT. Data Solutions',
           rating: '5',
-          testimonial: 'Very practical and useful. Highly recommended!',
+          testimonial: 'Materi lengkap dan instruktur yang sangat berpengalaman.',
           image: '/images/testimonials/siti-nurhaliza.jpg'
         }
       ],
@@ -2347,73 +2326,28 @@ app.get('/api/firebase/data', async (req, res) => {
     console.log(`  - Hero Sections: ${heroSections.length} documents`);
     console.log(`  - About Sections: ${aboutSections.length} documents`);
 
-    // Return real data with fallbacks to mock data if collections are empty
+    // Return real data only - no mock data
     res.json({
-      blogs: blogs.length > 0 ? blogs : [
-        {
-          title: 'Panduan Lengkap Data Analitik untuk Pemula',
-          category: 'tutorial',
-          author: 'Dr. Ahmad Wijaya',
-          date: '2024-01-15',
-          readTime: '10',
-          description: 'Panduan lengkap untuk memulai karir di bidang data analitik.',
-          image: '/images/blogs/data-analitik-pemula.jpg',
-          content: 'Data analitik adalah proses menginspeksi, membersihkan, dan memodelkan data...'
-        }
-      ],
-      experts: experts.length > 0 ? experts : [
-        {
-          id: 'expert-1',
-          name: 'Dr. Ahmad Wijaya, M.Sc.',
-          title: 'Data Science Expert & Founder',
-          organization: 'GROW SYNERGY INDONESIA',
-          image: 'https://picsum.photos/seed/ahmad-wijaya/300/300.jpg',
-          bio: 'Expert dengan 10+ tahun pengalaman di bidang data science dan machine learning.',
-          specialties: ['Data Science', 'Machine Learning', 'Python'],
-          experience: '10+ tahun',
-          rating: 4.9,
-          reviewCount: 156
-        }
-      ],
-      portfolios: portfolios.length > 0 ? portfolios : [],
-      academies: academies.length > 0 ? academies : [],
-      testimonials: testimonials.length > 0 ? testimonials : [],
-      heroSection: heroSections.length > 0 ? heroSections : [
-        {
-          title: 'Transformasi Karir dengan Data Analitik',
-          subtitle: 'GROW SYNERGY INDONESIA',
-          description: 'Platform pembelajaran data analitik terbaik di Indonesia.',
-          backgroundImage: '/images/hero1.jpg',
-          buttonText1: 'Mulai Belajar',
-          buttonText2: 'Konsultasi Gratis'
-        }
-      ],
-      aboutSection: aboutSections.length > 0 ? aboutSections : []
+      blogs: blogs,
+      experts: experts,
+      portfolios: portfolios,
+      academies: academies,
+      testimonials: testimonials,
+      heroSection: heroSections,
+      aboutSection: aboutSections
     });
   } catch (error) {
     console.error('❌ Error fetching real data from Firestore:', error);
-    // Fallback to mock data if Firestore fails
-    const mockData = {
-      blogs: [
-        {
-          title: 'Panduan Lengkap Data Analitik untuk Pemula',
-          category: 'tutorial',
-          author: 'Dr. Ahmad Wijaya',
-          date: '2024-01-15',
-          readTime: '10',
-          description: 'Panduan lengkap untuk memulai karir di bidang data analitik.',
-          image: '/images/blogs/data-analitik-pemula.jpg',
-          content: 'Data analitik adalah proses menginspeksi, membersihkan, dan memodelkan data...'
-        }
-      ],
+    // Return empty arrays if Firestore fails - no mock data
+    res.json({
+      blogs: [],
       experts: [],
       portfolios: [],
       academies: [],
       testimonials: [],
       heroSection: [],
-    };
-    
-    res.json(mockData);
+      aboutSection: []
+    });
   }
 });
 
