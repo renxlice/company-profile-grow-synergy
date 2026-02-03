@@ -29,6 +29,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     
+    <!-- Firebase Config -->
+    {{> firebase-config}}
+    
     <!-- Google Analytics -->
     {{#if googleAnalyticsId}}
     <script async src="https://www.googletagmanager.com/gtag/js?id={{googleAnalyticsId}}"></script>
@@ -305,72 +308,12 @@
             <div class="container mx-auto px-4">
                 <div class="max-w-6xl mx-auto">
                     <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Related Articles</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {{#if relatedBlogs.length}}
-                            {{#each relatedBlogs}}
-                            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer transform hover:scale-105" onclick="window.location.href='/blog/{{this.slug}}'">
-                                <div class="relative">
-                                    {{#if this.image}}
-                                    <img src="{{this.image}}" alt="{{this.title}}" class="w-full h-48 object-cover">
-                                    {{else}}
-                                    <div class="h-48 bg-gray-200 flex items-center justify-center">
-                                        <i class="fas fa-blog text-gray-400 text-4xl"></i>
-                                    </div>
-                                    {{/if}}
-                                    {{#if this.featured}}
-                                    <div class="absolute top-4 left-4 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center">
-                                        <i class="fas fa-star mr-1"></i>Featured
-                                    </div>
-                                    {{/if}}
-                                    <div class="absolute top-4 right-4">
-                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold">
-                                            {{this.category}}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="p-6">
-                                    <div class="flex items-center text-sm text-gray-500 mb-2">
-                                        <i class="fas fa-calendar mr-2"></i>
-                                        <span>{{#if this.date}}{{this.date}}{{else}}{{#if this.publishedDate}}{{this.publishedDate}}{{else}}No date{{/if}}{{/if}}</span>
-                                        <span class="mx-2">•</span>
-                                        <i class="fas fa-clock mr-1"></i>
-                                        <span>{{this.readTime}} min read</span>
-                                    </div>
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">{{this.title}}</h3>
-                                    <p class="text-gray-600 mb-4 line-clamp-3">{{this.excerpt}}{{#unless this.excerpt}}{{this.description}}{{/unless}}</p>
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <span class="text-sm text-gray-700">{{this.author}}</span>
-                                        </div>
-                                        <span class="text-orange-500 font-semibold text-sm flex items-center">
-                                            Baca Selengkapnya 
-                                            <i class="fas fa-arrow-right ml-1"></i>
-                                        </span>
-                                    </div>
-                                    {{#if this.tags}}
-                                    <div class="mt-4 flex flex-wrap gap-2">
-                                        {{#each this.tags}}
-                                        <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                                            #{{this}}
-                                        </span>
-                                        {{/each}}
-                                    </div>
-                                    {{/if}}
-                                </div>
-                            </div>
-                            {{/each}}
-                        {{else}}
-                            <!-- No related blogs state -->
-                            <div class="col-span-full text-center py-12">
-                                <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
-                                <h3 class="text-xl font-semibold text-gray-600 mb-2">No Related Articles</h3>
-                                <p class="text-gray-500 mb-4">Check back later for more articles in this category.</p>
-                                <a href="/blog" class="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
-                                    <i class="fas fa-arrow-left mr-2"></i>
-                                    Back to Blog
-                                </a>
-                            </div>
-                        {{/if}}
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="relatedArticlesGrid">
+                        <!-- Related articles will be loaded here dynamically -->
+                        <div class="col-span-full text-center py-12">
+                            <div class="inline-flex items-center justify-center w-12 h-12 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+                            <p class="text-gray-500">Memuat artikel terkait...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -508,8 +451,168 @@
         {{structuredDataJson}}
     </script>
 
-    <!-- Share Functionality -->
+    <!-- Share Functionality & Related Articles Loader -->
     <script>
+        // Initialize Firestore explicitly if not available
+        if (!window.db) {
+            window.db = firebase.firestore();
+        }
+        
+        // Load related articles from Firestore
+        async function loadRelatedArticles() {
+            try {
+                console.log('Loading related articles from Firestore...');
+                const response = await fetch('/api/firebase/data');
+                const data = await response.json();
+                console.log('Firestore data loaded:', data.blogs);
+                
+                if (data.blogs && data.blogs.length > 0) {
+                    // Get current blog category from the page
+                    const currentBlogCategory = '{{blog.category}}';
+                    const currentBlogId = '{{blog.id}}';
+                    
+                    // Filter related articles (same category, exclude current blog)
+                    const relatedArticles = data.blogs.filter(blog => {
+                        return blog.category === currentBlogCategory && blog.id !== currentBlogId;
+                    }).slice(0, 3); // Take max 3 articles
+                    
+                    const relatedGrid = document.getElementById('relatedArticlesGrid');
+                    if (relatedGrid) {
+                        if (relatedArticles.length > 0) {
+                            relatedGrid.innerHTML = '';
+                            relatedArticles.forEach(article => {
+                                const articleCard = createRelatedArticleCard(article);
+                                relatedGrid.appendChild(articleCard);
+                            });
+                        } else {
+                            // Show no related articles message
+                            relatedGrid.innerHTML = `
+                                <div class="col-span-full text-center py-12">
+                                    <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak Ada Artikel Terkait</h3>
+                                    <p class="text-gray-500 mb-4">Belum ada artikel lain dalam kategori ini.</p>
+                                    <a href="/blog" class="inline-flex items-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                                        <i class="fas fa-arrow-left mr-2"></i>
+                                        Kembali ke Blog
+                                    </a>
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    // Show empty state
+                    const relatedGrid = document.getElementById('relatedArticlesGrid');
+                    if (relatedGrid) {
+                        relatedGrid.innerHTML = `
+                            <div class="col-span-full text-center py-12">
+                                <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                                <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Artikel</h3>
+                                <p class="text-gray-500 mb-4">Artikel blog akan segera tersedia.</p>
+                            </div>
+                        `;
+                    }
+                }
+                
+                console.log('Related articles loaded successfully!');
+            } catch (error) {
+                console.error('Error loading related articles:', error);
+                // Show error state
+                const relatedGrid = document.getElementById('relatedArticlesGrid');
+                if (relatedGrid) {
+                    relatedGrid.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <i class="fas fa-exclamation-triangle text-6xl text-red-300 mb-4"></i>
+                            <h3 class="text-xl font-semibold text-red-600 mb-2">Gagal Memuat Artikel</h3>
+                            <p class="text-gray-500">Terjadi kesalahan saat memuat data. Silakan refresh halaman.</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Create related article card
+        function createRelatedArticleCard(article) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition cursor-pointer transform hover:scale-105';
+            
+            // Use slug if available, otherwise use ID as fallback
+            const articleSlug = article.slug || article.id;
+            
+            card.onclick = () => {
+                window.location.href = `/blog/${articleSlug}`;
+            };
+            
+            // Format date
+            const formatDate = (dateString) => {
+                if (!dateString) return 'No date';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('id-ID', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            };
+            
+            // Category badge colors
+            const getCategoryColor = (category) => {
+                const colors = {
+                    'tutorial': 'bg-blue-100 text-blue-800',
+                    'tips': 'bg-green-100 text-green-800',
+                    'career': 'bg-purple-100 text-purple-800',
+                    'industry': 'bg-orange-100 text-orange-800',
+                    'general': 'bg-gray-100 text-gray-800'
+                };
+                return colors[category] || colors.general;
+            };
+            
+            card.innerHTML = `
+                <div class="relative">
+                    ${article.featured ? '<div class="absolute top-4 left-4 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg flex items-center"><i class="fas fa-star mr-1"></i>Featured</div>' : ''}
+                    <img src="${article.image || '/images/blog-placeholder.jpg'}" alt="${article.title}" class="w-full h-48 object-cover">
+                    <div class="absolute top-4 right-4">
+                        <span class="${getCategoryColor(article.category)} px-2 py-1 rounded-full text-xs font-semibold">
+                            ${article.category || 'General'}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-sm text-gray-500 mb-2">
+                        <i class="fas fa-calendar mr-2"></i>
+                        <span>${formatDate(article.date || article.publishedDate || article.createdAt)}</span>
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-clock mr-1"></i>
+                        <span>${article.readTime || '5'} min read</span>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                        ${article.title}
+                    </h3>
+                    <p class="text-gray-600 mb-4 line-clamp-3">
+                        ${article.excerpt || article.description || 'No description available'}
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-700">${article.author || 'Anonymous'}</span>
+                        </div>
+                        <span class="text-orange-500 font-semibold text-sm flex items-center">
+                            Baca Selengkapnya 
+                            <i class="fas fa-arrow-right ml-1"></i>
+                        </span>
+                    </div>
+                    ${article.tags && Array.isArray(article.tags) && article.tags.length > 0 ? `
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            ${article.tags.slice(0, 3).map(tag => `
+                                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                                    #${tag}
+                                </span>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return card;
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             const blogTitle = '{{blog.title}}';
             const blogUrl = window.location.href;
@@ -544,6 +647,9 @@
                 const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                 window.open(url, '_blank');
             });
+            
+            // Load related articles
+            loadRelatedArticles();
         });
     </script>
     
